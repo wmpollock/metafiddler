@@ -3,10 +3,22 @@
 from pygame import mixer, time
 import metafiddler.controller as controller
 import metafiddler.event as event
+import metafiddler.pagemanager
 
+import os.path 
+
+appState = {
+    #'next_page': 'file://sample/8716.html'
+    'next_page': 'file:8716.html'
+#    'next_page': 'file:' + os.path.join('.', 'sample', '8716.html')
+}
+
+page = metafiddler.pagemanager.get(appState['next_page'])
+print(page)
+
+exit()
 
 mixer.init()
-
 
 mixer.music.load('c:/Users/Bill/Music/MetaFilter/Chrismas is a swell time a hell time/Lentrohamsanin - Jingle Rock Bell.mp3')
 mixer.music.play(0)

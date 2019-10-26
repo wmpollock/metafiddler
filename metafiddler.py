@@ -20,44 +20,60 @@ appState = {
     }
 }
 
-page = metafiddler.pagemanager.get(appState['current_page']['audio_source_url'])
-pprint.pprint(page)
-exit()
+# {'artist': 'TheNegativeInfluence',
+#  'audio_file_url': '//mefimusic.s3.amazonaws.com/Down%20a%20Hole.mp3',
+#  'audio_source_url': 'http://music.metafilter.com/8716/Down-a-Hole',
+#  'list_title': '.Evaluation Hopper',
+#!!! THIS IS NOT THE SAME IN 
+#  'mp3_localfile': 'C:\\Users\\Bill\\Music\\MetaFilter\\.Evaluation '
+#                   'Hopper\\TheNegativeInfluence - Down a Hole.mp3',
+#  'newer': {'href': 'https://music.metafilter.com/8717/It-Dont-Matter-Whos-First-In-Line'},
+#  'older': {'href': 'https://music.metafilter.com/8715/Manhattan-Skyline'},
+#  'title': 'Down a Hole'}
 
-# Some things we need for metafodder:
-# +  artist
-# +  title
-#   list_name
-#   path
+def main():
+    appState['current_page'] = metafiddler.pagemanager.get(appState['current_page']['audio_source_url'], provision_data = True, blocking = True)
+    appState['next_page'] = metafiddler.pagemanager.get(appState['current_page']['newer']['href'])
+    pprint.pprint(appState)
+    exit()
 
-# Other things:
-# #"published_parsed": entry.published_parsed,
-#        +    "audio_file_url": url,
-#        -    "audio_source_url": entry.link
+    # Some things we need for metafodder:
+    # +  artist
+    # +  title
+    #   list_name
+    #   path
 
-mixer.init()
+    # Other things:
+    # #"published_parsed": entry.published_parsed,
+    #        +    "audio_file_url": url,
+    #        -    "audio_source_url": entry.link
 
-mixer.music.load('c:/Users/Bill/Music/MetaFilter/Chrismas is a swell time a hell time/Lentrohamsanin - Jingle Rock Bell.mp3')
-mixer.music.play(0)
+    mixer.init()
 
-lastEvent = ''
-done = 0
+    mixer.music.load('c:/Users/Bill/Music/MetaFilter/Chrismas is a swell time a hell time/Lentrohamsanin - Jingle Rock Bell.mp3')
+    mixer.music.play(0)
 
-while not(done):
-    while mixer.music.get_busy():
-        # This event stacking makes it seem like we're not going to deal
-        # with +1 events and, um, yes, wait for the next poll and 
-        # pop them off your stack or something.
-        e = controller.poll()
+    lastEvent = ''
+    done = 0
 
-        # Debounce event
-        if lastEvent != e:
-            print(e)
-            if e == event.STOP:
-                print("-> Stop!")
-                mixer.music.stop()
-            #elif event == event.PLAY:
-                # Some higgedy about already playing
-            lastEvent = e
+    while not(done):
+        while mixer.music.get_busy():
+            # This event stacking makes it seem like we're not going to deal
+            # with +1 events and, um, yes, wait for the next poll and 
+            # pop them off your stack or something.
+            e = controller.poll()
 
-        #time.Clock().tick(.25)
+            # Debounce event
+            if lastEvent != e:
+                print(e)
+                if e == event.STOP:
+                    print("-> Stop!")
+                    mixer.music.stop()
+                #elif event == event.PLAY:
+                    # Some higgedy about already playing
+                lastEvent = e
+
+            #time.Clock().tick(.25)
+
+if __name__ == '__main__':
+    main()            

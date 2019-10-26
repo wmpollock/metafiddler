@@ -3,7 +3,7 @@ import urllib.request
 import re
 import metafodder
 
-def get(url):
+def get(url, **kwargs):
     
     with urllib.request.urlopen(url) as url:
         content = url.read()

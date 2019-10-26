@@ -3,9 +3,9 @@ import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 from pygame import mixer, time
 
-#import metafiddler.controller as controller
-import metafiddler.event as event
-import metafiddler.pagemanager
+#import controller as controller
+import event 
+import pagemanager
 
 import os.path 
 
@@ -32,8 +32,8 @@ appState = {
 #  'title': 'Down a Hole'}
 
 def main():
-    appState['current_page'] = metafiddler.pagemanager.get(appState['current_page']['audio_source_url'], provision_data = True, blocking = True)
-    appState['next_page'] = metafiddler.pagemanager.get(appState['current_page']['newer']['href'])
+    appState['current_page'] = pagemanager.get(appState['current_page']['audio_source_url'], provision_data = True, blocking = True)
+    appState['next_page'] = pagemanager.get(appState['current_page']['newer']['href'])
     pprint.pprint(appState)
     exit()
 

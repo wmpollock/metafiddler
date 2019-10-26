@@ -14,7 +14,7 @@
 #  Being able to grab input no matter whether the app was active
 # or not was key to this whole thing working
 
-import metafiddler.event as event
+import event as event
 
 from math import floor, ceil
 import time

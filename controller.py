@@ -5,7 +5,7 @@
 
 # I mean, this could be REST or captive KBD or who knows.
 # Input however should be nonblocking.
-import metafiddler.controllerimplementation.windows as controller
+import controllerimplementation.windows as controller
 
 def poll():
     return(controller.poll())

@@ -4,7 +4,7 @@ A sequential player and catalogger for music.metafilter.com
 
 ## Background
 
-music.metafilter.com was about three years old when I first discovered it in ~2009.  At first a lof the content was folks cleaning out their old recordings but in short order folks were using it as another outlet for their online music.  Contests drove thematic submissions and a growing body of really decent, earnest music was there for the mining.
+music.metafilter.com was about few months old when I first discovered it in 2006.  At first a lof the content was folks cleaning out their old recordings but in short order folks were using it as another outlet for their online music.  Contests drove thematic submissions and a growing body of really decent, earnest music was there for the mining.
 
 This wasn't going to be anything you'd ever heard before and from people you'd never see.  Better, it was a curatable stream.
 
@@ -12,9 +12,11 @@ There's something in my gatherer's heart that got bitten hard by music collectio
 
 I didn't want to miss anything good so when I started I started at the first track which was a public radio interview of the site's founder.  I think its a hidden track.
 
+From there down the sequential road I travelled.
+
 Anyway, I cobbled up a web interface wrapper to MuFi and that was cool and all but since I wanted to either reject a song or put it into one of my collections I'd need to find the browser amongst many, etcetera.
 
-This mess is to get around all that.
+This mess is to get around all that.  Because dang, I'm /years/ behind now.
 
 ## Disclaimer
 

@@ -5,17 +5,18 @@ import msvcrt
 # keyboard map on the chiz-eap
 
 
-print("Keyboard mapping:\n",
-          "Mapping:\n",
-          "🡆 - next\n",
-          "🡄 - prev\n",
-          "🡅 - volume up\n",
-          "🡇 - volume down\n",
-          "s|ESC - stop\n",
-          "p - start\n",
-          "a - Playlist A\n",
-          "b - Playlist B\n"
-          )
+if __name__ == '__main__':
+    print("Keyboard mapping:\n",
+            "Mapping:\n",
+            "🡆 - next\n",
+            "🡄 - prev\n",
+            "🡅 - volume up\n",
+            "🡇 - volume down\n",
+            "s|ESC - stop\n",
+            "p - start\n",
+            "a - Playlist A\n",
+            "b - Playlist B\n"
+            )
 
 
 

@@ -13,7 +13,6 @@ base_outdir = os.path.join(str(Path.home()), "Music", "MetaFilter")
 valid_filename_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
 char_limit = 255
 
-pygame.mixer.init()
 
 class MufiSong:
     """Audio-file-centric view of a MuFi song allong with metadata."""
@@ -144,3 +143,6 @@ class MufiSong:
         if len(cleaned_filename)>char_limit:
             print("Warning, filename truncated because it was over {}. Filenames may no longer be unique".format(char_limit))
         return cleaned_filename[:char_limit]    
+
+if __name__ == '__main__':
+    pygame.mixer.init()

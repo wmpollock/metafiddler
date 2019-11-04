@@ -109,77 +109,79 @@ class JOYINFOEX(ctypes.Structure):
         ('dwReserved2', DWORD),
     ]
 
-# Get the number of supported devices (usually 16).
-num_devs = joyGetNumDevs()
-if num_devs == 0:
-    print("Joystick driver not loaded.")
 
-# Number of the joystick to open.
-joy_id = 0
+def init():
+    # Get the number of supported devices (usually 16).
+    num_devs = joyGetNumDevs()
+    if num_devs == 0:
+        print("Joystick driver not loaded.")
 
-# Check if the joystick is plugged in.
-info = JOYINFO()
-p_info = ctypes.pointer(info)
-if joyGetPos(0, p_info) != 0:
-    print("Joystick %d not plugged in." % (joy_id + 1))
-    
-else:
-    print("Joystick provisioned\n\n",
-          "Mapping:\n",
-          "🡆 - next\n",
-          "🡄 - prev\n",
-          "🡅 - volume up\n",
-          "🡇 - volume down\n",
-          "[sel] - stop\n",
-          "[start] - start\n",
-          "A - Playlist A\n",
-          "B - Playlist B\n"
-          )
+    # Number of the joystick to open.
+    joy_id = 0
 
-    joystick_provisioned = 1
-
-    # Get device capabilities.
-    caps = JOYCAPS()
-    if joyGetDevCaps(joy_id, ctypes.pointer(caps), ctypes.sizeof(JOYCAPS)) != 0:
-        print("Failed to get device capabilities.")
-        exit()
-
-    print("Driver name:", caps.szPname)
-
-    # Fetch the name from registry.
-    key = None
-    if len(caps.szRegKey) > 0:
-        try:
-            key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "System\\CurrentControlSet\\Control\\MediaResources\\Joystick\\%s\\CurrentJoystickSettings" % (caps.szRegKey))
-        except WindowsError:
-            key = None
-
-    if key:
-        oem_name = winreg.QueryValueEx(key, "Joystick%dOEMName" % (joy_id + 1))
-        if oem_name:
-            key2 = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "System\\CurrentControlSet\\Control\\MediaProperties\\PrivateProperties\\Joystick\\OEM\\%s" % (oem_name[0]))
-            if key2:
-                oem_name = winreg.QueryValueEx(key2, "OEMName")
-                print( "OEM name:", oem_name[0])
-            key2.Close()
-
-    # Set the initial button states.
-    button_states = {}
-    for b in range(caps.wNumButtons):
-        name = button_names[b]
-        if (1 << b) & info.wButtons:
-            button_states[name] = True
-        else:
-            button_states[name] = False
-
-
-    buttons_text = ""
-
-    # Initialise the JOYINFOEX structure.
-    info = JOYINFOEX()
-    info.dwSize = ctypes.sizeof(JOYINFOEX)
-    info.dwFlags = JOY_RETURNBUTTONS | JOY_RETURNCENTERED | JOY_RETURNPOV | JOY_RETURNU | JOY_RETURNV | JOY_RETURNX | JOY_RETURNY | JOY_RETURNZ
+    # Check if the joystick is plugged in.
+    info = JOYINFO()
     p_info = ctypes.pointer(info)
+    if joyGetPos(0, p_info) != 0:
+        print("Joystick %d not plugged in." % (joy_id + 1))
+        
+    else:
+        print("Joystick provisioned\n\n",
+            "Mapping:\n",
+            "🡆 - next\n",
+            "🡄 - prev\n",
+            "🡅 - volume up\n",
+            "🡇 - volume down\n",
+            "[sel] - stop\n",
+            "[start] - start\n",
+            "A - Playlist A\n",
+            "B - Playlist B\n"
+            )
+
+        joystick_provisioned = 1
+
+        # Get device capabilities.
+        caps = JOYCAPS()
+        if joyGetDevCaps(joy_id, ctypes.pointer(caps), ctypes.sizeof(JOYCAPS)) != 0:
+            print("Failed to get device capabilities.")
+            exit()
+
+        print("Driver name:", caps.szPname)
+
+        # Fetch the name from registry.
+        key = None
+        if len(caps.szRegKey) > 0:
+            try:
+                key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "System\\CurrentControlSet\\Control\\MediaResources\\Joystick\\%s\\CurrentJoystickSettings" % (caps.szRegKey))
+            except WindowsError:
+                key = None
+
+        if key:
+            oem_name = winreg.QueryValueEx(key, "Joystick%dOEMName" % (joy_id + 1))
+            if oem_name:
+                key2 = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "System\\CurrentControlSet\\Control\\MediaProperties\\PrivateProperties\\Joystick\\OEM\\%s" % (oem_name[0]))
+                if key2:
+                    oem_name = winreg.QueryValueEx(key2, "OEMName")
+                    print( "OEM name:", oem_name[0])
+                key2.Close()
+
+        # Set the initial button states.
+        button_states = {}
+        for b in range(caps.wNumButtons):
+            name = button_names[b]
+            if (1 << b) & info.wButtons:
+                button_states[name] = True
+            else:
+                button_states[name] = False
+
+
+        buttons_text = ""
+
+        # Initialise the JOYINFOEX structure.
+        info = JOYINFOEX()
+        info.dwSize = ctypes.sizeof(JOYINFOEX)
+        info.dwFlags = JOY_RETURNBUTTONS | JOY_RETURNCENTERED | JOY_RETURNPOV | JOY_RETURNU | JOY_RETURNV | JOY_RETURNX | JOY_RETURNY | JOY_RETURNZ
+        p_info = ctypes.pointer(info)
 
 # Fetch new joystick data until it returns non-0 (that is, it has been unplugged)
 def poll(): 
@@ -231,3 +233,5 @@ def poll():
 
     return(metafiddler.event.NONE)
     
+if __name__ == '__main__':
+    init()

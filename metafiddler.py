@@ -37,10 +37,13 @@ appState = {
 #  'title': 'Down a Hole'}
 
 def main():
-
-    appState['current_page'].get(extract = True, blocking = True, subdir = 'MetaFiddler')
+    print("Seeing up current page")
+    #appState['current_page'].get(subdir = 'MetaFiddler',extract = True, blocking = True)
+    #appState['current_page'].get(subdir="MetaFiddler", provision=1)
+    appState['current_page'].get(subdir="MetaFiddler", provision=True)
+    #appState['current_page'].get(subdir="MetaFiddler")
     current_page = appState['current_page']
-    current_page.song.generate_description()
+    #current_page.song.generate_description()
 
     exit()
 

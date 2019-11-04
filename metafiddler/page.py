@@ -25,7 +25,7 @@ class MufiPage:
 
     def get(self, **kwargs):
         global mp3_url_regexp
-
+        print("Getting", self.audio_source_url)
         with urllib.request.urlopen(self.audio_source_url) as url:
             content = url.read()
             
@@ -57,7 +57,8 @@ class MufiPage:
             if script:
                 match = mp3_url_regexp.search(script.text)
                 if match:
-                    self.song.audio_file_url = match.group(0)
+                    # Browser fiddles about with native method, https is fine for us.
+                    self.song.audio_file_url = 'https:' + match.group(0)
 
             links = {
                 "older": {
@@ -81,9 +82,9 @@ class MufiPage:
                     print("FATAL: couldn't find", link_name)
                     exit()
 
-        if 'extract' in kwargs:
+        if 'provision' in kwargs:
             print("Provisioning data.")
-            self.song.get()
+            self.song.get(**kwargs)
 
     
 

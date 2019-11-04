@@ -128,13 +128,13 @@ class MufiSong:
         pygame.mixer.music.stop()
 
     # From https://gist.github.com/wassname/1393c4a57cfcbf03641dbc31886123b8
-    def __clean_filename(self, filename, whitelist=valid_filename_chars, replace=''):
+    def __clean_filename(self, filename):
         global valid_filename_chars
         global char_limit
         
         # replace arbitrary things with underscore (default nuffin')
-        for r in replace:
-            filename = filename.replace(r,'_')
+        # for r in replace:
+        #     filename = filename.replace(r,'_')
         
         # keep only valid ascii chars
         cleaned_filename = unicodedata.normalize('NFKD', filename).encode('ASCII', 'ignore').decode()

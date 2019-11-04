@@ -4,7 +4,7 @@ import re
 from metafiddler.song import MufiSong
 
 
-mp3_url_regexp = re.compile(r'//mefimusic\.s3\.amazonaws\.com/.+.mp3');
+mp3_url_regexp = re.compile(r'//mefimusic\.s3\.amazonaws\.com/.+.mp3')
 
 class MufiPage:
     # MP3-taglike data
@@ -31,13 +31,6 @@ class MufiPage:
         print("Getting", self.audio_source_url)
         with urllib.request.urlopen(self.audio_source_url) as url:
             content = url.read()
-            
-            page_content = {'audio_source_url': url,
-                            # We're going to give it this kinda janky folder name to store things
-                            # While we play through them.  Also it helps the naming
-                            'list_title': ".Evaluation Hopper"
-                            }
-
             soup = BeautifulSoup(content, features="lxml")
 
             # Title

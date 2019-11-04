@@ -22,7 +22,7 @@ class MufiSong:
     audio_file_url = ''
     audio_source_url = ''
     local_path = ''
-    # Location of 
+  # Location of 
     title_read_path = ''
     # 
     provisioned = 0    
@@ -70,29 +70,6 @@ class MufiSong:
             tts.save(self.title_read_path)
 
 
-    def __get_outpath(self,**kwargs):
-        # I thought maybe MeFi would be using OGG but as of 2019
-        # their submissions are still.  MP3 only ¯\_(ツ)_/¯  I mean, yeet, I guess.
-        # Thought I was going to have go get all up into mimetypes.guess_extension :O
-        filename = self.__clean_filename(self.artist + " - " + self.title) + ".mp3"
-        outdir = ''    
-        # I'm going to the content in a per-playlist folder because I keep
-        # my xmas music segregated and kind of don't want to load it on the 
-        # accidental.  Tempting to lump 'em all together in oen subdir tho
-        if 'subdir' in kwargs:
-            if len(kwargs.get('subdir')):
-                outdir = os.path.join(base_outdir, self.__clean_filename(kwargs.get('subdir')))
-        
-        if not outdir:
-            #raise SystemExit("FATAL: Need to invoke with 'subdir'" + traceback.print_tb(tb[, limit[, file]])¶)
-            print(kwargs)
-            raise Exception("FATAL: Need to invoke with 'subdir'")
-
-        if not os.path.exists(outdir):
-            os.mkdir(outdir)
-
-        outpath = os.path.join(outdir, filename)
-        return(outpath)
     
     def play(self):
         if self.local_path:
@@ -123,8 +100,8 @@ class MufiSong:
         self.get(**kwargs)
         self.get_title_read(**kwargs)
     
-    def stop(self):
-        pygame.mixer.music.stop()
+    # def stop(self):
+    #     pygame.mixer.music.stop()
 
     # From https://gist.github.com/wassname/1393c4a57cfcbf03641dbc31886123b8
     def __clean_filename(self, filename):
@@ -143,6 +120,30 @@ class MufiSong:
         if len(cleaned_filename)>char_limit:
             print("Warning, filename truncated because it was over {}. Filenames may no longer be unique".format(char_limit))
         return cleaned_filename[:char_limit]    
+
+    def __get_outpath(self,**kwargs):
+        # I thought maybe MeFi would be using OGG but as of 2019
+        # their submissions are still.  MP3 only ¯\_(ツ)_/¯  I mean, yeet, I guess.
+        # Thought I was going to have go get all up into mimetypes.guess_extension :O
+        filename = self.__clean_filename(self.artist + " - " + self.title) + ".mp3"
+        outdir = ''    
+        # I'm going to the content in a per-playlist folder because I keep
+        # my xmas music segregated and kind of don't want to load it on the 
+        # accidental.  Tempting to lump 'em all together in oen subdir tho
+        if 'subdir' in kwargs:
+            if len(kwargs.get('subdir')):
+                outdir = os.path.join(base_outdir, self.__clean_filename(kwargs.get('subdir')))
+        
+        if not outdir:
+            #raise SystemExit("FATAL: Need to invoke with 'subdir'" + traceback.print_tb(tb[, limit[, file]])¶)
+            print(kwargs)
+            raise Exception("FATAL: Need to invoke with 'subdir'")
+
+        if not os.path.exists(outdir):
+            os.mkdir(outdir)
+
+        outpath = os.path.join(outdir, filename)
+        return(outpath)
 
 if __name__ == '__main__':
     pygame.mixer.init()

@@ -1,9 +1,11 @@
+import gtts
 import os
 import os.path
+from pathlib import Path
 import urllib
 import unicodedata
 import string
-from pathlib import Path
+
 
 base_outdir = os.path.join(str(Path.home()), "Music", "MetaFilter")
 
@@ -18,13 +20,12 @@ class MufiSong:
     audio_file_url = ''
     audio_source_url = ''
     local_path = ''
+    title_read_path = ''
+    
 
     def get(self,**kwargs):
-        print("yeet?")
-        print(kwargs)
-
         if not self.local_path:
-            self.local_path = self.get_outpath(**kwargs)
+            self.local_path = self.__get_outpath(**kwargs)
             # Should I think pass callback if we want it; for 'fodder we would be there's
             # enough chaos going on in 'fiddler that absolutely no. 
 
@@ -36,8 +37,30 @@ class MufiSong:
                 urllib.request.urlretrieve(self.audio_file_url, self.local_path, kwargs.get('callback'))
             else:
                 urllib.request.urlretrieve(self.audio_file_url, self.local_path)
-           
-    def get_outpath(self,**kwargs):
+
+    def get_title_read(self, **kwargs):
+        # Man, we could get fancy, but we'll save that for ho-radio
+
+        # Like, its tempting to make a tempfile for this buuuuut I want to be able to re-run a 
+        # given page to a given stage so when I pick it up I don't need to reprovision...
+        # IDK, maybe more pickling is what this all calls for....
+        #tts_file = tempfile.mktemp(suffix="mp3")
+        if not len(self.title_read_path):
+            self.title_read_path = self.__get_outpath(subdir="Title Reads")
+
+        if os.path.exists(self.title_read_path):
+            print("Title read", self.title_read_path, "exists!")
+        else:
+            # Irony; we worked kind of hard to split exactly this in some instances :/
+            read = self.title + " by " + self.artist
+            print("Title read:", read)
+            print("Generating title read", self.title_read_path)
+            tts = gtts.gTTS(read)
+            print("Saving read")
+            tts.save(self.title_read_path)
+
+
+    def __get_outpath(self,**kwargs):
         # I thought maybe MeFi would be using OGG but as of 2019
         # their submissions are still.  MP3 only ¯\_(ツ)_/¯  I mean, yeet, I guess.
         # Thought I was going to have go get all up into mimetypes.guess_extension :O
@@ -68,6 +91,14 @@ class MufiSong:
         else:
             raise SystemExit("Local path has not been defined -- content missing :[") 
         # mixer.music.play(0)
+
+    # Pull down all content, in the metafiddler context we want to keep "get" separate,
+    # presumably (narf)
+    def provision(self, **kwargs):
+        self.get(**kwargs)
+        self.get_title_read(**kwargs)
+    
+
 
 
     # From https://gist.github.com/wassname/1393c4a57cfcbf03641dbc31886123b8

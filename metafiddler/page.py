@@ -84,7 +84,7 @@ class MufiPage:
 
         if 'provision' in kwargs:
             print("Provisioning data.")
-            self.song.get(**kwargs)
+            self.song.provision(**kwargs)
 
     
 

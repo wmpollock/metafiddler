@@ -5,8 +5,8 @@ import msvcrt
 # keyboard map on the chiz-eap
 
 
-if __name__ == '__main__':
-    print("Keyboard mapping:\n",
+def init():
+        print("Keyboard mapping:\n",
             "Mapping:\n",
             "🡆 - next\n",
             "🡄 - prev\n",

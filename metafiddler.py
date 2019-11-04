@@ -41,6 +41,8 @@ def main():
     lastEvent = ''
     done = 0
 
+    metafiddler.controller.init()
+    
     current_page = MufiPage('file:sample/8716.html')
     print(current_page)
     print("Seeing up current page")
@@ -73,14 +75,36 @@ def main():
 
              # Debounce event
             if e == metafiddler.event.STOP:
-                print("-> Stop!")
-                current_page.song.stop()
-            #elif event == event.PLAY:
-                # Some higgedy about already playing
-            
+                print("-> Stop [psyche!  pause!]!")
+                current_page.song.pause()
+                
+            elif e == metafiddler.event.PLAY:
+                current_page.song.play()
+
+            elif e == metafiddler.event.NEXT:
+                print("NEXT")
+            elif e == metafiddler.event.PREVIOUS:
+                print("PREVIOUS")
+            elif e == metafiddler.event.VOLUME_UP:
+                v = pygame.mixer.music.get_volume()
+                if v < 1:
+                    pygame.mixer.music.set_volume(v + .1)
+
+            elif e == metafiddler.event.VOLUME_DOWN:
+                v = pygame.mixer.music.get_volume()
+                if v > 1:
+                    pygame.mixer.music.set_volume(v - .1)
+
+ 
+            elif e == metafiddler.event.PLAYLIST_A:
+                print("PYLIST AAAAA")
+           
+            elif e == metafiddler.event.PLAYLIST_B:
+                print("PLAYLIsT BBBBBB")
+
+            # Ticking jacks our kbd/joy scane            
             #pygame.time.Clock().tick(.25)
 
-    #         # and pull/provision next
     #         # Save state
             # Backup/propagate state to remote
 

@@ -17,6 +17,12 @@ controllers = [
     metafiddler.controller_implementation.windows_usb_joystick
 ]
 
+def init():
+    global last_event
+    for controller in controllers:
+        controller.init()
+
+
 def poll():
     global last_event
     for controller in controllers:

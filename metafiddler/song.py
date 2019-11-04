@@ -69,7 +69,8 @@ class MufiSong:
             print("Saving read")
             tts.save(self.title_read_path)
 
-
+    def pause(self):
+        pygame.mixer.music.pause()
     
     def play(self):
         if self.local_path:
@@ -145,5 +146,5 @@ class MufiSong:
         outpath = os.path.join(outdir, filename)
         return(outpath)
 
-if __name__ == '__main__':
-    pygame.mixer.init()
+# if __name__ == '__main__':
+pygame.mixer.init()

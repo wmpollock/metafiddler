@@ -232,6 +232,3 @@ def poll():
             return(metafiddler.event.PLAYLIST_B)
 
     return(metafiddler.event.NONE)
-    
-if __name__ == '__main__':
-    init()

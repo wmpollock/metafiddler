@@ -111,6 +111,12 @@ class JOYINFOEX(ctypes.Structure):
 
 
 def init():
+    global p_info
+    global info
+    global caps
+    global button_states
+    global joystick_provisioned
+
     # Get the number of supported devices (usually 16).
     num_devs = joyGetNumDevs()
     if num_devs == 0:
@@ -174,9 +180,6 @@ def init():
             else:
                 button_states[name] = False
 
-
-        buttons_text = ""
-
         # Initialise the JOYINFOEX structure.
         info = JOYINFOEX()
         info.dwSize = ctypes.sizeof(JOYINFOEX)
@@ -185,7 +188,12 @@ def init():
 
 # Fetch new joystick data until it returns non-0 (that is, it has been unplugged)
 def poll(): 
-    
+    global p_info
+    global info
+    global caps
+    global button_states
+    global joystick_provisioned
+
     # No joystick provisioned, lets bounce.
     if joystick_provisioned == 0:
         return
@@ -210,7 +218,7 @@ def poll():
         # Value here is kind of not always == 1
         if x > .5:
             # X/Y to the left
-            return(mafiddler.event.NEXT)
+            return(metafiddler.event.NEXT)
         elif x < -.5:
             # X/Y to the right
             return(metafiddler.event.PREVIOUS)

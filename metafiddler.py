@@ -18,7 +18,7 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import metafiddler.controller
 import metafiddler.event 
 from metafiddler.page import MufiPage
-
+import pygame
 import pprint 
 appState = {
     'current_page': MufiPage('file:sample/8716.html')
@@ -57,26 +57,25 @@ def main():
         #appState['next_page'] = current_page.links[newer]
         #appState['next_page'].provision(subdir="MetaFiddler")
     
-        current_page.song.play_title()
+        #current_page.song.play_title()
         # Start playing
         current_page.song.play()
 
     #     #while :
         while current_page.song.playing():
-             # This event stacking makes it seem like we're not going to deal
-             # with +1 events and, um, yes, wait for the next poll and 
-             # pop them off your stack or something.
-             e = metafiddler.controller.poll()
+            # This event stacking makes it seem like we're not going to deal
+            # with +1 events and, um, yes, wait for the next poll and 
+            # pop them off your stack or something.
+            e = metafiddler.controller.poll()
 
              # Debounce event
-                 print(e)
-                 if e == metafiddler.event.STOP:
-                     print("-> Stop!")
-                     mixer.music.stop()
-                 #elif event == event.PLAY:
-                     # Some higgedy about already playing
-                 lastEvent = e
-             #time.Clock().tick(.25)
+            if e == metafiddler.event.STOP:
+                print("-> Stop!")
+                current_page.song.stop()
+            #elif event == event.PLAY:
+                # Some higgedy about already playing
+            
+            #pygame.time.Clock().tick(.25)
 
              # Advance prev <- current 
     #         # and pull/provision next

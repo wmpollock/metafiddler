@@ -26,8 +26,6 @@ from ctypes.wintypes import WCHAR as TCHAR
 
 # Its possible the JS is not added and if so lets just get on with things
 joystick_provisioned = 0
-# Debounce the output so we're not only registering each action once.
-last_response=""
 
 # Fetch function pointers
 joyGetNumDevs = ctypes.windll.winmm.joyGetNumDevs
@@ -126,6 +124,18 @@ if joyGetPos(0, p_info) != 0:
     print("Joystick %d not plugged in." % (joy_id + 1))
     
 else:
+    print("Joystick provisioned\n\n",
+          "Mapping:\n",
+          "🡆 - next\n",
+          "🡄 - prev\n",
+          "🡅 - volume up\n",
+          "🡇 - volume down\n",
+          "[sel] - stop\n",
+          "[start] - start\n",
+          "A - Playlist A\n",
+          "B - Playlist B\n"
+          )
+
     joystick_provisioned = 1
 
     # Get device capabilities.
@@ -173,7 +183,7 @@ else:
 
 # Fetch new joystick data until it returns non-0 (that is, it has been unplugged)
 def poll(): 
-    result = metafiddler.event.NONE
+    
     # No joystick provisioned, lets bounce.
     if joystick_provisioned == 0:
         return
@@ -198,31 +208,26 @@ def poll():
         # Value here is kind of not always == 1
         if x > .5:
             # X/Y to the left
-            result = mafiddler.event.NEXT
+            return(mafiddler.event.NEXT)
         elif x < -.5:
             # X/Y to the right
-            result = metafiddler.event.PREVIOUS
+            return(metafiddler.event.PREVIOUS)
         elif y  > .5:
             # X/Y down
-            result = metafiddler.event.VOLUME_DOWN
+            return(metafiddler.event.VOLUME_DOWN)
         elif y < -.5:
             # X/Y up
-            result = metafiddler.event.VOLUME_UP
+            return(metafiddler.event.VOLUME_UP)
         
         if (button_states.get("thumbl")):
-            result = metafiddler.event.PLAY
+            return(metafiddler.event.PLAY)
         if (button_states.get("thumbr")):
-            result = metafiddler.event.STOP
+            return(metafiddler.event.STOP)
        
         if (button_states.get("x")):
-            result = metafiddler.event.PLAYLIST_A
+            return(metafiddler.event.PLAYLIST_A)
         if (button_states.get("b")):
-            result = metafiddler.event.PLAYLIST_B
+            return(metafiddler.event.PLAYLIST_B)
 
-    # Debounce the output so we only register one event back up...
-    if not last_result == result:
-        last_result = result
-        return(result)
-    else:
-        return(metafiddler.event.NONE)
-
+    return(metafiddler.event.NONE)
+    

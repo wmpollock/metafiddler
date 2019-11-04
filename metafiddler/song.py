@@ -120,6 +120,9 @@ class MufiSong:
         self.get(**kwargs)
         self.get_title_read(**kwargs)
     
+    def stop(self):
+        pygame.mixer.music.stop()
+
     # From https://gist.github.com/wassname/1393c4a57cfcbf03641dbc31886123b8
     def __clean_filename(self, filename, whitelist=valid_filename_chars, replace=''):
         global valid_filename_chars

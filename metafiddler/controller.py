@@ -5,7 +5,10 @@
 
 # I mean, this could be REST or captive KBD or who knows.
 # Input however should be nonblocking.
-import controllerimplementation.windows as controller
+import metafiddler.controller_implementation.windows
 
 def poll():
-    return(controller.poll())
+    if lastEvent != e:
+
+
+    return(metafiddler.controller_implementation.windows.poll())

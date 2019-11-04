@@ -2,6 +2,7 @@ import gtts
 import os
 import os.path
 from pathlib import Path
+import pygame.mixer
 import urllib
 import unicodedata
 import string
@@ -12,18 +13,23 @@ base_outdir = os.path.join(str(Path.home()), "Music", "MetaFilter")
 valid_filename_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
 char_limit = 255
 
+pygame.mixer.init()
 
 class MufiSong:
+    """Audio-file-centric view of a MuFi song allong with metadata."""
     # MP3-taglike data
     title = ''
     artist = ''
     audio_file_url = ''
     audio_source_url = ''
     local_path = ''
+    # Location of 
     title_read_path = ''
-    
+    # 
+    provisioned = 0    
 
     def get(self,**kwargs):
+        """Retrieve the audio file if it doesn't exist locally already"""
         if not self.local_path:
             self.local_path = self.__get_outpath(**kwargs)
             # Should I think pass callback if we want it; for 'fodder we would be there's
@@ -39,6 +45,7 @@ class MufiSong:
                 urllib.request.urlretrieve(self.audio_file_url, self.local_path)
 
     def get_title_read(self, **kwargs):
+        """Generate a TTS read of the audo description"""
         # Man, we could get fancy, but we'll save that for ho-radio
 
         # Like, its tempting to make a tempfile for this buuuuut I want to be able to re-run a 
@@ -85,12 +92,27 @@ class MufiSong:
         return(outpath)
     
     def play(self):
-    # mixer.init()
         if self.local_path:
             pygame.mixer.music.load(self.local_path)
         else:
             raise SystemExit("Local path has not been defined -- content missing :[") 
-        # mixer.music.play(0)
+        # yeet
+        pygame.mixer.music.play(0)
+
+    def play_title(self):
+        if self.title_read_path:
+            pygame.mixer.music.load(self.title_read_path)
+        else:
+            raise SystemExit("Local path has not been defined -- content missing :[") 
+        # yeet
+        print("Playing title @ ", self.title_read_path)
+        pygame.mixer.music.play()
+        while pygame.mixer.music.get_busy():
+            pygame.time.Clock().tick(10)
+
+
+    def playing(self):
+        return pygame.mixer.music.get_busy()
 
     # Pull down all content, in the metafiddler context we want to keep "get" separate,
     # presumably (narf)
@@ -98,9 +120,6 @@ class MufiSong:
         self.get(**kwargs)
         self.get_title_read(**kwargs)
     
-
-
-
     # From https://gist.github.com/wassname/1393c4a57cfcbf03641dbc31886123b8
     def __clean_filename(self, filename, whitelist=valid_filename_chars, replace=''):
         global valid_filename_chars

@@ -81,10 +81,8 @@ class MufiPage:
                     ## Might be natural case for last/first entry?  If so, don't go there
                     print("FATAL: couldn't find", link_name)
                     exit()
+            
 
-        if 'provision' in kwargs:
-            print("Provisioning data.")
-            self.song.provision(**kwargs)
-
-    
-
+    def provision(self, **kwargs):
+        self.get(**kwargs)
+        self.song.provision(**kwargs)

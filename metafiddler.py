@@ -14,9 +14,8 @@ import os.path
 
 # I mean, thx and all, but....
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-from pygame import mixer, time
 
-#import controller as controller
+import metafiddler.controller
 import metafiddler.event 
 from metafiddler.page import MufiPage
 
@@ -37,59 +36,55 @@ appState = {
 #  'title': 'Down a Hole'}
 
 def main():
+    lastEvent = ''
+    done = 0
+
+
     print("Seeing up current page")
-    #appState['current_page'].get(subdir = 'MetaFiddler',extract = True, blocking = True)
-    #appState['current_page'].get(subdir="MetaFiddler", provision=1)
-    appState['current_page'].get(subdir="MetaFiddler", provision=True)
-    #appState['current_page'].get(subdir="MetaFiddler")
+    appState['current_page'].provision(subdir="MetaFiddler")
     current_page = appState['current_page']
-    #current_page.song.generate_description()
 
-    exit()
-
-    # Some things we need for metafodder:
-    # +  artist
-    # +  title
-    #   list_name
-    #   path
 
     # Other things:
     # #"published_parsed": entry.published_parsed,
     #        +    "audio_file_url": url,
     #        -    "audio_source_url": entry.link
 
+
+    while not(done):
+
+        # Background this     
+        #appState['next_page'] = current_page.links[newer]
+        #appState['next_page'].provision(subdir="MetaFiddler")
     
-    lastEvent = ''
-    done = 0
+        current_page.song.play_title()
+        # Start playing
+        current_page.song.play()
 
-    # while not(done):
-    #     appState['next_page'] = current_page.links[newer]
-    #     # Provision our content for the next round
-    #     appState['next_page'].get(appState['current_page']['newer']['href'], extract = True)
-    #     pprint.pprint(appState)
+    #     #while :
+        while current_page.song.playing():
+             # This event stacking makes it seem like we're not going to deal
+             # with +1 events and, um, yes, wait for the next poll and 
+             # pop them off your stack or something.
+             e = metafiddler.controller.poll()
 
-    #     #while mixer.music.get_busy():
-    #     while audio.playing
-    #         # This event stacking makes it seem like we're not going to deal
-    #         # with +1 events and, um, yes, wait for the next poll and 
-    #         # pop them off your stack or something.
-    #         e = controller.poll()
+             # Debounce event
+                 print(e)
+                 if e == metafiddler.event.STOP:
+                     print("-> Stop!")
+                     mixer.music.stop()
+                 #elif event == event.PLAY:
+                     # Some higgedy about already playing
+                 lastEvent = e
+             #time.Clock().tick(.25)
 
-    #         # Debounce event
-    #         if lastEvent != e:
-    #             print(e)
-    #             if e == event.STOP:
-    #                 print("-> Stop!")
-    #                 mixer.music.stop()
-    #             #elif event == event.PLAY:
-    #                 # Some higgedy about already playing
-    #             lastEvent = e
-    #         #time.Clock().tick(.25)
-
-    #         # Advance prev <- current 
+             # Advance prev <- current 
     #         # and pull/provision next
     #         # Save state
             # Backup/propagate state to remote
+
+        # At tis point its ended without us actioning?
+        exit()
 
 if __name__ == '__main__':
     main()            

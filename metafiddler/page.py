@@ -7,17 +7,20 @@ from metafiddler.song import MufiSong
 mp3_url_regexp = re.compile(r'//mefimusic\.s3\.amazonaws\.com/.+.mp3');
 
 class MufiPage:
-    # Whether we have gotten the page data or are working w/a raw URL at this point
-    metadata_provisioned = 0
-    # Whether we have gotten the audio file and, IDK, announce?
-    data_provisioned = 0
-    song = MufiSong()
-    
     # MP3-taglike data
     audio_source_url = ''
 
+    # Song entity
+    song = MufiSong()
+    
     # PageMetadata
     links = {}
+
+    def __str__(self):
+        return str({
+            "song": self.song,
+            "links": self.links
+        })
 
     def __init__(self,url):
         self.audio_source_url = url
@@ -86,3 +89,4 @@ class MufiPage:
     def provision(self, **kwargs):
         self.get(**kwargs)
         self.song.provision(**kwargs)
+        return self

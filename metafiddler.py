@@ -18,11 +18,10 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import metafiddler.controller
 import metafiddler.event 
 from metafiddler.page import MufiPage
+import multiprocessing
 import pygame
 import pprint 
-appState = {
-    'current_page': MufiPage('file:sample/8716.html')
-}
+
 
 # {'artist': 'TheNegativeInfluence',
 #  'audio_file_url': '//mefimusic.s3.amazonaws.com/Down%20a%20Hole.mp3',
@@ -35,16 +34,19 @@ appState = {
 #  'older': {'href': 'https://music.metafilter.com/8715/Manhattan-Skyline'},
 #  'title': 'Down a Hole'}
 
+def get_next(queue, page):
+    queue.put(page.provision(subdir="Metafilter"))
+
 def main():
     lastEvent = ''
     done = 0
 
-
+    current_page = MufiPage('file:sample/8716.html')
+    print(current_page)
     print("Seeing up current page")
-    appState['current_page'].provision(subdir="MetaFiddler")
-    current_page = appState['current_page']
-
-
+    current_page.provision(subdir="MetaFiddler")
+    print(current_page)
+    
     # Other things:
     # #"published_parsed": entry.published_parsed,
     #        +    "audio_file_url": url,
@@ -54,14 +56,15 @@ def main():
     while not(done):
 
         # Background this     
-        #appState['next_page'] = current_page.links[newer]
-        #appState['next_page'].provision(subdir="MetaFiddler")
-    
-        #current_page.song.play_title()
+        next_page = current_page.links["newer"]
+        queue = multiprocessing.Queue()
+        process = multiprocessing.Process(target=get_next, args=(queue, next_page))
+        process.start()
+
         # Start playing
+        print("Playing...")
         current_page.song.play()
 
-    #     #while :
         while current_page.song.playing():
             # This event stacking makes it seem like we're not going to deal
             # with +1 events and, um, yes, wait for the next poll and 
@@ -77,12 +80,14 @@ def main():
             
             #pygame.time.Clock().tick(.25)
 
-             # Advance prev <- current 
     #         # and pull/provision next
     #         # Save state
             # Backup/propagate state to remote
 
-        # At tis point its ended without us actioning?
+            # At tis point its ended without us actioning?
+        current_page = queue.get()
+        process.join()
+        print(current_page)
         exit()
 
 if __name__ == '__main__':

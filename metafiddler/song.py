@@ -28,6 +28,10 @@ class MufiSong:
     # 
     provisioned = 0    
 
+    def __str__(self):
+        return str({"title", self.title,
+                    "artist", self.artist})
+
     def get(self,**kwargs):
         """Retrieve the audio file if it doesn't exist locally already"""
         if not self.local_path:

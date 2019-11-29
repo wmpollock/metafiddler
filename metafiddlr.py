@@ -41,18 +41,17 @@ def main():
     done = 0
 
     metafiddler.controller.init()
+    metafiddler.config.init()
     
-    current_page = MufiPage('file:sample/8716.html')
-    print(current_page)
-    print("Seeing up current page")
+    current_page = MufiPage(metafiddler.config.current_page)
+    
+    print("Setting up current page")
     current_page.provision(subdir="MetaFiddler")
-    print(current_page)
     
     # Other things:
     # #"published_parsed": entry.published_parsed,
     #        +    "audio_file_url": url,
     #        -    "audio_source_url": entry.link
-
 
     while not(done):
 
@@ -66,7 +65,10 @@ def main():
         print("Playing...")
         current_page.song.play()
 
-        while current_page.song.playing():
+        # 
+        actioned = 0
+
+        while current_page.song.playing() or not actioned:
             # This event stacking makes it seem like we're not going to deal
             # with +1 events and, um, yes, wait for the next poll and 
             # pop them off your stack or something.
@@ -78,28 +80,40 @@ def main():
                 current_page.song.pause()
                 
             elif e == metafiddler.event.PLAY:
+                # Maybe this should do something if its not playing?
                 current_page.song.play()
 
             elif e == metafiddler.event.NEXT:
                 print("NEXT")
+                pygame.mixer.music.fadeout(100)
+                actioned = 1
+
             elif e == metafiddler.event.PREVIOUS:
                 print("PREVIOUS")
+
             elif e == metafiddler.event.VOLUME_UP:
+                print("Volume up")
                 v = pygame.mixer.music.get_volume()
                 if v < 1:
                     pygame.mixer.music.set_volume(v + .1)
 
             elif e == metafiddler.event.VOLUME_DOWN:
+                print("Volume down")
                 v = pygame.mixer.music.get_volume()
-                if v > 1:
+                if v > 0:
                     pygame.mixer.music.set_volume(v - .1)
-
  
             elif e == metafiddler.event.PLAYLIST_A:
-                print("PYLIST AAAAA")
-           
+                print("Playlist A")
+                current_page.song.playlist_add(metafiddler.config.playlist_a)
+                pygame.mixer.music.fadeout(100)
+                actioned = 1
+                
             elif e == metafiddler.event.PLAYLIST_B:
-                print("PLAYLIsT BBBBBB")
+                print("Playlist B")
+                current_page.song.playlist_add(metafiddler.config.playlist_b)
+                pygame.mixer.music.fadeout(100)
+                actioned = 1
 
             # Ticking jacks our kbd/joy scane            
             #pygame.time.Clock().tick(.25)
@@ -109,6 +123,8 @@ def main():
 
             # At tis point its ended without us actioning?
         current_page = queue.get()
+        metafiddler.config.current_page = current_page.audio_source_url
+        metafiddler.config.save()
         process.join()
         print(current_page)
         exit()

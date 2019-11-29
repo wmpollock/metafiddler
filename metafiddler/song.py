@@ -95,6 +95,9 @@ class MufiSong:
     def playing(self):
         return pygame.mixer.music.get_busy()
 
+    def playlist_add(self, playlist_id):
+        metafiddler.mechanise.favorite(playlist_id, self.mufi_id)
+
     # Pull down all content, in the metafiddler context we want to keep "get" separate,
     # presumably (narf)
     def provision(self, **kwargs):

@@ -1,6 +1,7 @@
 import gtts
 import os
 import os.path
+import metafiddler.mechanise
 from pathlib import Path
 import pygame.mixer
 import urllib
@@ -13,6 +14,10 @@ base_outdir = os.path.join(str(Path.home()), "Music", "MetaFilter")
 valid_filename_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
 char_limit = 255
 
+# if __name__ == '__main__':
+# Someone has to do it and we're the player so...
+pygame.mixer.init()
+
 
 class MufiSong:
     """Audio-file-centric view of a MuFi song allong with metadata."""
@@ -22,10 +27,12 @@ class MufiSong:
     audio_file_url = ''
     audio_source_url = ''
     local_path = ''
-  # Location of 
+    mufi_id = 0
+    # Location of mp3 for title read
     title_read_path = ''
-    # 
+    # Flag whether we've gotten data -- I'm sure I had a purpose...
     provisioned = 0    
+
 
     def __str__(self):
         return str({"title", self.title,
@@ -66,7 +73,7 @@ class MufiSong:
             print("Title read:", read)
             print("Generating title read", self.title_read_path)
             tts = gtts.gTTS(read)
-            print("Saving read")
+            print("Saving title read")
             tts.save(self.title_read_path)
 
     def pause(self):
@@ -149,5 +156,3 @@ class MufiSong:
         outpath = os.path.join(outdir, filename)
         return(outpath)
 
-# if __name__ == '__main__':
-pygame.mixer.init()

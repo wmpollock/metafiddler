@@ -47,10 +47,9 @@ class MufiSong:
             # enough chaos going on in 'fiddler that absolutely no. 
 
         if os.path.exists(self.local_path):
-            #logging.debug(self.local_path + " already exists")
             print(self.local_path + " already exists")
         else:
-            #logging.debug("Downloading " + self.local_path)
+            print("Downloading " + self.local_path)
             if 'callback' in kwargs:
                 urllib.request.urlretrieve(self.audio_file_url, self.local_path, kwargs.get('callback'))
             else:
@@ -68,15 +67,14 @@ class MufiSong:
             self.title_read_path = self.__get_outpath(subdir="Title Reads")
 
         if os.path.exists(self.title_read_path):
-            #logging.debug("Title read " + self.title_read_path + "exists!")
-            print("Ttile read")
+            print("Title read " + self.title_read_path + " already exists.")
         else:
             # Irony; we worked kind of hard to split exactly this in some instances :/
             read = self.title + " by " + self.artist
-            #logging.debug("Title read: " + read)
-            #logging.debug("Generating title read " + self.title_read_path)
+            print("Title read: " + read)
+            print("Generating title read " + self.title_read_path)
             tts = gtts.gTTS(read)
-            #logging.debug("Saving title read")
+            print("Saving title read")
             tts.save(self.title_read_path)
 
     # I tried subclassing self as part of pygame.mixer.music but I'm obv. doing

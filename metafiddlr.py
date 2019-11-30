@@ -26,11 +26,21 @@ import multiprocessing
 import os.path 
 import pygame
 
+import sys
+# I'm not sure what it was afore but w/o this value we end up with
+# pickling errors for our struct (maybe this is indicative a Bad Thing?)
+sys.setrecursionlimit(10000)
+
 # Command line promises made and undelivered:
 # need to pass --config_file down into metafiddler.config
 
 def get_next(queue, page):
-    queue.put(page.provision())
+    #queue.put(page.provision())
+     r = page.provision()
+     print(r)
+     queue.put(r, False, 2)
+     print("OUT!")
+    
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
@@ -62,13 +72,12 @@ def main():
         # Download the next page while we're listening to this one so we're 
         # good to go.
         # --------------------------------------------------------------------
-        print(current_page)
+#        print(current_page)
         next_page = current_page.links["newer"]
-        print(next_page)
+#        print(next_page)
         queue = multiprocessing.Queue()
         process = multiprocessing.Process(target=get_next, args=(queue, next_page))
         process.start()
-        # get_next(queue, next_page)
         # Yeahhhh, we're potentially writing what we just read but it keeps
         # current current, ya know?
         config.current_page = current_page.audio_source_url
@@ -144,7 +153,7 @@ def main():
 
         # This is the resolved end page which is already provisioned...
         logging.info("Process loop cycles")
-        current_page = queue.get(10)
+        current_page = queue.get(timeout=3)
         logging.info("waiting for other processes")
         process.join()
         #current_page = next_page

@@ -23,9 +23,6 @@ mufi_id_regexp = re.compile(r'//music\.metafilter\.com/(\d+)')
 class MufiPage:
     # MP3-taglike data
     audio_source_url = ''
-
-    # Song entity
-    song = MufiSong()
     
     # PageMetadata
     links = {}
@@ -39,7 +36,7 @@ class MufiPage:
 
     def __init__(self,url):
         self.audio_source_url = url
-        #self.song = MufiSong()
+        self.song = MufiSong()
 
     def get(self, **kwargs):
         global mp3_url_regexp
@@ -118,4 +115,5 @@ class MufiPage:
         kwargs['subdir'] = "MetaFiddler"
         self.get(**kwargs)
         self.song.provision(**kwargs)
+        print("Done provisioning")
         return self

@@ -1,16 +1,18 @@
 import msvcrt
 import metafiddler.event
 import sys
+import logging
+
 
 def init():
     if not sys.stdin.isatty():
-        print("FATAL: this process is not a termain.  Perhaps you need to run winpty?")
+        logging.critical("FATAL: this process is not a termain.  Perhaps you need to run winpty?")
         exit()
 
     # If this print is janky perhaps you need to 
     # setx PYTHONIOENCODING utf-8
     # Seems you Can't Just Do That for Friends
-    print("Keyboard mapping:\n",
+    logging.info("Keyboard mapping:\n",
         "Mapping:\n",
         # "🡆     - next\n",
         # "🡄     - prev\n",

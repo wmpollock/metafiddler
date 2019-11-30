@@ -13,8 +13,6 @@ def init():
     global jarfile
     global cj
 
-
-    print(jarfile)    
     cj = mechanize.LWPCookieJar()
     br.set_cookiejar(cj)
 
@@ -50,8 +48,9 @@ def login():
 def favorite(playlist_id, mufi_id):
     global cj
     br.open("https://music.metafilter.com/contribute/add_to_playlist.mefi?id=" + str(mufi_id))
-    br.select_form(action='track-add.mefi')
     print(br.form)
+
+    br.select_form(action='track-add.mefi')
     br["playlist_id"] = str(playlist_id),
     response = br.submit()
     print(response.read())

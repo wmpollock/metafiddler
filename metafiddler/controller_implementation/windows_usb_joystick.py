@@ -19,10 +19,11 @@ import metafiddler.event
 from math import floor, ceil
 import time
 import ctypes
-#import _winreg as winreg
+import logging
 import winreg
 from ctypes.wintypes import WORD, UINT, DWORD
 from ctypes.wintypes import WCHAR as TCHAR
+
 
 # Its possible the JS is not added and if so lets just get on with things
 joystick_provisioned = 0
@@ -120,7 +121,7 @@ def init():
     # Get the number of supported devices (usually 16).
     num_devs = joyGetNumDevs()
     if num_devs == 0:
-        print("Joystick driver not loaded.")
+        logging.warn("Joystick driver not loaded.")
 
     # Number of the joystick to open.
     joy_id = 0
@@ -129,10 +130,10 @@ def init():
     info = JOYINFO()
     p_info = ctypes.pointer(info)
     if joyGetPos(0, p_info) != 0:
-        print("Joystick %d not plugged in." % (joy_id + 1))
+        logging.info("Joystick %d not plugged in." % (joy_id + 1))
         
     else:
-        print("Joystick provisioned\n\n",
+        logging.info("Joystick provisioned\n\n",
             "Mapping:\n",
             "🡆 - next\n",
             "🡄 - prev\n",
@@ -149,10 +150,10 @@ def init():
         # Get device capabilities.
         caps = JOYCAPS()
         if joyGetDevCaps(joy_id, ctypes.pointer(caps), ctypes.sizeof(JOYCAPS)) != 0:
-            print("Failed to get device capabilities.")
+            logging.critical("FATAL: Failed to get device capabilities.")
             exit()
 
-        print("Driver name:", caps.szPname)
+        logging.debug("Driver name:", caps.szPname)
 
         # Fetch the name from registry.
         key = None
@@ -168,7 +169,7 @@ def init():
                 key2 = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "System\\CurrentControlSet\\Control\\MediaProperties\\PrivateProperties\\Joystick\\OEM\\%s" % (oem_name[0]))
                 if key2:
                     oem_name = winreg.QueryValueEx(key2, "OEMName")
-                    print( "OEM name:", oem_name[0])
+                    logging.debug( "OEM name:", oem_name[0])
                 key2.Close()
 
         # Set the initial button states.

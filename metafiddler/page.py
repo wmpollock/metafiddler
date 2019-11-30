@@ -43,7 +43,7 @@ class MufiPage:
     def get(self, **kwargs):
         global mp3_url_regexp
         if self.audio_source_url:
-            print("Getting", self.audio_source_url)
+            logging.debug("Getting", self.audio_source_url)
             with urllib.request.urlopen(self.audio_source_url) as url:
                 content = url.read()
                 soup = BeautifulSoup(content, features="lxml")
@@ -105,13 +105,13 @@ class MufiPage:
                 if m:
                     self.song.mufi_id = m.group(0)
                 else:
-                    print("FATAL coudln't find mufi_id in ", self.audio_source_url)
+                    logging.critical("FATAL coudln't find mufi_id in ", self.audio_source_url)
                     exit()
                 
                 
 
         else:
-            print("FATAL: no audio source url provided to metafiddler.page")
+            logging.critical("FATAL: no audio source url provided to metafiddler.page")
             exit()
 
     def provision(self, **kwargs):

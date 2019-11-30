@@ -19,12 +19,14 @@ controllers = [
 
 def init():
     global last_event
+    global controllers
     for controller in controllers:
         controller.init()
 
 
 def poll():
     global last_event
+    global controllers
     for controller in controllers:
         event = controller.poll()
         if last_event != event:

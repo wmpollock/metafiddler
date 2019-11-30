@@ -1,22 +1,18 @@
-import metafiddler.event
 import msvcrt
-
-
-# keyboard map on the chiz-eap
-
+import metafiddler.event
 
 def init():
-        print("Keyboard mapping:\n",
-            "Mapping:\n",
-            "🡆 - next\n",
-            "🡄 - prev\n",
-            "🡅 - volume up\n",
-            "🡇 - volume down\n",
-            "s|ESC - stop\n",
-            "p - start\n",
-            "a - Playlist A\n",
-            "b - Playlist B\n"
-            )
+    print("Keyboard mapping:\n",
+        "Mapping:\n",
+        "🡆 - next\n",
+        "🡄 - prev\n",
+        "🡅 - volume up\n",
+        "🡇 - volume down\n",
+        "s|ESC - stop\n",
+        "p - start\n",
+        "a - Playlist A\n",
+        "b - Playlist B\n"
+        )
 
 
 
@@ -25,6 +21,7 @@ def poll():
 
     if msvcrt.kbhit():
         key = msvcrt.getch()
+
         if key in keycode_signals:
             # apperently its a two-banger?
             key = msvcrt.getch()
@@ -57,3 +54,11 @@ def poll():
             return(metafiddler.event.PLAYLIST_B)
 
     return metafiddler.event.NONE
+
+if __name__ == "__main__":
+    last_r = ""
+    while 1:
+        r = poll()
+        if last_r != r:
+            print("Event!", r)
+            last_r = r

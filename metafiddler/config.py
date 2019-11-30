@@ -8,7 +8,7 @@ import logging
 # current position
 
 class MufiConfig:
-    config_file = pathlib.Path.home() / ".metafiddlr.yaml"
+    config_file = str(pathlib.Path.home() / ".metafiddlr.yaml")
     config = {}
 
     def __init__(self, **kwargs):

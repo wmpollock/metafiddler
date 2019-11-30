@@ -1,7 +1,8 @@
 from bs4 import BeautifulSoup
-import urllib.request
-import re
+import logging
 from metafiddler.song import MufiSong
+import re
+import urllib.request
 
 # Page in RSS Looks like:
 # {'artist': 'TheNegativeInfluence',
@@ -43,7 +44,7 @@ class MufiPage:
     def get(self, **kwargs):
         global mp3_url_regexp
         if self.audio_source_url:
-            logging.debug("Getting", self.audio_source_url)
+            logging.debug("Getting " + self.audio_source_url)
             with urllib.request.urlopen(self.audio_source_url) as url:
                 content = url.read()
                 soup = BeautifulSoup(content, features="lxml")
@@ -105,7 +106,7 @@ class MufiPage:
                 if m:
                     self.song.mufi_id = m.group(0)
                 else:
-                    logging.critical("FATAL coudln't find mufi_id in ", self.audio_source_url)
+                    logging.critical("FATAL coudln't find mufi_id in " + self.audio_source_url)
                     exit()
                 
                 

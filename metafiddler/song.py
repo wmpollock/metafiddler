@@ -47,7 +47,7 @@ class MufiSong:
             # enough chaos going on in 'fiddler that absolutely no. 
 
         if os.path.exists(self.local_path):
-            logging.debug(self.local_path, "already exists")
+            logging.debug(self.local_path + " already exists")
         else:
             logging.debug("Downloading " + self.local_path)
             if 'callback' in kwargs:

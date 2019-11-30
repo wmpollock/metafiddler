@@ -133,17 +133,18 @@ def init():
         logging.info("Joystick %d not plugged in." % (joy_id + 1))
         
     else:
-        logging.info("Joystick provisioned\n\n",
-            "Mapping:\n",
-            "🡆 - next\n",
-            "🡄 - prev\n",
-            "🡅 - volume up\n",
-            "🡇 - volume down\n",
-            "[sel] - stop\n",
-            "[start] - start\n",
-            "A - Playlist A\n",
-            "B - Playlist B\n"
-            )
+        logging.info("\n".join(                
+        "Joystick provisioned\n\n",
+            "\tMapping:\n",
+            "\t[right] - next\n",
+            "\t[left]  - prev\n",
+            "\t[up]    - volume up\n",
+            "\t[down]  - volume down\n",
+            "[sel]     - stop\n",
+            "[start]   - start\n",
+            "A         - Playlist A\n",
+            "B         - Playlist B\n"
+            ))
 
         joystick_provisioned = 1
 
@@ -153,7 +154,7 @@ def init():
             logging.critical("FATAL: Failed to get device capabilities.")
             exit()
 
-        logging.debug("Driver name:", caps.szPname)
+        logging.debug("Driver name: " + caps.szPname)
 
         # Fetch the name from registry.
         key = None
@@ -169,7 +170,7 @@ def init():
                 key2 = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "System\\CurrentControlSet\\Control\\MediaProperties\\PrivateProperties\\Joystick\\OEM\\%s" % (oem_name[0]))
                 if key2:
                     oem_name = winreg.QueryValueEx(key2, "OEMName")
-                    logging.debug( "OEM name:", oem_name[0])
+                    logging.debug( "OEM name: " + oem_name[0])
                 key2.Close()
 
         # Set the initial button states.

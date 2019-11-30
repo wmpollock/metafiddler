@@ -44,7 +44,6 @@ def main():
 #    print(config)
     
     logging.info("\nPlaylist A: " + config.playlist_title('playlist_a'))
-    #logging.info("Playlist A ID:", config.playlist_id('playlist_a'))
     logging.info("\nPlaylist B: " + config.playlist_title('playlist_b'))
 
     current_page = MufiPage(config.current_page)

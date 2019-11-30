@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-import logging
+#import logging
 from metafiddler.song import MufiSong
 import re
 import urllib.request
@@ -39,7 +39,7 @@ class MufiPage:
 
     def __init__(self,url):
         self.audio_source_url = url
-        self.song = MufiSong()
+        #self.song = MufiSong()
 
     def get(self, **kwargs):
         global mp3_url_regexp
@@ -111,7 +111,7 @@ class MufiPage:
                     exit()
 
         else:
-            logging.critical("FATAL: no audio source url provided to metafiddler.page")
+            #logging.critical("FATAL: no audio source url provided to metafiddler.page")
             exit()
 
     def provision(self, **kwargs):

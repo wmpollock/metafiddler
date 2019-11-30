@@ -1,5 +1,5 @@
 import gtts
-import logging
+#import logging
 import metafiddler.mechanise
 import os
 import os.path
@@ -47,9 +47,10 @@ class MufiSong:
             # enough chaos going on in 'fiddler that absolutely no. 
 
         if os.path.exists(self.local_path):
-            logging.debug(self.local_path + " already exists")
+            #logging.debug(self.local_path + " already exists")
+            print(self.local_path + " already exists")
         else:
-            logging.debug("Downloading " + self.local_path)
+            #logging.debug("Downloading " + self.local_path)
             if 'callback' in kwargs:
                 urllib.request.urlretrieve(self.audio_file_url, self.local_path, kwargs.get('callback'))
             else:
@@ -67,14 +68,15 @@ class MufiSong:
             self.title_read_path = self.__get_outpath(subdir="Title Reads")
 
         if os.path.exists(self.title_read_path):
-            logging.debug("Title read " + self.title_read_path + "exists!")
+            #logging.debug("Title read " + self.title_read_path + "exists!")
+            print("Ttile read")
         else:
             # Irony; we worked kind of hard to split exactly this in some instances :/
             read = self.title + " by " + self.artist
-            logging.debug("Title read: " + read)
-            logging.debug("Generating title read " + self.title_read_path)
+            #logging.debug("Title read: " + read)
+            #logging.debug("Generating title read " + self.title_read_path)
             tts = gtts.gTTS(read)
-            logging.debug("Saving title read")
+            #logging.debug("Saving title read")
             tts.save(self.title_read_path)
 
     # I tried subclassing self as part of pygame.mixer.music but I'm obv. doing
@@ -99,7 +101,7 @@ class MufiSong:
         else:
             raise SystemExit("Local path has not been defined -- content missing :[") 
         # yeet
-        logging.info("Playing title @ " + self.title_read_path)
+        #logging.info("Playing title @ " + self.title_read_path)
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy():
             pygame.time.Clock().tick(10)
@@ -134,8 +136,8 @@ class MufiSong:
         
         # keep only whitelisted chars
         cleaned_filename = ''.join(c for c in cleaned_filename if c in valid_filename_chars)
-        if len(cleaned_filename)>char_limit:
-            logging.warning("Warning, filename truncated because it was over {}. Filenames may no longer be unique".format(char_limit))
+#        if len(cleaned_filename)>char_limit:
+            #logging.warning("Warning, filename truncated because it was over {}. Filenames may no longer be unique".format(char_limit))
         return cleaned_filename[:char_limit]    
 
     def __get_outpath(self,**kwargs):

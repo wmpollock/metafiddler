@@ -104,7 +104,7 @@ class MufiPage:
                 # ------------------------------------------------------------
                 m = mufi_id_regexp.search(self.audio_source_url)
                 if m:
-                    self.song.mufi_id = m.group(0)
+                    self.song.mufi_id = m.group(1)
                 else:
                     logging.critical("FATAL coudln't find mufi_id in " + self.audio_source_url)
                     exit()

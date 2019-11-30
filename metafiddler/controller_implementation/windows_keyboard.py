@@ -20,15 +20,15 @@ def init():
         # "🡅     - volume up",
         # "🡇     - volume down",
         # Fancypants arrows don't work in WinPTY?!?
-        "\t[left]      - next",
-        "\t[right]     - prev",
-        "\t[up]        - volume up",
-        "\t[down]      - volume down",
+        "\t[left]  - next",
+        "\t[right] - prev",
+        "\t[up]    - volume up",
+        "\t[down]  - volume down",
         
-        "\ts|ESC - stop",
-        "\tp     - start",
-        "\ta     - Playlist A",
-        "\tb     - Playlist B"
+        "\ts|ESC  - stop",
+        "\tp      - start",
+        "\ta      - Playlist A",
+        "\tb      - Playlist B"
         ])
         )
 

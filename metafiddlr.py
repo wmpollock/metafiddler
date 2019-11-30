@@ -33,6 +33,7 @@ def main():
     done = 0
 
     metafiddler.controller.init()
+    metafiddler.mechanise.init()
     config = MufiConfig()
 
 #    print(config)

@@ -1,4 +1,4 @@
-# Once we have the cookies we could cache-in:
+# Once we have the cookiewe could cache-in:
 # https://stackoverflow.com/a/33214851/8446930
 
 import mechanize
@@ -7,23 +7,25 @@ import pathlib
 
 br = mechanize.Browser()
 
-jarfle = ''
+jarfile = pathlib.Path.home() / ".metafiddler.cookiejar"
+
 def init():
     global jarfile
     global cj
 
-    
-    jarfile = pathlib.Path.home() / "cookies.jar"
-    cj = mechanize.LWPCookieJar(jarfile)
+
+    print(jarfile)    
+    cj = mechanize.LWPCookieJar()
     br.set_cookiejar(cj)
 
     # I guess we'll assume good until we get evidence otherwise...
     if jarfile.exists():
-        cj.load()
+        cj.load(jarfile)
     else:
         login()
 
 def login():
+    global jarfile
     global br
     global cj
     user_name = input("Enter username:")
@@ -37,8 +39,13 @@ def login():
     br['user_pass'] = password
 
     response = br.submit()
-    print(response.read())
-    cj.save()
+    
+    # So at this point we should have a number of clues:
+    #   the response.read() text should has a li.profile .extra-label that contains the user_name
+    #   the cookie jar will contain USER_NAME
+    # print(response.read())
+    
+    cj.save(jarfile)
 
 def favorite(playlist_id, mufi_id):
     global cj
@@ -48,8 +55,4 @@ def favorite(playlist_id, mufi_id):
     br["playlist_id"] = str(playlist_id),
     response = br.submit()
     print(response.read())
-    cj.save()
-
-if __name__ == "__main__":
-    login()
-    favorite(365, 5334)
+    cj.save(jarfile)

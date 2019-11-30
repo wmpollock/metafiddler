@@ -19,7 +19,7 @@ class MufiConfig:
                 self.config_file = kwargs['config_file']
 
             with open(self.config_file) as yaml_file:
-                self.config = yaml.load(yaml_file)
+                self.config = yaml.load(yaml_file, Loader=yaml.FullLoader)
             logging.debug("Loaded " + self.config_file)
         except FileNotFoundError:
             logging.debug("No config in " + self.config_file)

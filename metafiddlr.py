@@ -34,7 +34,13 @@ def main():
 
     metafiddler.controller.init()
     config = MufiConfig()
+
+#    print(config)
     
+    print("\nPlaylist A:", config.playlist_title('playlist_a'));
+    #print("Playlist A ID:", config.playlist_id('playlist_a'))
+    print("\nPlaylist B:", config.playlist_title('playlist_b'));
+
     current_page = MufiPage(config.current_page)
     
     print("Setting up current page")
@@ -106,14 +112,15 @@ def main():
                     pygame.mixer.music.set_volume(v - .1)
  
             elif e == metafiddler.event.PLAYLIST_A:
-                print("Playlist A")
-                current_page.song.playlist_add(config.playlist_a)
                 pygame.mixer.music.fadeout(100)
+                print("Playlist A:", config.playlist_title('playlist_a'));
+                current_page.song.playlist_add(config.playlist_id('playlist_a'))
                 
             elif e == metafiddler.event.PLAYLIST_B:
-                print("Playlist B")
-                current_page.song.playlist_add(config.playlist_b)
                 pygame.mixer.music.fadeout(100)
+                print("Playlist B:", config.playlist_title('playlist_b'));
+                current_page.song.playlist_add(config.playlist_id('playlist_b'))
+                
 
         current_page = queue.get()
         process.join()

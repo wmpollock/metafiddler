@@ -15,6 +15,7 @@ import os.path
 # I mean, thx and all, but....
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
+from metafiddler.config import MufiConfig
 import metafiddler.controller
 import metafiddler.event 
 from metafiddler.page import MufiPage
@@ -22,7 +23,10 @@ import multiprocessing
 import pygame
 import pprint 
 
+# Command line promises made and undelivered:
+# need to pass --config_file down into metafiddler.config
 
+# Page Looks like:
 # {'artist': 'TheNegativeInfluence',
 #  'audio_file_url': '//mefimusic.s3.amazonaws.com/Down%20a%20Hole.mp3',
 #  'audio_source_url': 'http://music.metafilter.com/8716/Down-a-Hole',
@@ -41,9 +45,9 @@ def main():
     done = 0
 
     metafiddler.controller.init()
-    metafiddler.config.init()
+    config = MufiConfig()
     
-    current_page = MufiPage(metafiddler.config.current_page)
+    current_page = MufiPage(config.current_page)
     
     print("Setting up current page")
     current_page.provision(subdir="MetaFiddler")
@@ -105,13 +109,13 @@ def main():
  
             elif e == metafiddler.event.PLAYLIST_A:
                 print("Playlist A")
-                current_page.song.playlist_add(metafiddler.config.playlist_a)
+                current_page.song.playlist_add(config.playlist_a)
                 pygame.mixer.music.fadeout(100)
                 actioned = 1
                 
             elif e == metafiddler.event.PLAYLIST_B:
                 print("Playlist B")
-                current_page.song.playlist_add(metafiddler.config.playlist_b)
+                current_page.song.playlist_add(config.playlist_b)
                 pygame.mixer.music.fadeout(100)
                 actioned = 1
 
@@ -123,8 +127,8 @@ def main():
 
             # At tis point its ended without us actioning?
         current_page = queue.get()
-        metafiddler.config.current_page = current_page.audio_source_url
-        metafiddler.config.save()
+        config.current_page = current_page.audio_source_url
+        config.save()
         process.join()
         print(current_page)
         exit()

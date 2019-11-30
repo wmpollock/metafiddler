@@ -56,8 +56,12 @@ def main():
     # #"published_parsed": entry.published_parsed,
     #        +    "audio_file_url": url,
     #        -    "audio_source_url": entry.link
+    
+    
 
     while not(done):
+
+
 
         # Background this     
         next_page = current_page.links["newer"]
@@ -65,14 +69,21 @@ def main():
         process = multiprocessing.Process(target=get_next, args=(queue, next_page))
         process.start()
 
+        # Yeahhhh, we're potentially writing what we just read but it keeps
+        # current current, ya know?
+        config.current_page = current_page.audio_source_url
+        config.save()
+        
+        print("Playing title read")
+        current_page.song.play_title()
         # Start playing
         print("Playing...")
         current_page.song.play()
 
-        # 
-        actioned = 0
-
-        while current_page.song.playing() or not actioned:
+        # I'm not sure what sense this is making now? 
+        #actioned = 0
+        # while current_page.song.playing() or not actioned:
+        while current_page.song.playing():
             # This event stacking makes it seem like we're not going to deal
             # with +1 events and, um, yes, wait for the next poll and 
             # pop them off your stack or something.
@@ -80,9 +91,14 @@ def main():
 
              # Debounce event
             if e == metafiddler.event.STOP:
-                print("-> Stop [psyche!  pause!]!")
-                current_page.song.pause()
+                # W@ M8?!?
+                # print("-> Stop [psyche!  pause!]!")
+                # current_page.song.pause()
+                print("STOP!")
+                current_page.song.stop()
+                done = 1
                 
+            # Kind of useless w/o STOP =~ /pause??
             elif e == metafiddler.event.PLAY:
                 # Maybe this should do something if its not playing?
                 current_page.song.play()
@@ -90,7 +106,7 @@ def main():
             elif e == metafiddler.event.NEXT:
                 print("NEXT")
                 pygame.mixer.music.fadeout(100)
-                actioned = 1
+                # actioned = 1
 
             elif e == metafiddler.event.PREVIOUS:
                 print("PREVIOUS")
@@ -111,13 +127,13 @@ def main():
                 print("Playlist A")
                 current_page.song.playlist_add(config.playlist_a)
                 pygame.mixer.music.fadeout(100)
-                actioned = 1
+                # actioned = 1
                 
             elif e == metafiddler.event.PLAYLIST_B:
                 print("Playlist B")
                 current_page.song.playlist_add(config.playlist_b)
                 pygame.mixer.music.fadeout(100)
-                actioned = 1
+                # actioned = 1
 
             # Ticking jacks our kbd/joy scane            
             #pygame.time.Clock().tick(.25)
@@ -127,11 +143,8 @@ def main():
 
             # At tis point its ended without us actioning?
         current_page = queue.get()
-        config.current_page = current_page.audio_source_url
-        config.save()
         process.join()
         print(current_page)
-        exit()
 
 if __name__ == '__main__':
     main()            

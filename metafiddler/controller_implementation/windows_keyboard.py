@@ -6,7 +6,7 @@ import logging
 
 def init():
     if not sys.stdin.isatty():
-        logging.critical("FATAL: this process is not a termain.  Perhaps you need to run winpty?")
+        logging.critical("FATAL: this process is not a terminal.  Perhaps you need to prefix with winpty.")
         exit()
 
     # If this print is janky perhaps you need to 

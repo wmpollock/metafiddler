@@ -33,7 +33,7 @@ class MufiSong:
     # Flag whether we've gotten data -- I'm sure I had a purpose...
     provisioned = 0    
 
-
+  
     def __str__(self):
         return str({"title", self.title,
                     "artist", self.artist})
@@ -76,9 +76,14 @@ class MufiSong:
             print("Saving title read")
             tts.save(self.title_read_path)
 
+    # I tried subclassing self as part of pygame.mixer.music but I'm obv. doing
+    # something wrong :/
     def pause(self):
         pygame.mixer.music.pause()
     
+    def stop(self):
+        pygame.mixer.music.stop()
+
     def play(self):
         if self.local_path:
             pygame.mixer.music.load(self.local_path)

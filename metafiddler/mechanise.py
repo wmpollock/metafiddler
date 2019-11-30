@@ -31,7 +31,7 @@ def login():
     user_name = input("Enter username:")
     password = input("Enter password:")
 
-    response = br.open('https://login.metafilter.com')
+    br.open('https://login.metafilter.com')
 
     br.select_form(action='logging-in.mefi')
     

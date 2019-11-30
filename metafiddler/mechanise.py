@@ -1,6 +1,6 @@
 # Once we have the cookiewe could cache-in:
 # https://stackoverflow.com/a/33214851/8446930
-
+import logging
 import mechanize
 import os.path
 import pathlib
@@ -18,7 +18,9 @@ def init():
 
     # I guess we'll assume good until we get evidence otherwise...
     if jarfile.exists():
+        logging.debug("Loading jarfile: " + str(jarfile))
         cj.load(jarfile)
+        br.set_cookiejar(cj)
     else:
         login()
 
@@ -47,11 +49,17 @@ def login():
 
 def favorite(playlist_id, mufi_id):
     global cj
-    br.open("https://music.metafilter.com/contribute/add_to_playlist.mefi?id=" + str(mufi_id))
-    print(br.form)
+    #login()
+    response = br.open("https://music.metafilter.com/contribute/add_to_playlist.mefi?id=" + str(mufi_id))
+
+    # if br.form == None:
+    #     #logging.critical("Did not receive page with form.")
+    #     print("Did not receive page with form.")
+    #     exit()
 
     br.select_form(action='track-add.mefi')
     br["playlist_id"] = str(playlist_id),
     response = br.submit()
-    print(response.read())
+
+    #print(response.read())
     cj.save(jarfile)

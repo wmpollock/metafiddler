@@ -25,14 +25,12 @@ import multiprocessing
 
 import os.path 
 import pygame
-import pprint 
-
 
 # Command line promises made and undelivered:
 # need to pass --config_file down into metafiddler.config
 
 def get_next(queue, page):
-    queue.put(page.provision(subdir="Metafilter"))
+    queue.put(page.provision())
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
@@ -49,7 +47,7 @@ def main():
     current_page = MufiPage(config.current_page)
     
     logging.debug("Setting up current page")
-    current_page.provision(subdir="MetaFiddler")
+    current_page.provision()
     
     # Other things:
     # #"published_parsed": entry.published_parsed,
@@ -61,12 +59,16 @@ def main():
 
     while not(done):
 
-        # Background this     
+        # Download the next page while we're listening to this one so we're 
+        # good to go.
+        # --------------------------------------------------------------------
+        print(current_page)
         next_page = current_page.links["newer"]
+        print(next_page)
         queue = multiprocessing.Queue()
         process = multiprocessing.Process(target=get_next, args=(queue, next_page))
         process.start()
-
+        # get_next(queue, next_page)
         # Yeahhhh, we're potentially writing what we just read but it keeps
         # current current, ya know?
         config.current_page = current_page.audio_source_url
@@ -78,7 +80,6 @@ def main():
         logging.info("Playing...")
         current_page.song.play()
 
-
         # We're going to loop we get an explicit action, send to 
         # playlist or whatever.  Since we're curating we don't want to
         # just keep rolling through.
@@ -87,8 +88,6 @@ def main():
         while current_page.song.playing() or not song_actioned:
             if not (current_page.song.playing() or input_prompted):
                 input_prompted = True
-
-
 
             # This event stacking makes it seem like we're not going to deal
             # with +1 events and, um, yes, wait for the next poll and 
@@ -117,7 +116,6 @@ def main():
                 pygame.mixer.music.fadeout(True)
                 song_actioned = True
 
-
             elif e == metafiddler.event.PREVIOUS:
                 logging.info("PREVIOUS")
                 song_actioned = True
@@ -144,9 +142,15 @@ def main():
                 current_page.song.playlist_add(config.playlist_id('playlist_b'))
                 song_actioned = True
 
-        current_page = queue.get()
+        # This is the resolved end page which is already provisioned...
+        logging.info("Process loop cycles")
+        queue.get()
+        logging.info("waiting for other processes")
         process.join()
-        logging.debug(current_page)
+        current_page = next_page
+        print(current_page)
+       # logging.debug(current_page)
+        song_actioned = 0
 
 if __name__ == '__main__':
     main()            

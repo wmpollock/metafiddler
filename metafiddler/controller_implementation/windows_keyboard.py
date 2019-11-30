@@ -77,5 +77,5 @@ if __name__ == "__main__":
     while 1:
         r = poll()
         if last_r != r:
-            print("Event!", r)
+            logging.debug("Event:" + r)
             last_r = r

@@ -16,8 +16,6 @@ import urllib.request
 #  'older': {'href': 'https://music.metafilter.com/8715/Manhattan-Skyline'},
 #  'title': 'Down a Hole'}
 
-
-
 mp3_url_regexp = re.compile(r'//mefimusic\.s3\.amazonaws\.com/.+.mp3')
 # no trailing slash because they're not necessary per MeFi's URL handling and s/b legit to us too.
 mufi_id_regexp = re.compile(r'//music\.metafilter\.com/(\d+)')
@@ -34,17 +32,19 @@ class MufiPage:
 
     def __str__(self):
         return str({
-            "song": self.song,
-            "links": self.links
+            "url": self.audio_source_url,
+            "song": str(self.song),
+            "links": str(self.links),
         })
 
     def __init__(self,url):
         self.audio_source_url = url
+        self.song = MufiSong()
 
     def get(self, **kwargs):
         global mp3_url_regexp
         if self.audio_source_url:
-            logging.debug("Getting " + self.audio_source_url)
+            #logging.debug("Getting " + self.audio_source_url)
             with urllib.request.urlopen(self.audio_source_url) as url:
                 content = url.read()
                 soup = BeautifulSoup(content, features="lxml")
@@ -94,6 +94,7 @@ class MufiPage:
                     if a:
                         # Links are not (currently) fully qualified
                         self.links[link_name] = MufiPage('https://music.metafilter.com' + a['href'])
+                        #logging.debug("Found " + link_name + ": https://music.metafilter.com" + a['href'])
                     # In fact /is/ natural case and undefined state (== n00bs) should start at the front w/no older :O
                     # else:
                     #     ## Might be natural case for last/first entry?  If so, don't go there
@@ -106,16 +107,15 @@ class MufiPage:
                 if m:
                     self.song.mufi_id = m.group(1)
                 else:
-                    logging.critical("FATAL coudln't find mufi_id in " + self.audio_source_url)
+                 #   logging.critical("FATAL coudln't find mufi_id in " + self.audio_source_url)
                     exit()
-                
-                
 
         else:
             logging.critical("FATAL: no audio source url provided to metafiddler.page")
             exit()
 
     def provision(self, **kwargs):
+        kwargs['subdir'] = "MetaFiddler"
         self.get(**kwargs)
         self.song.provision(**kwargs)
         return self

@@ -4,24 +4,27 @@
 # | |  | |  __/ || (_| |  _| | (_| | (_| | |  __/ |
 # |_|  |_|\___|\__\__,_|_| |_|\__,_|\__,_|_|\___|_|
 #
-
-# Cruising the information superhighway for tunes, man.
+# ----------------------------------------------------------------------------
+# Desperately cruising the desolate information superhighway for tunes, man...
 # Tunes.
+#
 # Pollock, 2019
+# ============================================================================
 
-import os
-import os.path 
-
-# I mean, thx and all, but....
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-
+import logging
 from metafiddler.config import MufiConfig
 import metafiddler.controller
 import metafiddler.event 
 from metafiddler.page import MufiPage
 import multiprocessing
+import os
+import os.path 
 import pygame
 import pprint 
+
+
+# I mean, thx and all, but....
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 # Command line promises made and undelivered:
 # need to pass --config_file down into metafiddler.config
@@ -30,6 +33,8 @@ def get_next(queue, page):
     queue.put(page.provision(subdir="Metafilter"))
 
 def main():
+    logging.basicConfig(level=logging.DEBUG)
+
     done = 0
 
     metafiddler.controller.init()
@@ -38,13 +43,13 @@ def main():
 
 #    print(config)
     
-    print("\nPlaylist A:", config.playlist_title('playlist_a'));
-    #print("Playlist A ID:", config.playlist_id('playlist_a'))
-    print("\nPlaylist B:", config.playlist_title('playlist_b'));
+    logging.info("\nPlaylist A: " + config.playlist_title('playlist_a'))
+    #logging.info("Playlist A ID:", config.playlist_id('playlist_a'))
+    logging.info("\nPlaylist B: " + config.playlist_title('playlist_b'))
 
     current_page = MufiPage(config.current_page)
     
-    print("Setting up current page")
+    logging.debug("Setting up current page")
     current_page.provision(subdir="MetaFiddler")
     
     # Other things:
@@ -67,13 +72,18 @@ def main():
         config.current_page = current_page.audio_source_url
         config.save()
         
-        print("Playing title read")
+        logging.debug("Playing title read")
         current_page.song.play_title()
         # Start playing
-        print("Playing...")
+        logging.info("Playing...")
         current_page.song.play()
 
-        while current_page.song.playing():
+
+        # We're going to loop we get an explicit action, send to 
+        # playlist or whatever.  Since we're curating we don't want to
+        # just keep rolling through.
+        song_actioned = 0
+        while current_page.song.playing() or not song_actioned:
             # This event stacking makes it seem like we're not going to deal
             # with +1 events and, um, yes, wait for the next poll and 
             # pop them off your stack or something.
@@ -82,10 +92,13 @@ def main():
              # Debounce event
             if e == metafiddler.event.STOP:
                 # W@ M8?!?
-                # print("-> Stop [psyche!  pause!]!")
+                # logging.info("-> Stop [psyche!  pause!]!")
                 # current_page.song.pause()
-                print("STOP!")
+                logging.info("STOP!")
                 current_page.song.stop()
+                # Not really on this but since we're going to come back here after we
+                # bail, should be A-OK.
+                song_actioned = 1
                 done = 1
                 
             # Kind of useless w/o STOP =~ /pause??
@@ -94,38 +107,41 @@ def main():
                 current_page.song.play()
 
             elif e == metafiddler.event.NEXT:
-                print("NEXT")
+                logging.info("NEXT")
                 pygame.mixer.music.fadeout(100)
+                song_actioned = 1
+
 
             elif e == metafiddler.event.PREVIOUS:
-                print("PREVIOUS")
+                logging.info("PREVIOUS")
+                song_actioned = 1
 
             elif e == metafiddler.event.VOLUME_UP:
-                print("Volume up")
+                logging.info("Volume up")
                 v = pygame.mixer.music.get_volume()
                 if v < 1:
                     pygame.mixer.music.set_volume(v + .1)
 
             elif e == metafiddler.event.VOLUME_DOWN:
-                print("Volume down")
+                logging.info("Volume down")
                 v = pygame.mixer.music.get_volume()
                 if v > 0:
                     pygame.mixer.music.set_volume(v - .1)
  
             elif e == metafiddler.event.PLAYLIST_A:
                 pygame.mixer.music.fadeout(100)
-                print("Playlist A:", config.playlist_title('playlist_a'));
                 current_page.song.playlist_add(config.playlist_id('playlist_a'))
+                song_actioned = 1
                 
             elif e == metafiddler.event.PLAYLIST_B:
                 pygame.mixer.music.fadeout(100)
-                print("Playlist B:", config.playlist_title('playlist_b'));
                 current_page.song.playlist_add(config.playlist_id('playlist_b'))
+                song_actioned = 1
                 
 
         current_page = queue.get()
         process.join()
-        print(current_page)
+        logging.debug(current_page)
 
 if __name__ == '__main__':
     main()            

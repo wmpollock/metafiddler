@@ -20,9 +20,9 @@ class MufiConfig:
 
             with open(self.config_file) as yaml_file:
                 self.config = yaml.load(yaml_file)
-            logging.debug("Loaded", self.config_file)
+            logging.debug("Loaded " + self.config_file)
         except FileNotFoundError:
-            logging.debug("No config in ", self.config_file)
+            logging.debug("No config in " + self.config_file)
             # Hah, well, I guess we can start at the beginning then.
             self.current_page = "https://music.metafilter.com/8"
 

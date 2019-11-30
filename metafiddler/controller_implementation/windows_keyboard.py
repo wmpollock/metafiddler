@@ -12,23 +12,26 @@ def init():
     # If this print is janky perhaps you need to 
     # setx PYTHONIOENCODING utf-8
     # Seems you Can't Just Do That for Friends
-    logging.info("Keyboard mapping:\n",
-        "Mapping:\n",
-        # "🡆     - next\n",
-        # "🡄     - prev\n",
-        # "🡅     - volume up\n",
-        # "🡇     - volume down\n",
-        # Fancypants arrows don't work in WinPTY?!?
-        "[left]      - next\n",
-        "[right]     - prev\n",
-        "[up]        - volume up\n",
-        "[down]      - volume down\n\n",
+    logging.info("\n".join(
+        ["Keyboard mapping:",
         
-        "s|ESC - stop\n",
-        "p     - start\n",
-        "a     - Playlist A\n",
-        "b     - Playlist B\n"
+        # "🡆     - next",
+        # "🡄     - prev",
+        # "🡅     - volume up",
+        # "🡇     - volume down",
+        # Fancypants arrows don't work in WinPTY?!?
+        "\t[left]      - next",
+        "\t[right]     - prev",
+        "\t[up]        - volume up",
+        "\t[down]      - volume down",
+        
+        "\ts|ESC - stop",
+        "\tp     - start",
+        "\ta     - Playlist A",
+        "\tb     - Playlist B"
+        ])
         )
+
 
 def poll():
     keycode_signals = [b'\000', b'\xe0']

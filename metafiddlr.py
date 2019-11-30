@@ -27,8 +27,9 @@ import os.path
 import pygame
 
 import sys
-# I'm not sure what it was afore but w/o this value we end up with
-# pickling errors for our struct (maybe this is indicative a Bad Thing?)
+
+# Starts at 1K, w/o it the pickling of the object is a no, go: maybe
+# we got something else bad in here...
 sys.setrecursionlimit(10000)
 
 # Command line promises made and undelivered:
@@ -39,7 +40,6 @@ def get_next(queue, page):
      r = page.provision()
      print(r)
      queue.put(r, False, 2)
-     print("OUT!")
     
 
 def main():
@@ -154,10 +154,10 @@ def main():
         # This is the resolved end page which is already provisioned...
         logging.info("Process loop cycles")
         current_page = queue.get(timeout=3)
+        print(current_page)
         logging.info("waiting for other processes")
         process.join()
         #current_page = next_page
-        print(current_page)
        # logging.debug(current_page)
         song_actioned = 0
 

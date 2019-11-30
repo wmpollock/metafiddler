@@ -24,9 +24,6 @@ class MufiPage:
     # MP3-taglike data
     audio_source_url = ''
     
-    # PageMetadata
-    links = {}
-
     def __str__(self):
         return str({
             "url": self.audio_source_url,
@@ -37,6 +34,9 @@ class MufiPage:
     def __init__(self,url):
         self.audio_source_url = url
         self.song = MufiSong()
+        # PageMetadata
+        self.links = {}
+
 
     def get(self, **kwargs):
         global mp3_url_regexp
@@ -115,5 +115,5 @@ class MufiPage:
         kwargs['subdir'] = "MetaFiddler"
         self.get(**kwargs)
         self.song.provision(**kwargs)
-        print("Done provisioning")
+        print("Done provisioning ", self.audio_source_url)
         return self

@@ -1,20 +1,32 @@
 import msvcrt
 import metafiddler.event
+import sys
 
 def init():
+    if not sys.stdin.isatty():
+        print("FATAL: this process is not a termain.  Perhaps you need to run winpty?")
+        exit()
+
+    # If this print is janky perhaps you need to 
+    # setx PYTHONIOENCODING utf-8
+    # Seems you Can't Just Do That for Friends
     print("Keyboard mapping:\n",
         "Mapping:\n",
-        "🡆 - next\n",
-        "🡄 - prev\n",
-        "🡅 - volume up\n",
-        "🡇 - volume down\n",
+        # "🡆     - next\n",
+        # "🡄     - prev\n",
+        # "🡅     - volume up\n",
+        # "🡇     - volume down\n",
+        # Fancypants arrows don't work in WinPTY?!?
+        "[left]      - next\n",
+        "[right]     - prev\n",
+        "[up]        - volume up\n",
+        "[down]      - volume down\n\n",
+        
         "s|ESC - stop\n",
-        "p - start\n",
-        "a - Playlist A\n",
-        "b - Playlist B\n"
+        "p     - start\n",
+        "a     - Playlist A\n",
+        "b     - Playlist B\n"
         )
-
-
 
 def poll():
     keycode_signals = [b'\000', b'\xe0']

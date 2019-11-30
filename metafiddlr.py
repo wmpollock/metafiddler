@@ -11,20 +11,22 @@
 # Pollock, 2019
 # ============================================================================
 
+import os
+# Needs to be before we invoke pygame because thanks, pygame, IHI.
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+
+
 import logging
 from metafiddler.config import MufiConfig
 import metafiddler.controller
 import metafiddler.event 
 from metafiddler.page import MufiPage
 import multiprocessing
-import os
+
 import os.path 
 import pygame
 import pprint 
 
-
-# I mean, thx and all, but....
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 # Command line promises made and undelivered:
 # need to pass --config_file down into metafiddler.config
@@ -34,8 +36,6 @@ def get_next(queue, page):
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
-
-    done = 0
 
     metafiddler.controller.init()
     metafiddler.mechanise.init()
@@ -57,7 +57,8 @@ def main():
     #        +    "audio_file_url": url,
     #        -    "audio_source_url": entry.link
     
-    
+  
+    done = False
 
     while not(done):
 
@@ -82,8 +83,14 @@ def main():
         # We're going to loop we get an explicit action, send to 
         # playlist or whatever.  Since we're curating we don't want to
         # just keep rolling through.
-        song_actioned = 0
+        song_actioned = False
+        input_prompted = False
         while current_page.song.playing() or not song_actioned:
+            if not (current_page.song.playing() or input_prompted):
+                input_prompted = True
+
+
+
             # This event stacking makes it seem like we're not going to deal
             # with +1 events and, um, yes, wait for the next poll and 
             # pop them off your stack or something.
@@ -98,8 +105,8 @@ def main():
                 current_page.song.stop()
                 # Not really on this but since we're going to come back here after we
                 # bail, should be A-OK.
-                song_actioned = 1
-                done = 1
+                song_actioned = True
+                done = True
                 
             # Kind of useless w/o STOP =~ /pause??
             elif e == metafiddler.event.PLAY:
@@ -108,13 +115,13 @@ def main():
 
             elif e == metafiddler.event.NEXT:
                 logging.info("NEXT")
-                pygame.mixer.music.fadeout(100)
-                song_actioned = 1
+                pygame.mixer.music.fadeout(True)
+                song_actioned = True
 
 
             elif e == metafiddler.event.PREVIOUS:
                 logging.info("PREVIOUS")
-                song_actioned = 1
+                song_actioned = True
 
             elif e == metafiddler.event.VOLUME_UP:
                 logging.info("Volume up")
@@ -131,13 +138,12 @@ def main():
             elif e == metafiddler.event.PLAYLIST_A:
                 pygame.mixer.music.fadeout(100)
                 current_page.song.playlist_add(config.playlist_id('playlist_a'))
-                song_actioned = 1
+                song_actioned = True
                 
             elif e == metafiddler.event.PLAYLIST_B:
                 pygame.mixer.music.fadeout(100)
                 current_page.song.playlist_add(config.playlist_id('playlist_b'))
-                song_actioned = 1
-                
+                song_actioned = True
 
         current_page = queue.get()
         process.join()

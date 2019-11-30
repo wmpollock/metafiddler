@@ -26,18 +26,6 @@ import pprint
 # Command line promises made and undelivered:
 # need to pass --config_file down into metafiddler.config
 
-# Page Looks like:
-# {'artist': 'TheNegativeInfluence',
-#  'audio_file_url': '//mefimusic.s3.amazonaws.com/Down%20a%20Hole.mp3',
-#  'audio_source_url': 'http://music.metafilter.com/8716/Down-a-Hole',
-#  'list_title': '.Evaluation Hopper',
-#!!! THIS IS NOT THE SAME IN 
-#  'mp3_localfile': 'C:\\Users\\Bill\\Music\\MetaFilter\\.Evaluation '
-#                   'Hopper\\TheNegativeInfluence - Down a Hole.mp3',
-#  'newer': {'href': 'https://music.metafilter.com/8717/It-Dont-Matter-Whos-First-In-Line'},
-#  'older': {'href': 'https://music.metafilter.com/8715/Manhattan-Skyline'},
-#  'title': 'Down a Hole'}
-
 def get_next(queue, page):
     queue.put(page.provision(subdir="Metafilter"))
 
@@ -61,8 +49,6 @@ def main():
 
     while not(done):
 
-
-
         # Background this     
         next_page = current_page.links["newer"]
         queue = multiprocessing.Queue()
@@ -80,9 +66,6 @@ def main():
         print("Playing...")
         current_page.song.play()
 
-        # I'm not sure what sense this is making now? 
-        #actioned = 0
-        # while current_page.song.playing() or not actioned:
         while current_page.song.playing():
             # This event stacking makes it seem like we're not going to deal
             # with +1 events and, um, yes, wait for the next poll and 
@@ -106,7 +89,6 @@ def main():
             elif e == metafiddler.event.NEXT:
                 print("NEXT")
                 pygame.mixer.music.fadeout(100)
-                # actioned = 1
 
             elif e == metafiddler.event.PREVIOUS:
                 print("PREVIOUS")
@@ -127,21 +109,12 @@ def main():
                 print("Playlist A")
                 current_page.song.playlist_add(config.playlist_a)
                 pygame.mixer.music.fadeout(100)
-                # actioned = 1
                 
             elif e == metafiddler.event.PLAYLIST_B:
                 print("Playlist B")
                 current_page.song.playlist_add(config.playlist_b)
                 pygame.mixer.music.fadeout(100)
-                # actioned = 1
 
-            # Ticking jacks our kbd/joy scane            
-            #pygame.time.Clock().tick(.25)
-
-    #         # Save state
-            # Backup/propagate state to remote
-
-            # At tis point its ended without us actioning?
         current_page = queue.get()
         process.join()
         print(current_page)

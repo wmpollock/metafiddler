@@ -3,6 +3,19 @@ import urllib.request
 import re
 from metafiddler.song import MufiSong
 
+# Page in RSS Looks like:
+# {'artist': 'TheNegativeInfluence',
+#  'audio_file_url': '//mefimusic.s3.amazonaws.com/Down%20a%20Hole.mp3',
+#  'audio_source_url': 'http://music.metafilter.com/8716/Down-a-Hole',
+#  'list_title': '.Evaluation Hopper',
+#!!! THIS IS NOT THE SAME IN 
+#  'mp3_localfile': 'C:\\Users\\Bill\\Music\\MetaFilter\\.Evaluation '
+#                   'Hopper\\TheNegativeInfluence - Down a Hole.mp3',
+#  'newer': {'href': 'https://music.metafilter.com/8717/It-Dont-Matter-Whos-First-In-Line'},
+#  'older': {'href': 'https://music.metafilter.com/8715/Manhattan-Skyline'},
+#  'title': 'Down a Hole'}
+
+
 
 mp3_url_regexp = re.compile(r'//mefimusic\.s3\.amazonaws\.com/.+.mp3')
 # no trailing slash because they're not necessary per MeFi's URL handling and s/b legit to us too.

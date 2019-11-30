@@ -67,7 +67,7 @@ class MufiSong:
             self.title_read_path = self.__get_outpath(subdir="Title Reads")
 
         if os.path.exists(self.title_read_path):
-            logging.debug("Title read " + self.title_read_path, "exists!")
+            logging.debug("Title read " + self.title_read_path + "exists!")
         else:
             # Irony; we worked kind of hard to split exactly this in some instances :/
             read = self.title + " by " + self.artist

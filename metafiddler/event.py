@@ -19,3 +19,4 @@ VOLUME_DOWN = 'quieter'
 PLAYLIST_A = 'Add to playlist a'
 PLAYLIST_B = 'Add to playlist b'
 
+GO_SOURCE = 'Open source webpage'

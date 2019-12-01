@@ -9,44 +9,52 @@ bindings = {
     # but they came out of the two-step polling process pretty tidy
     # as chars and I kinda like 'em.
     b'\000' + b'M': {
-			"return":  metafiddler.event.NEXT,
-            "desc": "arrrow-forward"
-		},
+        "return":  metafiddler.event.NEXT,
+        "desc": "arrrow-forward"
+    },
     b'\000' + b'K': {
-			"return":  metafiddler.event.PREVIOUS,
-            "desc": "arrow-back"
-		},
+        "return":  metafiddler.event.PREVIOUS,
+        "desc": "arrow-back"
+    },
     b'\000' + b'H': {
-			"return":  metafiddler.event.VOLUME_UP,
-            "desc": "arrow-up"
-		},
+        "return":  metafiddler.event.VOLUME_UP,
+        "desc": "arrow-up"
+    },
     b'\000' + b'P': {
-			"return":  metafiddler.event.VOLUME_DOWN,
-            "desc": "arrow-down"
-		},
+        "return":  metafiddler.event.VOLUME_DOWN,
+        "desc": "arrow-down"
+    },
     # escape: may not want to print this bad boi 
-     chr(27):  {
-			"return":  metafiddler.event.STOP,
-            "desc": "escape"
-		},
+    chr(27):  {
+        "return":  metafiddler.event.STOP,
+        "desc": "escape"
+    },
     's': {
-			"return":  metafiddler.event.STOP,
-		},
+        "return":  metafiddler.event.STOP,
+    },
+    'q': {
+        "return":  metafiddler.event.STOP,
+    },
+
     'p': {
-			"return":  metafiddler.event.PLAY,
-		}, 
+        "return":  metafiddler.event.PLAY,
+    }, 
     'z': {
-			"return":  metafiddler.event.SEEK_BACK,
-		}, 
+        "return":  metafiddler.event.SEEK_BACK,
+    }, 
     'x': {
-			"return":  metafiddler.event.SEEK_FORWARD,
-		},
+        "return":  metafiddler.event.SEEK_FORWARD,
+    },
     'a': {
-			"return":  metafiddler.event.PLAYLIST_A,
-		},
+        "return":  metafiddler.event.PLAYLIST_A,
+    },
     'b': {
-			"return":  metafiddler.event.PLAYLIST_B,
-		},
+        "return":  metafiddler.event.PLAYLIST_B,
+    },
+    'w': {
+        "return":  metafiddler.event.GO_SOURCE,
+    }, 
+
 }
 
 # TODO:  It'd be nicer to have each binding as a standard

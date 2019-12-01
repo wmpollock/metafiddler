@@ -21,11 +21,10 @@ import metafiddler.controller
 import metafiddler.event 
 from metafiddler.page import MufiPage
 import multiprocessing
-
 import os.path 
 import pygame
-
 import sys
+import webbrowser
 
 # Starts at 1K, w/o it the pickling of the object is a no, go: maybe
 # we got something else bad in here...
@@ -47,8 +46,8 @@ def main():
     metafiddler.mechanise.init()
     config = MufiConfig()
     
-    logging.info("\nPlaylist A: " + config.playlist_title('playlist_a'))
-    logging.info("\nPlaylist B: " + config.playlist_title('playlist_b'))
+    logging.info("Playlist A: " + config.playlist_title('playlist_a'))
+    logging.info("Playlist B: " + config.playlist_title('playlist_b'))
 
     current_page = MufiPage(config.current_page)
     
@@ -156,7 +155,8 @@ def main():
                 # superback would be .mixer.music.rewind
                 if current_page.song.playing():
                     pygame.mixer.music.set_pos(100)
-                
+            elif e == metafiddler.event.GO_SOURCE:
+                webbrowser.open(current_page.audio_source_url, new=2)
         # This is the resolved end page which is already provisioned...
         next_page = queue.get(timeout=15)
         process.join()

@@ -43,7 +43,6 @@ def login():
     # So at this point we should have a number of clues:
     #   the response.read() text should has a li.profile .extra-label that contains the user_name
     #   the cookie jar will contain USER_NAME
-    # print(response.read())
     
     cj.save(jarfile)
 

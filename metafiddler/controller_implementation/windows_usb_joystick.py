@@ -26,7 +26,7 @@ from ctypes.wintypes import WCHAR as TCHAR
 
 
 # Its possible the JS is not added and if so lets just get on with things
-joystick_provisioned = 0
+joystick_provisioned = False
 
 # Fetch function pointers
 joyGetNumDevs = ctypes.windll.winmm.joyGetNumDevs
@@ -134,20 +134,20 @@ def init():
         
     else:
         logging.info("\n".join(                
-        "Joystick provisioned\n\n",
-            "\tMapping:\n",
-            "\t[right] - next\n",
-            "\t[left]  - prev\n",
-            "\t[up]    - volume up\n",
-            "\t[down]  - volume down\n",
-            "[sel]     - stop\n",
-            "[start]   - start\n",
-            "A         - Playlist A\n",
-            "B         - Playlist B\n"
+        ["Joystick provisioned",
+            "\tMapping:",
+            "\t[right] - next",
+            "\t[left]  - prev",
+            "\t[up]    - volume up",
+            "\t[down]  - volume down",
+            "[sel]     - stop",
+            "[start]   - start",
+            "A         - Playlist A",
+            "B         - Playlist B"]
             ))
 
-        joystick_provisioned = 1
-
+        joystick_provisioned = True
+        
         # Get device capabilities.
         caps = JOYCAPS()
         if joyGetDevCaps(joy_id, ctypes.pointer(caps), ctypes.sizeof(JOYCAPS)) != 0:
@@ -196,10 +196,11 @@ def poll():
     global button_states
     global joystick_provisioned
 
+    
     # No joystick provisioned, lets bounce.
-    if joystick_provisioned == 0:
+    if not joystick_provisioned:
         return
-
+    
     if joyGetPosEx(0, p_info) == 0:
         # Remap the values to float
         x = (info.dwXpos - 32767) / 32768.0

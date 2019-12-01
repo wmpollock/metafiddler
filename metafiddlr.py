@@ -15,7 +15,6 @@ import os
 # Needs to be before we invoke pygame because thanks, pygame, IHI.
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
-
 import logging
 from metafiddler.config import MufiConfig
 import metafiddler.controller
@@ -38,7 +37,6 @@ sys.setrecursionlimit(10000)
 def get_next(queue, page):
     #queue.put(page.provision())
      r = page.provision()
-     print(r)
      queue.put(r, False, 2)
     
 
@@ -48,8 +46,6 @@ def main():
     metafiddler.controller.init()
     metafiddler.mechanise.init()
     config = MufiConfig()
-
-#    print(config)
     
     logging.info("\nPlaylist A: " + config.playlist_title('playlist_a'))
     logging.info("\nPlaylist B: " + config.playlist_title('playlist_b'))
@@ -72,9 +68,7 @@ def main():
         # Download the next page while we're listening to this one so we're 
         # good to go.
         # --------------------------------------------------------------------
-#        print(current_page)
         next_page = current_page.links["newer"]
-#        print(next_page)
         queue = multiprocessing.Queue()
         process = multiprocessing.Process(target=get_next, args=(queue, next_page))
         process.start()
@@ -82,11 +76,9 @@ def main():
         # current current, ya know?
         config.current_page = current_page.audio_source_url
         config.save()
-        
-        logging.debug("Playing title read")
-        current_page.song.play_title()
+
         # Start playing
-        logging.info("Playing...")
+        current_page.song.play_title()
         current_page.song.play()
 
         # We're going to loop we get an explicit action, send to 
@@ -97,6 +89,7 @@ def main():
         while current_page.song.playing() or not song_actioned:
             if not (current_page.song.playing() or input_prompted):
                 input_prompted = True
+                logging.info("Waiting for user for input.")
 
             # This event stacking makes it seem like we're not going to deal
             # with +1 events and, um, yes, wait for the next poll and 
@@ -105,9 +98,6 @@ def main():
 
              # Debounce event
             if e == metafiddler.event.STOP:
-                # W@ M8?!?
-                # logging.info("-> Stop [psyche!  pause!]!")
-                # current_page.song.pause()
                 logging.info("STOP!")
                 current_page.song.stop()
                 # Not really on this but since we're going to come back here after we
@@ -122,11 +112,16 @@ def main():
 
             elif e == metafiddler.event.NEXT:
                 logging.info("NEXT")
-                pygame.mixer.music.fadeout(True)
+                pygame.mixer.music.fadeout(100)
                 song_actioned = True
 
             elif e == metafiddler.event.PREVIOUS:
-                logging.info("PREVIOUS")
+                # TODO: variant behavior/naming.  We should also
+                # have a back navigationally.  There should be symmetry
+                # between seek/positional and navigational controls. 
+                # Back = "Seek back" sounds maybe sensible?
+                pygame.mixer.music.fadeout(100)
+                logging.info("BACK")
                 song_actioned = True
 
             elif e == metafiddler.event.VOLUME_UP:
@@ -152,14 +147,8 @@ def main():
                 song_actioned = True
 
         # This is the resolved end page which is already provisioned...
-        logging.info("Process loop cycles")
         current_page = queue.get(timeout=3)
-        print(current_page)
-        logging.info("waiting for other processes")
         process.join()
-        #current_page = next_page
-       # logging.debug(current_page)
-        song_actioned = 0
 
 if __name__ == '__main__':
     main()            

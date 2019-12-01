@@ -32,5 +32,5 @@ def poll():
         if last_event != event:
             last_event = event
             return event
-        else:
-            return metafiddler.event
+
+    return metafiddler.event

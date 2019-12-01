@@ -1,4 +1,6 @@
 ,*
-sample/*
+**/_dev/*
+**/sample/*
 **/__pycache__/*
 config.json
+_dev/js_winmm.py

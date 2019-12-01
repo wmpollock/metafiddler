@@ -3,6 +3,52 @@ import metafiddler.event
 import sys
 import logging
 
+
+bindings = {
+    # Well, IDK how I feel about using CHRs for BYTEs right about now
+    # but they came out of the two-step polling process pretty tidy
+    # as chars and I kinda like 'em.
+    b'\000' + b'M': {
+			"return":  metafiddler.event.NEXT,
+            "desc": "arrrow-forward"
+		},
+    b'\000' + b'K': {
+			"return":  metafiddler.event.PREVIOUS,
+            "desc": "arrow-back"
+		},
+    b'\000' + b'H': {
+			"return":  metafiddler.event.VOLUME_UP,
+            "desc": "arrow-up"
+		},
+    b'\000' + b'P': {
+			"return":  metafiddler.event.VOLUME_DOWN,
+            "desc": "arrow-down"
+		},
+    # escape: may not want to print this bad boi 
+     chr(27):  {
+			"return":  metafiddler.event.STOP,
+            "desc": "escape"
+		},
+    's': {
+			"return":  metafiddler.event.STOP,
+		},
+    'p': {
+			"return":  metafiddler.event.PLAY,
+		}, 
+    'z': {
+			"return":  metafiddler.event.SEEK_BACK,
+		}, 
+    'x': {
+			"return":  metafiddler.event.SEEK_FORWARD,
+		},
+    'a': {
+			"return":  metafiddler.event.PLAYLIST_A,
+		},
+    'b': {
+			"return":  metafiddler.event.PLAYLIST_B,
+		},
+}
+
 # TODO:  It'd be nicer to have each binding as a standard
 # defintion:
 # bindings = {
@@ -12,88 +58,64 @@ import logging
 #     }
 # }
 
+
+
 def init():
     if not sys.stdin.isatty():
         logging.critical("FATAL: this process is not a terminal.  Perhaps you need to prefix with winpty.")
         exit()
+    
+    print("Keyboard mapping:")
+    for key in bindings.keys():
+        # Haha, since we use the labels I guess we don't need a dictionary to look these up (yikes...)
+        
+        if "desc" in bindings[key]:
+            label = bindings[key]["desc"]
+        else:
+            label = key
 
+        print("\t%-15s %s" %(label + ":", bindings[key]["return"]))
+    
+    
     # If this print is janky perhaps you need to 
     # setx PYTHONIOENCODING utf-8
     # Seems you Can't Just Do That for Friends
-    logging.info("\n".join(
-        ["Keyboard mapping:",
         
-        # "🡆     - next",
-        # "🡄     - prev",
-        # "🡅     - volume up",
-        # "🡇     - volume down",
-        # Fancypants arrows don't work in WinPTY?!?
-        "\t[left]  - next",
-        "\t[right] - prev",
-        "\tz       - seek back",
-        "\tx       - seek forward",
-
-        "",
-        "\t[up]    - volume up",
-        "\t[down]  - volume down",
-        "",
-        "\ts|ESC  - stop",
-        "\tp      - start",
-        "\ta      - Playlist A",
-        "\tb      - Playlist B"
-        ])
-        )
-
+    
 
 def poll():
-    keycode_signals = [b'\000', b'\xe0']
+    if not sys.stdin.isatty():
+        logging.critical("FATAL: this process is not a terminal.  Perhaps you need to prefix with winpty.")
+        exit()
+
+    #keycode_signals = [b'\000', b'\xe0']
+    keycode_signal = b'\000'
 
     if msvcrt.kbhit():
-        key = msvcrt.getch()
-
-        if key in keycode_signals:
-            # apperently its a two-banger?
-            key = msvcrt.getch()
-            # I mean, I guess key is as good as any?
-            if key == b'M':
-                # 🡆 - next
-                return(metafiddler.event.NEXT)
-            elif key == b'K':
-                # 🡄 - prev
-                return(metafiddler.event.PREVIOUS)
-            elif key == b'H':
-                # 🡅 - volume up
-                return(metafiddler.event.VOLUME_UP)
-            elif key == b'P':
-                # 🡇 - volume down
-                return(metafiddler.event.VOLUME_DOWN)
         
-        if (ord(key) == 27 or
-            key == b's'):
-            #  s|ESC - stop
-            return(metafiddler.event.STOP)
-        elif key == b'p':
-            #   p - start
-            return(metafiddler.event.PLAY) 
-        elif key == b'z':
-            #   p - start
-            return(metafiddler.event.SEEK_BACK) 
-        elif key == b'x':
-            #   p - start
-            return(metafiddler.event.SEEK_FORWARD) 
-        elif key == b'a':         
-            #   a - Playlist A
-            return(metafiddler.event.PLAYLIST_A)
-        elif key == b'a':         
-            #   b - Playlist B
-            return(metafiddler.event.PLAYLIST_B)
+        ch = msvcrt.getch()
+        #print(ch.decode("utf-8"))
+        #if ch in keycode_signals:
+        
+        # Arrow keys have a prefix
+        if ch == keycode_signal:
+            key = ch + msvcrt.getch()
+        else:
+            key = ch.decode("utf-8")
+
+        if key in bindings:
+            return bindings[key]["return"]
+
 
     return metafiddler.event.NONE
 
 if __name__ == "__main__":
+    init()
     last_r = ""
+    print("Polling...")
     while 1:
         r = poll()
-        if last_r != r:
-            logging.debug("Event:" + r)
+        if not last_r == r:
+            if r:
+                print("Event:" + r)
             last_r = r

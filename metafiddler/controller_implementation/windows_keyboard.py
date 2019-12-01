@@ -3,6 +3,14 @@ import metafiddler.event
 import sys
 import logging
 
+# TODO:  It'd be nicer to have each binding as a standard
+# defintion:
+# bindings = {
+#     'x' => {
+#         # The event should have its own description that we look up 
+#         event => 
+#     }
+# }
 
 def init():
     if not sys.stdin.isatty():
@@ -22,9 +30,13 @@ def init():
         # Fancypants arrows don't work in WinPTY?!?
         "\t[left]  - next",
         "\t[right] - prev",
+        "\tz       - seek back",
+        "\tx       - seek forward",
+
+        "",
         "\t[up]    - volume up",
         "\t[down]  - volume down",
-        
+        "",
         "\ts|ESC  - stop",
         "\tp      - start",
         "\ta      - Playlist A",
@@ -63,6 +75,12 @@ def poll():
         elif key == b'p':
             #   p - start
             return(metafiddler.event.PLAY) 
+        elif key == b'z':
+            #   p - start
+            return(metafiddler.event.SEEK_BACK) 
+        elif key == b'x':
+            #   p - start
+            return(metafiddler.event.SEEK_FORWARD) 
         elif key == b'a':         
             #   a - Playlist A
             return(metafiddler.event.PLAYLIST_A)

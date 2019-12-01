@@ -86,7 +86,7 @@ def main():
         # just keep rolling through.
         song_actioned = False
         input_prompted = False
-        while current_page.song.playing() or not song_actioned:
+        while current_page.song.playing() and not song_actioned:
             if not (current_page.song.playing() or input_prompted):
                 input_prompted = True
                 logging.info("Waiting for user for input.")
@@ -148,17 +148,17 @@ def main():
                 song_actioned = True
             
             elif e == metafiddler.event.SEEK_FORWARD:
-                pygame.mixer.music.set_pos(-100)
+                p = pygame.mixer.music.get_pos()
+                if p > 100:
+                    pygame.mixer.music.set_pos(-100)
 
             elif e == metafiddler.event.SEEK_BACK:
                 # superback would be .mixer.music.rewind
-                pygame.mixer.music.set_pos(100)
-                pass
-
-
-
+                if current_page.song.playing():
+                    pygame.mixer.music.set_pos(100)
+                
         # This is the resolved end page which is already provisioned...
-        next_page = queue.get(timeout=3)
+        next_page = queue.get(timeout=15)
         process.join()
         if e == metafiddler.event.PREVIOUS:
             current_page = current_page.links["older"]

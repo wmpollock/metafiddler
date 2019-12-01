@@ -10,7 +10,7 @@ import metafiddler.controller_implementation.windows_usb_joystick
 import metafiddler.event
 
 # Maybe debouncing here is the more humane thing to do?  Of course it is...
-last_event = metafiddler.event.NONE
+last_events = [metafiddler.event.NONE, metafiddler.event.NONE]
 
 controllers = [
     metafiddler.controller_implementation.windows_keyboard,
@@ -27,10 +27,12 @@ def init():
 def poll():
     global last_event
     global controllers
-    for controller in controllers:
+    #for controller in controllers:
+    for x in range(len(controllers)):
+        controller = controllers[x]
         event = controller.poll()
-        if last_event != event:
-            last_event = event
+        if last_events[x] != event:
+            last_events[x] = event
             return event
 
     return metafiddler.event

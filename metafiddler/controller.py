@@ -35,4 +35,4 @@ def poll():
             last_events[x] = event
             return event
 
-    return metafiddler.event
+    return metafiddler.event.NONE

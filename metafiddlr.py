@@ -96,9 +96,14 @@ def main():
             # pop them off your stack or something.
             e = metafiddler.controller.poll()
 
-             # Debounce event
+            # ** I really wanted to put all these into a magnificent map but python
+            # does not have a multiline lambda and IDK if busting them functions is
+            # more sensible?
+            
+            if not e == metafiddler.event.NONE:
+                logging.info("EVENT: " + e)
+
             if e == metafiddler.event.STOP:
-                logging.info("STOP!")
                 current_page.song.stop()
                 # Not really on this but since we're going to come back here after we
                 # bail, should be A-OK.
@@ -111,7 +116,6 @@ def main():
                 current_page.song.play()
 
             elif e == metafiddler.event.NEXT:
-                logging.info("NEXT")
                 pygame.mixer.music.fadeout(100)
                 song_actioned = True
 
@@ -121,17 +125,14 @@ def main():
                 # between seek/positional and navigational controls. 
                 # Back = "Seek back" sounds maybe sensible?
                 pygame.mixer.music.fadeout(100)
-                logging.info("BACK")
                 song_actioned = True
 
             elif e == metafiddler.event.VOLUME_UP:
-                logging.info("Volume up")
                 v = pygame.mixer.music.get_volume()
                 if v < 1:
                     pygame.mixer.music.set_volume(v + .1)
 
             elif e == metafiddler.event.VOLUME_DOWN:
-                logging.info("Volume down")
                 v = pygame.mixer.music.get_volume()
                 if v > 0:
                     pygame.mixer.music.set_volume(v - .1)
@@ -145,10 +146,26 @@ def main():
                 pygame.mixer.music.fadeout(100)
                 current_page.song.playlist_add(config.playlist_id('playlist_b'))
                 song_actioned = True
+            
+            elif e == metafiddler.event.SEEK_FORWARD:
+                pygame.mixer.music.set_pos(-100)
+
+            elif e == metafiddler.event.SEEK_BACK:
+                # superback would be .mixer.music.rewind
+                pygame.mixer.music.set_pos(100)
+                pass
+
+
 
         # This is the resolved end page which is already provisioned...
-        current_page = queue.get(timeout=3)
+        next_page = queue.get(timeout=3)
         process.join()
+        if e == metafiddler.event.PREVIOUS:
+            current_page = current_page.links["older"]
+            current_page.provision()
+        else:
+            current_page = next_page
+        
 
 if __name__ == '__main__':
-    main()            
+    main()

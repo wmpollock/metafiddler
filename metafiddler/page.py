@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-#import logging
+import logging
 from metafiddler.song import MufiSong
 import re
 import urllib.request
@@ -91,12 +91,10 @@ class MufiPage:
                     if a:
                         # Links are not (currently) fully qualified
                         self.links[link_name] = MufiPage('https://music.metafilter.com' + a['href'])
-                        #logging.debug("Found " + link_name + ": https://music.metafilter.com" + a['href'])
-                    # In fact /is/ natural case and undefined state (== n00bs) should start at the front w/no older :O
-                    # else:
-                    #     ## Might be natural case for last/first entry?  If so, don't go there
-                    #     print("FATAL: couldn't find", link_name)
-                    #     exit()
+                        logging.debug("Found " + link_name + ": https://music.metafilter.com" + a['href'])
+                    else:
+                        # Natural state for first/last tune:  we set the former state for a first-time run
+                        logging.warn("WARNING: no '" + link_name + "' field.")
                 
                 # "mufi_id" - post number used for favorites, URLs
                 # ------------------------------------------------------------
@@ -104,16 +102,16 @@ class MufiPage:
                 if m:
                     self.song.mufi_id = m.group(1)
                 else:
-                 #   logging.critical("FATAL coudln't find mufi_id in " + self.audio_source_url)
+                    logging.critical("FATAL coudln't find mufi_id in " + self.audio_source_url)
                     exit()
 
         else:
-            #logging.critical("FATAL: no audio source url provided to metafiddler.page")
+            logging.critical("FATAL: no audio source url provided to metafiddler.page")
             exit()
 
     def provision(self, **kwargs):
         kwargs['subdir'] = "MetaFiddler"
         self.get(**kwargs)
         self.song.provision(**kwargs)
-        print("Done provisioning ", self.audio_source_url)
+        logging.info("Done provisioning " + self.audio_source_url)
         return self

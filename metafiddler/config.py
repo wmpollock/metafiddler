@@ -3,10 +3,6 @@ import yaml
 import logging
 
 
-
-# Things to save; 
-# current position
-
 class MufiConfig:
     config_file = str(pathlib.Path.home() / ".metafiddlr.yaml")
     config = {}
@@ -43,4 +39,4 @@ class MufiConfig:
     def save(self):
         with open(self.config_file, 'w') as yaml_file:
             yaml.dump(self.config, yaml_file)
-        logging.info("Wrote state file")
+        logging.debug("Wrote state file")

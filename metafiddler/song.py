@@ -1,5 +1,5 @@
 import gtts
-#import logging
+import logging
 import metafiddler.mechanise
 import os
 import os.path
@@ -47,9 +47,9 @@ class MufiSong:
             # enough chaos going on in 'fiddler that absolutely no. 
 
         if os.path.exists(self.local_path):
-            print(self.local_path + " already exists")
+            logging.debug(self.local_path + " already exists")
         else:
-            print("Downloading " + self.local_path)
+            logging.debug("Downloading " + self.local_path)
             if 'callback' in kwargs:
                 urllib.request.urlretrieve(self.audio_file_url, self.local_path, kwargs.get('callback'))
             else:
@@ -67,14 +67,14 @@ class MufiSong:
             self.title_read_path = self.__get_outpath(subdir="Title Reads")
 
         if os.path.exists(self.title_read_path):
-            print("Title read " + self.title_read_path + " already exists.")
+            logging.debug("Title read " + self.title_read_path + " already exists.")
         else:
             # Irony; we worked kind of hard to split exactly this in some instances :/
             read = self.title + " by " + self.artist
-            print("Title read: " + read)
-            print("Generating title read " + self.title_read_path)
+            logging.debug("Title read: " + read)
+            logging.debug("Generating title read " + self.title_read_path)
             tts = gtts.gTTS(read)
-            print("Saving title read")
+            logging.debug("Saving title read")
             tts.save(self.title_read_path)
 
     # I tried subclassing self as part of pygame.mixer.music but I'm obv. doing
@@ -86,7 +86,9 @@ class MufiSong:
         pygame.mixer.music.stop()
 
     def play(self):
+        
         if self.local_path:
+            logging.info("Playing song: " + self.local_path)
             pygame.mixer.music.load(self.local_path)
         else:
             raise SystemExit("Local path has not been defined -- content missing :[") 
@@ -99,7 +101,7 @@ class MufiSong:
         else:
             raise SystemExit("Local path has not been defined -- content missing :[") 
         # yeet
-        #logging.info("Playing title @ " + self.title_read_path)
+        logging.info("Playing title read: " + self.title_read_path)
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy():
             pygame.time.Clock().tick(10)

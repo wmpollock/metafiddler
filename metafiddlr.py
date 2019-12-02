@@ -40,7 +40,8 @@ def get_next(queue, page):
     
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
+    #logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
     metafiddler.controller.init()
     metafiddler.mechanise.init()
@@ -146,15 +147,24 @@ def main():
                 current_page.song.playlist_add(config.playlist_id('playlist_b'))
                 song_actioned = True
             
-            elif e == metafiddler.event.SEEK_FORWARD:
+            elif e == metafiddler.event.SEEK_BACK:
                 p = pygame.mixer.music.get_pos()
                 if p > 100:
-                    pygame.mixer.music.set_pos(-100)
+                    pygame.mixer.music.rewind()
+                    pygame.mixer.music.play()
+                    
+                    # Says [https://www.pygame.org/docs/ref/music.html]
+                    #   For absolute positioning in an MP3 file, first call rewind()
+                    # But this is kind of nonsense because if when you fire this it
+                    # ends up going to some not-this number and then bailing :/
+                    #pygame.mixer.music.set_pos(p-100)
+                    #print("Now at ", pygame.mixer.music.get_pos())
 
-            elif e == metafiddler.event.SEEK_BACK:
-                # superback would be .mixer.music.rewind
+            elif e == metafiddler.event.SEEK_FORWARD:
                 if current_page.song.playing():
+                    # Fortunately only mp3s as seek is conditional on format :O
                     pygame.mixer.music.set_pos(100)
+
             elif e == metafiddler.event.GO_SOURCE:
                 webbrowser.open(current_page.audio_source_url, new=2)
         # This is the resolved end page which is already provisioned...

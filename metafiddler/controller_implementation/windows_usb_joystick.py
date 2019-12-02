@@ -133,18 +133,18 @@ def init():
         logging.info("Joystick %d not plugged in." % (joy_id + 1))
         
     else:
-        logging.info("\n".join(                
-        ["Joystick provisioned",
-            "\tMapping:",
-            "\t[right] - next",
-            "\t[left]  - prev",
-            "\t[up]    - volume up",
-            "\t[down]  - volume down",
+        print("\n\t".join(                
+        [
+            "Joystick mapping:", 
+            "[right] - next",
+            "[left]  - prev",
+            "[up]    - volume up",
+            "[down]  - volume down",
             "[sel]     - stop",
             "[start]   - start",
             "A         - Playlist A",
-            "B         - Playlist B"]
-            ))
+            "B         - Playlist B"
+            ]    ))
 
         joystick_provisioned = True
         

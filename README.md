@@ -2,6 +2,13 @@
 
 A sequential player and catalogger for music.metafilter.com
 
+## Launching
+
+```sh
+pip install -f requirements.txt
+./metafiddler.sh
+```
+
 ## Background
 
 music.metafilter.com was about few months old when I first discovered it in 2006.  At first a lof the content was folks cleaning out their old recordings but in short order folks were using it as another outlet for their online music.  Contests drove thematic submissions and a growing body of really decent, earnest music was there for the mining.
@@ -20,4 +27,4 @@ This mess is to get around all that.  Because dang, I'm /years/ behind now.
 
 ## Disclaimer
 
-The author is in no way affiliated with MetaFilter Network LLC.
+The author is in not affiliated with MetaFilter Network LLC though is a longtime fan.

@@ -110,7 +110,6 @@ class MufiPage:
             exit()
 
     def provision(self, **kwargs):
-        kwargs['subdir'] = "MetaFiddler"
         self.get(**kwargs)
         self.song.provision(**kwargs)
         logging.info("Done provisioning " + self.audio_source_url)

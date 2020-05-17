@@ -40,8 +40,8 @@ def get_next(queue, page):
     
 
 def main():
-    #logging.basicConfig(level=logging.DEBUG)
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
+    #logging.basicConfig(level=logging.INFO)
 
     metafiddler.controller.init()
     metafiddler.mechanise.init()
@@ -100,7 +100,7 @@ def main():
             # does not have a multiline lambda and IDK if busting them functions is
             # more sensible?
             
-            if not e == metafiddler.event.NONE:
+            if e and not e == metafiddler.event.NONE:
                 logging.info("EVENT: " + e)
 
             if e == metafiddler.event.STOP:

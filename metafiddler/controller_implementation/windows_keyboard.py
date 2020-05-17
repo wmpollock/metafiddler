@@ -98,21 +98,23 @@ def poll():
 
     #keycode_signals = [b'\000', b'\xe0']
     keycode_signal = b'\000'
+    try:
+        if msvcrt.kbhit():
+            
+            ch = msvcrt.getch()
+            #print(ch.decode("utf-8"))
+            #if ch in keycode_signals:
+            
+            # Arrow keys have a prefix
+            if ch == keycode_signal:
+                key = ch + msvcrt.getch()
+            else:
+                key = ch.decode("utf-8")
 
-    if msvcrt.kbhit():
-        
-        ch = msvcrt.getch()
-        #print(ch.decode("utf-8"))
-        #if ch in keycode_signals:
-        
-        # Arrow keys have a prefix
-        if ch == keycode_signal:
-            key = ch + msvcrt.getch()
-        else:
-            key = ch.decode("utf-8")
-
-        if key in bindings:
-            return bindings[key]["return"]
+            if key in bindings:
+                return bindings[key]["return"]
+    except KeyboardInterrupt:
+        logging.critical("FATAL: we got an interrupt, baby!")
 
 
     return metafiddler.event.NONE

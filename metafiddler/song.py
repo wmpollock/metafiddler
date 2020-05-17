@@ -3,12 +3,13 @@ import logging
 import metafiddler.mechanise
 import os
 import os.path
+import pathlib
+
 from pathlib import Path
 import pygame.mixer
 import urllib
 import unicodedata
 import string
-
 
 base_outdir = os.path.join(str(Path.home()), "Music", "MetaFilter")
 
@@ -157,8 +158,8 @@ class MufiSong:
             raise Exception("FATAL: Need to invoke with 'subdir'")
 
         if not os.path.exists(outdir):
-            os.mkdir(outdir)
-
+            os.makedirs(outdir)
+        
         outpath = os.path.join(outdir, filename)
         return(outpath)
 

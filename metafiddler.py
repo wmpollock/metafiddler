@@ -11,6 +11,10 @@
 # Pollock, 2019
 # ============================================================================
 
+# Command line promises made and undelivered:
+# need to pass --config_file down into metafiddler.config
+
+
 import os
 # Needs to be before we invoke pygame because thanks, pygame, IHI.
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
@@ -30,16 +34,15 @@ import webbrowser
 # we got something else bad in here...
 sys.setrecursionlimit(10000)
 
-# Command line promises made and undelivered:
-# need to pass --config_file down into metafiddler.config
 
-def get_next(queue, page):
+def provision_next_page(queue, page):
+    """ Callback from fork to provision the next page """
     #queue.put(page.provision())
-     r = page.provision()
-     queue.put(r, False, 2)
+    r = page.provision()
+    queue.put(r, False, 2)
     
 
-def main():
+def setup():
     logging.basicConfig(level=logging.DEBUG)
     #logging.basicConfig(level=logging.INFO)
 
@@ -50,7 +53,7 @@ def main():
     logging.info("Playlist A: " + config.playlist_title('playlist_a'))
     logging.info("Playlist B: " + config.playlist_title('playlist_b'))
 
-    current_page = MufiPage(config.current_page)
+    current_page = MufiPage(config, config.current_page)
     
     logging.debug("Setting up current page")
     current_page.provision()
@@ -63,6 +66,8 @@ def main():
   
     done = False
 
+def main():
+    setup()
     while not(done):
 
         # Download the next page while we're listening to this one so we're 
@@ -70,7 +75,7 @@ def main():
         # --------------------------------------------------------------------
         next_page = current_page.links["newer"]
         queue = multiprocessing.Queue()
-        process = multiprocessing.Process(target=get_next, args=(queue, next_page))
+        process = multiprocessing.Process(target=provision_next_page, args=(queue, next_page))
         process.start()
         # Yeahhhh, we're potentially writing what we just read but it keeps
         # current current, ya know?

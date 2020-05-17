@@ -23,6 +23,7 @@ pygame.mixer.init()
 
 class MufiSong:
     """Audio-file-centric view of a MuFi song allong with metadata."""
+    config = {}
     # MP3-taglike data
     title = ''
     artist = ''
@@ -30,11 +31,14 @@ class MufiSong:
     audio_source_url = ''
     local_path = ''
     mufi_id = 0
+
     # Location of mp3 for title read
     title_read_path = ''
     # Flag whether we've gotten data -- I'm sure I had a purpose...
     provisioned = 0    
 
+    def __init__(self, c):
+        self.config = c
   
     def __str__(self):
         return str({"title", self.title,
@@ -43,6 +47,15 @@ class MufiSong:
     def get(self,**kwargs):
         """Retrieve the audio file if it doesn't exist locally already"""
         if not self.local_path:
+            # All songs should go into the same folder unless
+            # we've got a specific home for them (playlist folders)
+            if "subdir" not in kwargs:
+                import pprint
+                pp = pprint.PrettyPrinter(indent=4)
+                pp.pprint(self.config)
+                
+                kwargs["subdir"] = self.config.song_save_dir
+
             self.local_path = self.__get_outpath(**kwargs)
             # Should I think pass callback if we want it; for 'fodder we would be there's
             # enough chaos going on in 'fiddler that absolutely no. 
@@ -153,6 +166,8 @@ class MufiSong:
         if 'subdir' in kwargs:
             if len(kwargs.get('subdir')):
                 outdir = os.path.join(base_outdir, self.__clean_filename(kwargs.get('subdir')))
+        else:
+            logging.fatal("Yikes, outpath invoked without subdir")
         
         if not outdir:
             raise Exception("FATAL: Need to invoke with 'subdir'")

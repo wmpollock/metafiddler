@@ -5,7 +5,11 @@ import logging
 
 class MufiConfig:
     config_file = str(pathlib.Path.home() / ".metafiddlr.yaml")
-    config = {}
+    
+    # Define some base configurations.
+    config = {
+        "song_save_dir": "Songs"
+    }
 
     def __init__(self, **kwargs):
         
@@ -15,13 +19,14 @@ class MufiConfig:
                 self.config_file = kwargs['config_file']
 
             with open(self.config_file) as yaml_file:
-                self.config = yaml.load(yaml_file, Loader=yaml.FullLoader)
+                self.config.update(yaml.load(yaml_file, Loader=yaml.FullLoader))
             logging.debug("Loaded " + self.config_file)
         except FileNotFoundError:
             logging.warning("No config file " + self.config_file)
             # Hah, well, I guess we can start at the beginning then.
             self.current_page = "https://music.metafilter.com/8"
 
+    # Store our current URL info
     @property
     def current_page(self):
         return self.config['current_page']
@@ -29,6 +34,10 @@ class MufiConfig:
     @current_page.setter
     def current_page(self,url):
         self.config['current_page'] = url
+
+    @property
+    def song_save_dir(self):
+        return self.config['song_save_dir']
 
 
     def playlist_config(self, playlist):

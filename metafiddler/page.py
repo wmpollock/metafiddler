@@ -23,6 +23,7 @@ mufi_id_regexp = re.compile(r'//music\.metafilter\.com/(\d+)')
 class MufiPage:
     # MP3-taglike data
     audio_source_url = ''
+    config = {}
     
     def __str__(self):
         return str({
@@ -31,9 +32,10 @@ class MufiPage:
             "links": str(self.links),
         })
 
-    def __init__(self,url):
+    def __init__(self, config, url):
         self.audio_source_url = url
-        self.song = MufiSong()
+        self.config = config
+        self.song = MufiSong(config)
         # PageMetadata
         self.links = {}
 
@@ -90,7 +92,7 @@ class MufiPage:
                     a = soup.find("a", text=link_vals['regexp'])
                     if a:
                         # Links are not (currently) fully qualified
-                        self.links[link_name] = MufiPage('https://music.metafilter.com' + a['href'])
+                        self.links[link_name] = MufiPage(self.config, 'https://music.metafilter.com' + a['href'])
                         logging.debug("Found " + link_name + ": https://music.metafilter.com" + a['href'])
                     else:
                         # Natural state for first/last tune:  we set the former state for a first-time run

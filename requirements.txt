@@ -1,4 +1,10 @@
+# For scraping
 bs4
+# For the audio interface
 gtts
-pygame
+# For Beatiful soup
+lxml
+# For automation against web interface
 mechanize
+# For portable game controller
+pygame

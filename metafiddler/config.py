@@ -49,6 +49,7 @@ class MufiConfig:
             return playlist['list_title']
         else:
             return ""
+            
     def playlist_id(self, playlist): 
         playlist=self.playlist_config(playlist)
         if 'list_title' in playlist:

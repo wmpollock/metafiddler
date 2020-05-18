@@ -143,7 +143,11 @@ def init():
             "[sel]     - stop",
             "[start]   - start",
             "A         - Playlist A",
-            "B         - Playlist B"
+            "B         - Playlist B",
+            "X         - Playlist X",
+            "Y         - Playlist Y",
+            
+
             ]    ))
 
         joystick_provisioned = True
@@ -210,6 +214,9 @@ def poll():
         for b in range(caps.wNumButtons):
             pressed = (0 != (1 << b) & info.dwButtons)
             name = button_names[b]
+            # if pressed: 
+            #     print("button state", name, "is true")
+
             button_states[name] = pressed
 
         # Format a list of currently pressed buttons.
@@ -237,9 +244,23 @@ def poll():
         if (button_states.get("thumbr")):
             return(metafiddler.event.STOP)
        
+        # So I don't get this, maybe these labels are for a set of controllers
+        # made by Satan, but my S?NES controllers seem to map like
+        # button  polls
+        # A       x
+        # B       b
+        # X       a
+        # Y       y
         if (button_states.get("x")):
             return(metafiddler.event.PLAYLIST_A)
         if (button_states.get("b")):
             return(metafiddler.event.PLAYLIST_B)
+
+        if (button_states.get("a")):
+            return(metafiddler.event.PLAYLIST_X)
+
+        if (button_states.get("y")):
+            return(metafiddler.event.PLAYLIST_Y)
+
 
     return(metafiddler.event.NONE)

@@ -52,8 +52,10 @@ def setup():
     metafiddler.controller.init()
     metafiddler.mechanise.init()
     
-    logging.info("Playlist A: " + config.playlist_title('playlist_a'))
-    logging.info("Playlist B: " + config.playlist_title('playlist_b'))
+    print("Playlist A: " + config.playlist_title('playlist_a'))
+    print("Playlist B: " + config.playlist_title('playlist_b'))
+    print("Playlist C: " + config.playlist_title('playlist_c'))
+    print("Playlist D: " + config.playlist_title('playlist_d'))
 
    
     logging.debug("Setting up current page")
@@ -64,7 +66,7 @@ def main():
     setup()
     global done
     global current_page
-    
+
     while not(done):
 
         # Download the next page while we're listening to this one so we're 
@@ -96,7 +98,17 @@ def main():
             # This event stacking makes it seem like we're not going to deal
             # with +1 events and, um, yes, wait for the next poll and 
             # pop them off your stack or something.
-            e = metafiddler.controller.poll()
+            try:
+                e = metafiddler.controller.poll()
+            except KeyboardInterrupt:
+                print("Inturruptus")
+                current_page.song.stop()
+                # Not really on this but since we're going to come back here after we
+                # bail, should be A-OK.
+                song_actioned = False
+                done = True
+                
+
 
             # ** I really wanted to put all these into a magnificent map but python
             # does not have a multiline lambda and IDK if busting them functions is
@@ -139,15 +151,17 @@ def main():
                 if v > 0:
                     pygame.mixer.music.set_volume(v - .1)
  
-            elif e == metafiddler.event.PLAYLIST_A:
+            elif e in [metafiddler.event.PLAYLIST_A,
+                    metafiddler.event.PLAYLIST_B,
+                    metafiddler.event.PLAYLIST_X,
+                    metafiddler.event.PLAYLIST_Y]:
                 pygame.mixer.music.fadeout(100)
-                current_page.song.playlist_add(config.playlist_id('playlist_a'))
+                if config.playlist_id(e):
+                    current_page.song.playlist_add(config.playlist_id('playlist_a'))
+                else:
+                    print("No playlist configured for that button in this config.")
                 song_actioned = True
                 
-            elif e == metafiddler.event.PLAYLIST_B:
-                pygame.mixer.music.fadeout(100)
-                current_page.song.playlist_add(config.playlist_id('playlist_b'))
-                song_actioned = True
             
             elif e == metafiddler.event.SEEK_BACK:
                 p = pygame.mixer.music.get_pos()

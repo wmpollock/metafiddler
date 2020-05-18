@@ -52,7 +52,7 @@ class MufiSong:
             if "subdir" not in kwargs:
                 import pprint
                 pp = pprint.PrettyPrinter(indent=4)
-                pp.pprint(self.config)
+                # pp.pprint(self.config)
                 
                 kwargs["subdir"] = self.config.song_save_dir
 
@@ -122,8 +122,12 @@ class MufiSong:
 
 
     def playing(self):
-        return pygame.mixer.music.get_busy()
-
+        try:
+            return pygame.mixer.music.get_busy()
+        except KeyboardInterrupt:
+            print("Ending on keyboard termination.")
+            exit(1)
+            
     def playlist_add(self, playlist_id):
         metafiddler.mechanise.favorite(playlist_id, self.mufi_id)
 

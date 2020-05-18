@@ -16,7 +16,10 @@ SEEK_BACK = 'rewind'
 VOLUME_UP = 'LOUDER'
 VOLUME_DOWN = 'quieter'
 
-PLAYLIST_A = 'Add to playlist a'
-PLAYLIST_B = 'Add to playlist b'
+# These values are passed through to selection thinguses
+PLAYLIST_A = 'playlist_a'
+PLAYLIST_B = 'playlist_b'
+PLAYLIST_X = 'playlist_c'
+PLAYLIST_Y = 'playlist_d'
 
 GO_SOURCE = 'Open source webpage'

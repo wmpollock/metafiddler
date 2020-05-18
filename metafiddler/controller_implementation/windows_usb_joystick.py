@@ -55,9 +55,12 @@ JOY_RETURNCENTERED = 0x400
 JOY_USEDEADZONE = 0x800
 JOY_RETURNALL = JOY_RETURNX | JOY_RETURNY | JOY_RETURNZ | JOY_RETURNR | JOY_RETURNU | JOY_RETURNV | JOY_RETURNPOV | JOY_RETURNBUTTONS
 
-# This is the mapping for my XBox 360 controller.
-button_names = ['a', 'b', 'x', 'y', 'tl', 'tr', 'back', 'start', 'thumbl', 'thumbr']
-# This is the mapping for the
+# Name mappings to make content marginally less arbitrary
+# xbox mappings
+# button_names = ['a', 'b', 'x', 'y', 'tl', 'tr', 'back', 'start', 'thumbl', 'thumbr']
+# This is the mapping for the NES/SNES USBs I have, different from the XBOX mapping this came ith by a fair mile.:
+button_names = ['x', 'a', 'b', 'y', 'left','right', 'NONE-A', 'NONE-B', 'select', 'start']
+
 
 # Define some structures from WinMM that we will use in function calls.
 class JOYCAPS(ctypes.Structure):
@@ -136,21 +139,25 @@ def init():
         logging.info("Joystick %d not plugged in." % (joy_id + 1))
         
     else:
-        print("Joystick mapping:\n", 
-  
+        print("\n" +
+            tabulate([["Joystick mapping"]], tablefmt="github") + 
+            "\n"+
             tabulate(
-        [
-            ["[right]", "next"],
-            ["[left]", "prev"],
-            ["[up]", "volume up"],
-            ["[down]", "volume down"],
-            ["[sel]","stop"],
-            ["[start]","start"],
-            ["A","Playlist A"],
-            ["B","Playlist B"],
-            ["X", "Playlist X"],
-            ["Y", "Playlist Y"],
-            ], tablefmt="grid"))
+            [       
+                ["[right]", "next"],
+                ["[left]", "prev"],
+                ["[up]", "volume up"],
+                ["[down]", "volume down"],
+                ["[sel]","stop"],
+                ["[start]","start"],
+                ["left","seek back"],
+                ["right","seek forward"],
+                ["A","Playlist A"],
+                ["B","Playlist B"],
+                ["X", "Playlist X"],
+                ["Y", "Playlist Y"],
+            ], 
+            tablefmt="grid"))
 
         joystick_provisioned = True
         
@@ -160,8 +167,8 @@ def init():
             logging.critical("FATAL: Failed to get device capabilities.")
             exit()
 
-        logging.debug("Driver name: " + caps.szPname)
-        exit()
+        # logging.debug("Driver name: " + caps.szPname)
+        
         # Fetch the name from registry.
         key = None
         if len(caps.szRegKey) > 0:
@@ -222,6 +229,7 @@ def poll():
 
             button_states[name] = pressed
 
+        
         # Format a list of currently pressed buttons.
         buttons_text = ""
         for btn in button_names:
@@ -244,33 +252,31 @@ def poll():
             # X/Y up
             return(metafiddler.event.VOLUME_UP)
         
-
-
-        if (button_states.get("thumbl")):
+        # Metabuttons
+        # -----------------------------------------------------------------------------
+        if (button_states.get("start")):
             return(metafiddler.event.PLAY)
-        if (button_states.get("thumbr")):
+        if (button_states.get("select")):
             return(metafiddler.event.STOP)
        
         # PLAYER BUTTONS
         # -----------------------------------------------------------------------------
-        # So I don't get this, maybe these labels are for a set of controllers
-        # made by Satan, but my S?NES controllers seem to map like
-        # button  polls
-        # A       x
-        # B       b
-        # X       a
-        # Y       y
-        if (button_states.get("x")):
+        if (button_states.get("a")):
             return(metafiddler.event.PLAYLIST_A)
 
         if (button_states.get("b")):
             return(metafiddler.event.PLAYLIST_B)
 
-        if (button_states.get("a")):
+        if (button_states.get("x")):
             return(metafiddler.event.PLAYLIST_X)
 
         if (button_states.get("y")):
             return(metafiddler.event.PLAYLIST_Y)
 
+        if (button_states.get("left")):
+            return(metafiddler.event.SEEK_BACK)
+
+        if (button_states.get("right")):
+            return(metafiddler.event.SEEK_FORWARD)
 
     return(metafiddler.event.NONE)

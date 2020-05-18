@@ -4,7 +4,7 @@ import logging
 
 
 class MufiConfig:
-    config_file = str(pathlib.Path.home() / ".metafiddlr.yaml")
+    config_file = str(pathlib.Path.home() / ".metafiddler.yaml")
     
     # Define some base configurations.
     config = {

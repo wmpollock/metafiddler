@@ -34,6 +34,9 @@ import webbrowser
 # we got something else bad in here...
 sys.setrecursionlimit(10000)
 
+config = MufiConfig()
+current_page = MufiPage(config, config.current_page)
+done = False
 
 def provision_next_page(queue, page):
     """ Callback from fork to provision the next page """
@@ -48,26 +51,20 @@ def setup():
 
     metafiddler.controller.init()
     metafiddler.mechanise.init()
-    config = MufiConfig()
     
     logging.info("Playlist A: " + config.playlist_title('playlist_a'))
     logging.info("Playlist B: " + config.playlist_title('playlist_b'))
 
-    current_page = MufiPage(config, config.current_page)
-    
+   
     logging.debug("Setting up current page")
     current_page.provision()
-    
-    # Other things:
-    # #"published_parsed": entry.published_parsed,
-    #        +    "audio_file_url": url,
-    #        -    "audio_source_url": entry.link
-    
-  
-    done = False
+
 
 def main():
     setup()
+    global done
+    global current_page
+    
     while not(done):
 
         # Download the next page while we're listening to this one so we're 

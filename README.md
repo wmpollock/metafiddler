@@ -5,7 +5,7 @@ A sequential player and catalogger for music.metafilter.com
 ## Launching
 
 ```sh
-pip install -f requirements.txt
+pip install -r requirements.txt
 ./metafiddler.sh
 ```
 

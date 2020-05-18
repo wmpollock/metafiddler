@@ -71,7 +71,6 @@ def setup():
         ], 
         tablefmt="grid"
     ))
-    exit(1)
     logging.debug("Setting up current page")
     current_page.provision()
 
@@ -172,6 +171,8 @@ def main():
                 pygame.mixer.music.fadeout(100)
                 if config.playlist_id(e):
                     current_page.song.playlist_add(config.playlist_id('playlist_a'))
+                    # TODO: This should boom go into the appropriate playlist
+                    # subdirectory...?
                 else:
                     print("No playlist configured for that button in this config.")
                 song_actioned = True

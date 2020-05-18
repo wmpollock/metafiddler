@@ -8,3 +8,5 @@ lxml
 mechanize
 # For portable game controller
 pygame
+# For better output
+tabulate

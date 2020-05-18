@@ -22,6 +22,7 @@ from math import floor, ceil
 import time
 import ctypes
 import logging
+from tabulate import tabulate
 import winreg
 from ctypes.wintypes import WORD, UINT, DWORD
 from ctypes.wintypes import WCHAR as TCHAR
@@ -56,7 +57,7 @@ JOY_RETURNALL = JOY_RETURNX | JOY_RETURNY | JOY_RETURNZ | JOY_RETURNR | JOY_RETU
 
 # This is the mapping for my XBox 360 controller.
 button_names = ['a', 'b', 'x', 'y', 'tl', 'tr', 'back', 'start', 'thumbl', 'thumbr']
-
+# This is the mapping for the
 
 # Define some structures from WinMM that we will use in function calls.
 class JOYCAPS(ctypes.Structure):
@@ -135,22 +136,21 @@ def init():
         logging.info("Joystick %d not plugged in." % (joy_id + 1))
         
     else:
-        print("\n\t".join(                
+        print("Joystick mapping:\n", 
+  
+            tabulate(
         [
-            "Joystick mapping:", 
-            "[right] - next",
-            "[left]  - prev",
-            "[up]    - volume up",
-            "[down]  - volume down",
-            "[sel]     - stop",
-            "[start]   - start",
-            "A         - Playlist A",
-            "B         - Playlist B",
-            "X         - Playlist X",
-            "Y         - Playlist Y",
-            
-
-            ]    ))
+            ["[right]", "next"],
+            ["[left]", "prev"],
+            ["[up]", "volume up"],
+            ["[down]", "volume down"],
+            ["[sel]","stop"],
+            ["[start]","start"],
+            ["A","Playlist A"],
+            ["B","Playlist B"],
+            ["X", "Playlist X"],
+            ["Y", "Playlist Y"],
+            ], tablefmt="grid"))
 
         joystick_provisioned = True
         
@@ -161,7 +161,7 @@ def init():
             exit()
 
         logging.debug("Driver name: " + caps.szPname)
-
+        exit()
         # Fetch the name from registry.
         key = None
         if len(caps.szRegKey) > 0:

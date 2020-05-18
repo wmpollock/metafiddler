@@ -2,6 +2,7 @@ import logging
 import msvcrt
 import metafiddler.event
 import sys
+from tabulate import tabulate
 
 bindings = {
     # Well, IDK how I feel about using CHRs for BYTEs right about now
@@ -49,12 +50,19 @@ bindings = {
     'x': {
         "return":  metafiddler.event.SEEK_FORWARD,
     },
+
+    # PLAYLISTS
+    # -----------------
     'a': {
         "return":  metafiddler.event.PLAYLIST_A,
     },
     'b': {
         "return":  metafiddler.event.PLAYLIST_B,
     },
+    'y': {
+        "return":  metafiddler.event.PLAYLIST_Y,
+    },
+
     'w': {
         "return":  metafiddler.event.GO_SOURCE,
     }, 
@@ -77,7 +85,9 @@ def init():
         logging.critical("FATAL: this process is not a terminal.  Perhaps you need to prefix with winpty.")
         exit()
     
+
     print("Keyboard mapping:")
+    table = []
     for key in bindings.keys():
         # Haha, since we use the labels I guess we don't need a dictionary to look these up (yikes...)
         
@@ -86,8 +96,10 @@ def init():
         else:
             label = key
 
-        print("\t%-15s %s" %(label + ":", bindings[key]["return"]))
+        # ?print("\t%-15s %s" %(label + ":", bindings[key]["return"]))
+        table.append([label, bindings[key]["return"]])
     
+    print(tabulate(table, tablefmt="grid") )
     
     # If this print is janky perhaps you need to 
     # setx PYTHONIOENCODING utf-8

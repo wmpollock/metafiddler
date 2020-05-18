@@ -19,7 +19,9 @@ import os
 # Needs to be before we invoke pygame because thanks, pygame, IHI.
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
+
 import logging
+
 from metafiddler.config import MufiConfig
 import metafiddler.controller
 import metafiddler.event 
@@ -28,15 +30,18 @@ import multiprocessing
 import os.path 
 import pygame
 import sys
+from tabulate import tabulate
 import webbrowser
+
+# 
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
+ 
+# exit();
 
 # Starts at 1K, w/o it the pickling of the object is a no, go: maybe
 # we got something else bad in here...
 sys.setrecursionlimit(10000)
 
-config = MufiConfig()
-current_page = MufiPage(config, config.current_page)
-done = False
 
 def provision_next_page(queue, page):
     """ Callback from fork to provision the next page """
@@ -46,18 +51,27 @@ def provision_next_page(queue, page):
     
 
 def setup():
-    logging.basicConfig(level=logging.DEBUG)
-    #logging.basicConfig(level=logging.INFO)
+    global config
+    global current_page
+    global done
+
+    config = MufiConfig()
+    current_page = MufiPage(config, config.current_page)
+    done = False
 
     metafiddler.controller.init()
     metafiddler.mechanise.init()
     
-    print("Playlist A: " + config.playlist_title('playlist_a'))
-    print("Playlist B: " + config.playlist_title('playlist_b'))
-    print("Playlist C: " + config.playlist_title('playlist_c'))
-    print("Playlist D: " + config.playlist_title('playlist_d'))
-
-   
+    print(tabulate(
+        [
+            ["Playlist A: ", config.playlist_title('playlist_a')],
+            ["Playlist B: ", config.playlist_title('playlist_b')],
+            ["Playlist C: ", config.playlist_title('playlist_c')],
+            ["Playlist D: ", config.playlist_title('playlist_d')]
+        ], 
+        tablefmt="grid"
+    ))
+    exit(1)
     logging.debug("Setting up current page")
     current_page.provision()
 

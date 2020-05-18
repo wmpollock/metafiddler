@@ -19,7 +19,7 @@ VOLUME_DOWN = 'quieter'
 # These values are passed through to selection thinguses
 PLAYLIST_A = 'playlist_a'
 PLAYLIST_B = 'playlist_b'
-PLAYLIST_X = 'playlist_c'
-PLAYLIST_Y = 'playlist_d'
+PLAYLIST_X = 'playlist_x'
+PLAYLIST_Y = 'playlist_y'
 
 GO_SOURCE = 'Open source webpage'

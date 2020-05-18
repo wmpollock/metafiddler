@@ -1,6 +1,8 @@
 
 # Windows USB Joysick consumer
 
+
+
 # Adapted from:
 # https://gist.github.com/rdb/8883307
 #   Released by rdb under the Unlicense (unlicense.org)
@@ -214,8 +216,9 @@ def poll():
         for b in range(caps.wNumButtons):
             pressed = (0 != (1 << b) & info.dwButtons)
             name = button_names[b]
-            # if pressed: 
-            #     print("button state", name, "is true")
+
+            if pressed and not button_states[name] == pressed: 
+                logging.debug("button '" + name + "'pressed'")
 
             button_states[name] = pressed
 
@@ -225,6 +228,8 @@ def poll():
             if button_states.get(btn):
                 buttons_text += btn + ' '
 
+        # X/Y JOYSTICK EVENTS
+        # -----------------------------------------------------------------------------
         # Value here is kind of not always == 1
         if x > .5:
             # X/Y to the left
@@ -239,11 +244,15 @@ def poll():
             # X/Y up
             return(metafiddler.event.VOLUME_UP)
         
+
+
         if (button_states.get("thumbl")):
             return(metafiddler.event.PLAY)
         if (button_states.get("thumbr")):
             return(metafiddler.event.STOP)
        
+        # PLAYER BUTTONS
+        # -----------------------------------------------------------------------------
         # So I don't get this, maybe these labels are for a set of controllers
         # made by Satan, but my S?NES controllers seem to map like
         # button  polls
@@ -253,6 +262,7 @@ def poll():
         # Y       y
         if (button_states.get("x")):
             return(metafiddler.event.PLAYLIST_A)
+
         if (button_states.get("b")):
             return(metafiddler.event.PLAYLIST_B)
 

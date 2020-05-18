@@ -1,8 +1,7 @@
+import logging
 import msvcrt
 import metafiddler.event
 import sys
-import logging
-
 
 bindings = {
     # Well, IDK how I feel about using CHRs for BYTEs right about now
@@ -10,19 +9,24 @@ bindings = {
     # as chars and I kinda like 'em.
     b'\000' + b'M': {
         "return":  metafiddler.event.NEXT,
-        "desc": "arrrow-forward"
+        # "desc": "arrrow-forward"
+        "desc": "→"
     },
     b'\000' + b'K': {
         "return":  metafiddler.event.PREVIOUS,
-        "desc": "arrow-back"
+        # "desc": "arrow-back"
+        "desc": '←'
     },
     b'\000' + b'H': {
         "return":  metafiddler.event.VOLUME_UP,
-        "desc": "arrow-up"
+        # "desc": "arrow-up"
+        "desc": "↑"
     },
     b'\000' + b'P': {
         "return":  metafiddler.event.VOLUME_DOWN,
-        "desc": "arrow-down"
+        # "desc": "arrow-down"
+        "desc": "↓"
+
     },
     # escape: may not want to print this bad boi 
     chr(27):  {

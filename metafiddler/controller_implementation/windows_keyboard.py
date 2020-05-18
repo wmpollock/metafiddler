@@ -86,7 +86,6 @@ def init():
         exit()
     
 
-    print("Keyboard mapping:")
     table = []
     for key in bindings.keys():
         # Haha, since we use the labels I guess we don't need a dictionary to look these up (yikes...)
@@ -98,6 +97,8 @@ def init():
 
         # ?print("\t%-15s %s" %(label + ":", bindings[key]["return"]))
         table.append([label, bindings[key]["return"]])
+
+    print(tabulate([["Keyboard mapping"]], tablefmt="github"))
     
     print(tabulate(table, tablefmt="grid") )
     

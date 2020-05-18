@@ -9,6 +9,9 @@ pip install -r requirements.txt
 ./metafiddler.sh
 ```
 
+## Process model
+![Process diagram](.media/process-diagram.png)
+
 ## Background
 
 music.metafilter.com was about few months old when I first discovered it in 2006.  Much of the OG content was folks cleaning out their old recordings but in short order musicians were using it as another outlet for their online music and part if not an exclusive part of their site persona.  Contests drove thematic submissions and a growing body of really decent, earnest music was there for the mining.

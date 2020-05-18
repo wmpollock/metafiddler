@@ -114,8 +114,7 @@ def poll():
             if key in bindings:
                 return bindings[key]["return"]
     except KeyboardInterrupt:
-        logging.critical("FATAL: we got an interrupt, baby!")
-        exit(0)
+        raise
 
 
     return metafiddler.event.NONE

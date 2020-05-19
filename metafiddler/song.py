@@ -10,6 +10,7 @@ import pygame.mixer
 import urllib
 import unicodedata
 import string
+from metafiddler.speech import Speaker
 
 base_outdir = os.path.join(str(Path.home()), "Music", "MetaFilter")
 
@@ -31,6 +32,9 @@ class MufiSong:
     audio_source_url = ''
     local_path = ''
     mufi_id = 0
+    # TTS object for the speaker, s/b consistent but maybe not the same
+    # as UI
+    speech = {}
 
     # Location of mp3 for title read
     title_read_path = ''
@@ -39,7 +43,8 @@ class MufiSong:
 
     def __init__(self, c):
         self.config = c
-  
+        speech = Speaker()
+
     def __str__(self):
         return str({"title", self.title,
                     "artist", self.artist})
@@ -87,9 +92,8 @@ class MufiSong:
             read = self.title + " by " + self.artist
             logging.debug("Title read: " + read)
             logging.debug("Generating title read " + self.title_read_path)
-            tts = gtts.gTTS(read)
-            logging.debug("Saving title read")
-            tts.save(self.title_read_path)
+            
+            self.speech.read_to_file(read, self.title_read_path)
 
     # I tried subclassing self as part of pygame.mixer.music but I'm obv. doing
     # something wrong :/

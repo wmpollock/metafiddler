@@ -1,14 +1,17 @@
+import os
 import pathlib
 import yaml
 import logging
-
+from pathlib import Path
 
 class MufiConfig:
     config_file = str(pathlib.Path.home() / ".metafiddler.yaml")
     
     # Define some base configurations.
-    config = {
-        "song_save_dir": "Songs"
+    vals = {
+        "metafiddler_root": os.path.join(str(Path.home()), "Music", "MetaFilter"),
+        "subdir_song_save": "Songs",
+        "subdir_title_reads": "Title-Reads"
     }
 
     def __init__(self, **kwargs):
@@ -16,34 +19,40 @@ class MufiConfig:
         try:
             # I mean, we'd need to hook it...
             if 'config_file' in kwargs:
-                self.config_file = kwargs['config_file']
+                self.vals_file = kwargs['config_file']
 
-            with open(self.config_file) as yaml_file:
-                self.config.update(yaml.load(yaml_file, Loader=yaml.FullLoader))
-            logging.debug("Loaded " + self.config_file)
+            with open(self.vals_file) as yaml_file:
+                self.vals.update(yaml.load(yaml_file, Loader=yaml.FullLoader))
+            logging.debug("Loaded " + self.vals_file)
         except FileNotFoundError:
-            logging.warning("No config file " + self.config_file)
+            logging.warning("No config file " + self.vals_file)
             # Hah, well, I guess we can start at the beginning then.
             self.current_page = "https://music.metafilter.com/8"
+
+    def get(self, value):
+        if value in self.vals:
+            return(self.vals[value])
+        else   
+            return()
 
     # Store our current URL info
     @property
     def current_page(self):
-        return self.config['current_page']
+        return self.vals['current_page']
 
     @current_page.setter
     def current_page(self,url):
-        self.config['current_page'] = url
+        self.vals['current_page'] = url
 
     @property
     def song_save_dir(self):
-        return self.config['song_save_dir']
+        return self.vals['song_save_dir']
 
 
     def playlist_config(self, playlist):
-        if 'playlists' in self.config:
-            if playlist in self.config:
-                return self.config['playlists'][playlist]
+        if 'playlists' in self.vals:
+            if playlist in self.vals:
+                return self.vals['playlists'][playlist]
 
     def playlist_title(self, playlist):
         playlist=self.playlist_config(playlist)
@@ -58,6 +67,8 @@ class MufiConfig:
             return playlist['list_id']
          
     def save(self):
-        with open(self.config_file, 'w') as yaml_file:
-            yaml.dump(self.config, yaml_file)
+        with open(self.vals_file, 'w') as yaml_file:
+            yaml.dump(self.vals, yaml_file)
         logging.debug("Wrote state file")
+    
+    

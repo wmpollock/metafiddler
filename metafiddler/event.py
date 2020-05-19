@@ -3,7 +3,7 @@
 # labels to misuse in configuration map dumps.
 
 # Some constants
-NONE = ''
+NONE = 'none'
 STOP = 'stop'
 PLAY = 'play'
 

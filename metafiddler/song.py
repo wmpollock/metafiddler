@@ -1,4 +1,4 @@
-import gtts
+
 import logging
 import metafiddler.mechanise
 import os
@@ -55,12 +55,12 @@ class MufiSong:
             # All songs should go into the same folder unless
             # we've got a specific home for them (playlist folders: currently
             # just vestigal from metafodder)
-            if "subdir" not in kwargs:
+            if "dir" not in kwargs:
                 import pprint
                 pp = pprint.PrettyPrinter(indent=4)
                 # pp.pprint(self.config)
                 
-                kwargs["subdir"] = self.config.get('subdir_song_save')
+                kwargs["dir"] = self.config.get('dir_song_save')
 
             self.local_path = self.__get_outpath(**kwargs)
 
@@ -85,7 +85,7 @@ class MufiSong:
         # IDK, maybe more pickling is what this all calls for....
         #tts_file = tempfile.mktemp(suffix="mp3")
         if not len(self.title_read_path):
-            self.title_read_path = self.__get_outpath(subdir=self.config['subdir_title_reads'])
+            self.title_read_path = self.__get_outpath(dir=self.config.get('dir_title_reads'))
 
         if os.path.exists(self.title_read_path):
             logging.debug("Title read " + self.title_read_path + " already exists.")
@@ -169,18 +169,20 @@ class MufiSong:
         # their submissions are still.  MP3 only ¯\_(ツ)_/¯  I mean, yeet, I guess.
         # Thought I was going to have go get all up into mimetypes.guess_extension :O
         filename = self.__clean_filename(self.artist + " - " + self.title) + ".mp3"
-        outdir = ''    
+
         # I'm going to the content in a per-playlist folder because I keep
         # my xmas music segregated and kind of don't want to load it on the 
         # accidental.  Tempting to lump 'em all together in oen subdir tho
-        if 'subdir' in kwargs:
-            outdir = os.path.join(self.config., self.__clean_filename(kwargs['subdir']))
-        else:
-            logging.fatal("Yikes, outpath invoked without subdir")
+        if not 'dir' in kwargs:
+
+            logging.fatal("Yikes, outpath invoked without 'dir'")
             exit(1)
-        
+
+        outdir = kwargs['dir']
+
+        # I was like, nah, but then, yeah, with this config nonsense
         if not outdir:
-            raise Exception("FATAL: Need to invoke with 'subdir'")
+            raise Exception("FATAL: Need to invoke with 'dir' defined")
 
         if not os.path.exists(outdir):
             os.makedirs(outdir)

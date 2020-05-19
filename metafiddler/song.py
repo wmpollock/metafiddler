@@ -5,14 +5,14 @@ import os
 import os.path
 import pathlib
 
-from pathlib import Path
+
 import pygame.mixer
 import urllib
 import unicodedata
 import string
 from metafiddler.speech import Speaker
 
-base_outdir = os.path.join(str(Path.home()), "Music", "MetaFilter")
+
 
 valid_filename_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
 char_limit = 255
@@ -53,15 +53,17 @@ class MufiSong:
         """Retrieve the audio file if it doesn't exist locally already"""
         if not self.local_path:
             # All songs should go into the same folder unless
-            # we've got a specific home for them (playlist folders)
+            # we've got a specific home for them (playlist folders: currently
+            # just vestigal from metafodder)
             if "subdir" not in kwargs:
                 import pprint
                 pp = pprint.PrettyPrinter(indent=4)
                 # pp.pprint(self.config)
                 
-                kwargs["subdir"] = self.config.song_save_dir
+                kwargs["subdir"] = self.config.get('subdir_song_save')
 
             self.local_path = self.__get_outpath(**kwargs)
+
             # Should I think pass callback if we want it; for 'fodder we would be there's
             # enough chaos going on in 'fiddler that absolutely no. 
 
@@ -83,7 +85,7 @@ class MufiSong:
         # IDK, maybe more pickling is what this all calls for....
         #tts_file = tempfile.mktemp(suffix="mp3")
         if not len(self.title_read_path):
-            self.title_read_path = self.__get_outpath(subdir="Title Reads")
+            self.title_read_path = self.__get_outpath(subdir=self.config['subdir_title_reads'])
 
         if os.path.exists(self.title_read_path):
             logging.debug("Title read " + self.title_read_path + " already exists.")
@@ -172,10 +174,10 @@ class MufiSong:
         # my xmas music segregated and kind of don't want to load it on the 
         # accidental.  Tempting to lump 'em all together in oen subdir tho
         if 'subdir' in kwargs:
-            if len(kwargs.get('subdir')):
-                outdir = os.path.join(base_outdir, self.__clean_filename(kwargs.get('subdir')))
+            outdir = os.path.join(self.config., self.__clean_filename(kwargs['subdir']))
         else:
             logging.fatal("Yikes, outpath invoked without subdir")
+            exit(1)
         
         if not outdir:
             raise Exception("FATAL: Need to invoke with 'subdir'")

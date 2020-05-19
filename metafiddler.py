@@ -71,6 +71,10 @@ def setup():
         ], 
         tablefmt="grid"
     ))
+
+    logging.debug("Setting up speech utterances.")
+    
+
     logging.debug("Setting up current page")
     current_page.provision()
 
@@ -129,6 +133,7 @@ def main():
             
             if e and not e == metafiddler.event.NONE:
                 logging.info("EVENT: " + e)
+                speech.say(metafiddler.event.describe(e))
 
             if e == metafiddler.event.STOP:
                 current_page.song.stop()
@@ -170,7 +175,7 @@ def main():
                     metafiddler.event.PLAYLIST_Y]:
                 pygame.mixer.music.fadeout(100)
                 if config.playlist_id(e):
-                    current_page.song.playlist_add(config.playlist_id('playlist_a'))
+                    current_page.song.playlist_add(e)
                     # TODO: This should boom go into the appropriate playlist
                     # subdirectory...?
                 else:

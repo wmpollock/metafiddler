@@ -6,6 +6,7 @@ import logging
 from pathlib import Path
 
 class MufiConfig:
+
     config_file = str(pathlib.Path.home() / ".metafiddler.yaml")
     
     # Define some base configurations.
@@ -22,13 +23,16 @@ class MufiConfig:
         try:
             # I mean, we'd need to hook it...
             if 'config_file' in kwargs:
-                self.vals_file = kwargs['config_file']
+                self.config_file = kwargs['config_file']
 
-            with open(self.vals_file) as yaml_file:
+            with open(self.config_file) as yaml_file:
                 self.vals.update(yaml.load(yaml_file, Loader=yaml.FullLoader))
-            logging.debug("Loaded " + self.vals_file)
+            logging.debug("Loaded " + self.config_file)
+            import pprint
+            pp = pprint.PrettyPrinter(indent=4)
+            pp.pprint(self.vals)
         except FileNotFoundError:
-            logging.warning("No config file " + self.vals_file)
+            logging.warning("No config file " + self.config_file)
             # Hah, well, I guess we can start at the beginning then.
             self.current_page = "https://music.metafilter.com/8"
 
@@ -36,11 +40,19 @@ class MufiConfig:
         # forcing a subdir configuration: one could configure all the paths
         # to something else outside the subdirs but this is how I'd like to
         # work with them as a configurable.
-        for subdir in filter(lambda x: re.search('subdir_', x)):
+        # s/subdir_foo/di_roo
+        # Have to extract since filter will get fussy about changing dict mideway
+        subdirs = list(filter(lambda x: re.search('subdir_', x), self.vals.keys()))
+        if not self.vals['metafiddler_root']:
+            logging.critical("Metafiddler root not set")
+            return(0)
+        for subdir in subdirs:
             dir_opt_name = re.sub("^subdir", "dir", subdir)
-            if not dir_opt_name in vals:
-                vals[dir_opt_name] = os.path.join(vals['metafiddler_root'], vals[subdir])
-
+            if not dir_opt_name in self.vals:
+                self.vals[dir_opt_name] = os.path.join(self.vals['metafiddler_root'], self.vals[subdir])
+                logging.debug("Set", dir_opt_name, self.vals[dir_opt_name])
+                if not os.path.exists(self.vals[dir_opt_name]):
+                    os.makedirs(self.vals[dir_opt_name])
 
 
 
@@ -86,8 +98,9 @@ class MufiConfig:
             return playlist['list_id']
          
     def save(self):
-        with open(self.vals_file, 'w') as yaml_file:
+        with open(self.config_file, 'w') as yaml_file:
             yaml.dump(self.vals, yaml_file)
+
         logging.debug("Wrote state file")
     
     

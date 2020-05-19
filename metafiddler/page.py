@@ -35,6 +35,11 @@ class MufiPage:
     def __init__(self, config, url):
         self.audio_source_url = url
         self.config = config
+        import pprint
+        print("From page init")
+        pp = pprint.PrettyPrinter(indent=4)
+        pp.pprint(config)
+
         self.song = MufiSong(config)
         # PageMetadata
         self.links = {}

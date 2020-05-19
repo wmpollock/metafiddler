@@ -34,7 +34,7 @@ class MufiSong:
     mufi_id = 0
     # TTS object for the speaker, s/b consistent but maybe not the same
     # as UI
-    speech = {}
+    speaker = {}
 
     # Location of mp3 for title read
     title_read_path = ''
@@ -43,7 +43,11 @@ class MufiSong:
 
     def __init__(self, c):
         self.config = c
-        speech = Speaker()
+        import pprint
+        pp = pprint.PrettyPrinter(indent=4)
+        print("Config on song init")
+        pp.pprint(c.vals)
+        self.speaker = Speaker(self.config)
 
     def __str__(self):
         return str({"title", self.title,
@@ -57,10 +61,14 @@ class MufiSong:
             # just vestigal from metafodder)
             if "dir" not in kwargs:
                 import pprint
-                pp = pprint.PrettyPrinter(indent=4)
-                # pp.pprint(self.config)
-                
-                kwargs["dir"] = self.config.get('dir_song_save')
+                if self.config.get('dir_song_save'):
+                    kwargs["dir"] = self.config.get('dir_song_save')
+                else:
+                    pp = pprint.PrettyPrinter(indent=4)
+                    pp.pprint(self.config.vals)
+
+                    logging.critical("FATAL: unable no 'dir_song_save' config")
+                    exit(1)
 
             self.local_path = self.__get_outpath(**kwargs)
 
@@ -95,7 +103,7 @@ class MufiSong:
             logging.debug("Title read: " + read)
             logging.debug("Generating title read " + self.title_read_path)
             
-            self.speech.read_to_file(read, self.title_read_path)
+            self.speaker.store(read, self.title_read_path)
 
     # I tried subclassing self as part of pygame.mixer.music but I'm obv. doing
     # something wrong :/

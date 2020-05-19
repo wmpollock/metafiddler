@@ -26,13 +26,19 @@ from metafiddler.config import MufiConfig
 import metafiddler.controller
 import metafiddler.event 
 from metafiddler.page import MufiPage
-from metafiddler.config import Speaker
+from metafiddler.speech import Speaker
 import multiprocessing
 import os.path 
 import pygame
 import sys
 from tabulate import tabulate
 import webbrowser
+
+done = 0
+current_page = {}
+config = {}
+speaker = {}
+
 
 # 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
@@ -57,8 +63,13 @@ def setup():
     global done
     global speaker
 
-
+    
     config = MufiConfig()
+    import pprint
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(config)
+
+    speaker = Speaker(config)
     current_page = MufiPage(config, config.current_page)
     done = False
 
@@ -78,8 +89,8 @@ def setup():
     logging.debug("Setting up speech utterances.")
 
     for e in metafiddler.event.events:
-        logmsg.debug("Preparing for event " + e)
-        speaker.prepare(metafidddler.events.describe(e))
+        logging.debug("Preparing for event " + e)
+        speaker.prepare(metafiddler.event.describe(e))
 
     logging.debug("Setting up current page")
     current_page.provision()

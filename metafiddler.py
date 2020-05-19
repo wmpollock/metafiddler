@@ -26,6 +26,7 @@ from metafiddler.config import MufiConfig
 import metafiddler.controller
 import metafiddler.event 
 from metafiddler.page import MufiPage
+from metafiddler.config import Speaker
 import multiprocessing
 import os.path 
 import pygame
@@ -54,6 +55,8 @@ def setup():
     global config
     global current_page
     global done
+    global speaker
+
 
     config = MufiConfig()
     current_page = MufiPage(config, config.current_page)
@@ -73,7 +76,10 @@ def setup():
     ))
 
     logging.debug("Setting up speech utterances.")
-    
+
+    for e in metafiddler.event.events:
+        logmsg.debug("Preparing for event " + e)
+        speaker.prepare(metafidddler.events.describe(e))
 
     logging.debug("Setting up current page")
     current_page.provision()
@@ -133,7 +139,7 @@ def main():
             
             if e and not e == metafiddler.event.NONE:
                 logging.info("EVENT: " + e)
-                speech.say(metafiddler.event.describe(e))
+                speaker.say(metafiddler.event.describe(e))
 
             if e == metafiddler.event.STOP:
                 current_page.song.stop()

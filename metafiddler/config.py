@@ -1,3 +1,4 @@
+import re
 import os
 import pathlib
 import yaml
@@ -11,11 +12,13 @@ class MufiConfig:
     vals = {
         "metafiddler_root": os.path.join(str(Path.home()), "Music", "MetaFilter"),
         "subdir_song_save": "Songs",
-        "subdir_title_reads": "Title-Reads"
+        # These will have the same filename as the songs they are for
+        "subdir_title_reads": "Title-Reads",
+        "subdir_ui_reads": "User-Interface",
     }
 
     def __init__(self, **kwargs):
-        
+
         try:
             # I mean, we'd need to hook it...
             if 'config_file' in kwargs:
@@ -29,10 +32,26 @@ class MufiConfig:
             # Hah, well, I guess we can start at the beginning then.
             self.current_page = "https://music.metafilter.com/8"
 
+        # We're going to wash some values across so we're not using/
+        # forcing a subdir configuration: one could configure all the paths
+        # to something else outside the subdirs but this is how I'd like to
+        # work with them as a configurable.
+        for subdir in filter(lambda x: re.search('subdir_', x)):
+            dir_opt_name = re.sub("^subdir", "dir", subdir)
+            if not dir_opt_name in vals:
+                vals[dir_opt_name] = os.path.join(vals['metafiddler_root'], vals[subdir])
+
+
+
+
+
+
+
     def get(self, value):
         if value in self.vals:
             return(self.vals[value])
-        else   
+        else:   
+            logging.warning("No configuration vaiable named " + value)
             return()
 
     # Store our current URL info

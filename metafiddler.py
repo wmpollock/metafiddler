@@ -65,9 +65,6 @@ def setup():
 
     
     config = MufiConfig()
-    import pprint
-    pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(config)
 
     speaker = Speaker(config)
     current_page = MufiPage(config, config.current_page)

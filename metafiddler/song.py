@@ -43,10 +43,6 @@ class MufiSong:
 
     def __init__(self, c):
         self.config = c
-        import pprint
-        pp = pprint.PrettyPrinter(indent=4)
-        print("Config on song init")
-        pp.pprint(c.vals)
         self.speaker = Speaker(self.config)
 
     def __str__(self):
@@ -64,9 +60,6 @@ class MufiSong:
                 if self.config.get('dir_song_save'):
                     kwargs["dir"] = self.config.get('dir_song_save')
                 else:
-                    pp = pprint.PrettyPrinter(indent=4)
-                    pp.pprint(self.config.vals)
-
                     logging.critical("FATAL: unable no 'dir_song_save' config")
                     exit(1)
 

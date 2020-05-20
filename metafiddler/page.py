@@ -35,10 +35,6 @@ class MufiPage:
     def __init__(self, config, url):
         self.audio_source_url = url
         self.config = config
-        import pprint
-        print("From page init")
-        pp = pprint.PrettyPrinter(indent=4)
-        pp.pprint(config)
 
         self.song = MufiSong(config)
         # PageMetadata
@@ -46,6 +42,8 @@ class MufiPage:
 
 
     def get(self, **kwargs):
+
+
         global mp3_url_regexp
         if self.audio_source_url:
             #logging.debug("Getting " + self.audio_source_url)
@@ -97,6 +95,7 @@ class MufiPage:
                     a = soup.find("a", text=link_vals['regexp'])
                     if a:
                         # Links are not (currently) fully qualified
+
                         self.links[link_name] = MufiPage(self.config, 'https://music.metafilter.com' + a['href'])
                         logging.debug("Found " + link_name + ": https://music.metafilter.com" + a['href'])
                     else:
@@ -117,6 +116,7 @@ class MufiPage:
             exit()
 
     def provision(self, **kwargs):
+
         self.get(**kwargs)
         self.song.provision(**kwargs)
         logging.info("Done provisioning " + self.audio_source_url)

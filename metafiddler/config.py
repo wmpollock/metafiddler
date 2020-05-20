@@ -35,9 +35,6 @@ class MufiConfig:
             with open(self.config_file) as yaml_file:
                 self.vals.update(yaml.load(yaml_file, Loader=yaml.FullLoader))
             logging.debug("Loaded " + self.config_file)
-            import pprint
-            pp = pprint.PrettyPrinter(indent=4)
-            pp.pprint(self.vals)
         except FileNotFoundError:
             logging.warning("No config file " + self.config_file)
             # Hah, well, I guess we can start at the beginning then.
@@ -61,17 +58,15 @@ class MufiConfig:
                 if not os.path.exists(self.vals[dir_opt_name]):
                     os.makedirs(self.vals[dir_opt_name])
 
-
-
-
-
-
     def get(self, value):
         if value in self.vals:
             return(self.vals[value])
         else:   
             logging.warning("No configuration vaiable named " + value)
             return()
+
+    # I think this access method in the grand scheme didn't scale very well
+    # and should be burned for crap.
 
     # Store our current URL info
     @property

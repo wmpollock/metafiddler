@@ -11,15 +11,22 @@ class MufiConfig:
     
     # Define some base configurations.
     vals = {
-        "metafiddler_root": os.path.join(str(Path.home()), "Music", "MetaFilter"),
-        "subdir_song_save": "Songs",
-        # These will have the same filename as the songs they are for
-        "subdir_title_reads": "Title-Reads",
-        "subdir_ui_reads": "User-Interface",
+        # "metafiddler_root": os.path.join(str(Path.home()), "Music", "MetaFilter"),
+        # "subdir_song_save": "Songs",
+        # # These will have the same filename as the songs they are for
+        # "subdir_title_reads": "Title-Reads",
+        # "subdir_ui_reads": "User-Interface",
     }
 
     def __init__(self, **kwargs):
 
+        self.vals = {
+            "metafiddler_root": os.path.join(str(Path.home()), "Music", "MetaFilter"),
+            "subdir_song_save": "Songs",
+            # These will have the same filename as the songs they are for
+            "subdir_title_reads": "Title-Reads",
+            "subdir_ui_reads": "User-Interface",
+        }
         try:
             # I mean, we'd need to hook it...
             if 'config_file' in kwargs:

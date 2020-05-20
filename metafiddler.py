@@ -40,8 +40,8 @@ config = {}
 speaker = {}
 
 
-# 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
+#  logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
  
 # exit();
 
@@ -63,10 +63,12 @@ def setup():
     global done
     global speaker
 
-    
     config = MufiConfig()
 
     speaker = Speaker(config)
+
+    speaker.say("Setting up current page.")
+
     current_page = MufiPage(config, config.current_page)
     done = False
 
@@ -91,7 +93,6 @@ def setup():
 
     logging.debug("Setting up current page")
     current_page.provision()
-
 
 def main():
     setup()
@@ -132,15 +133,17 @@ def main():
             try:
                 e = metafiddler.controller.poll()
             except KeyboardInterrupt:
-                print("Inturruptus")
+                speaker.say("I'm breaking out.")
+                logging.info("Inturruptus")
+                # Things just sort of hung otherwise...
+                exit(1)
                 current_page.song.stop()
                 # Not really on this but since we're going to come back here after we
                 # bail, should be A-OK.
                 song_actioned = False
                 done = True
                 
-
-
+               
             # ** I really wanted to put all these into a magnificent map but python
             # does not have a multiline lambda and IDK if busting them functions is
             # more sensible?

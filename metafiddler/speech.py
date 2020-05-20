@@ -5,6 +5,8 @@ import logging
 import pygame.mixer
 import os
 
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
+
 
 class Speaker:
     config = {}
@@ -29,11 +31,17 @@ class Speaker:
 
     def say(self, utterance):
         audio = self.prepare(utterance)
+
         logging.debug("Playing " + audio)
+        # Does the interface need an interface, yes, probably.
+        # s/b .play(file) and chump is done.
         pygame.mixer.music.load(audio)
-        
+        pygame.mixer.music.play()
+        while pygame.mixer.music.get_busy():
+            pygame.time.Clock().tick(10)
+
+
     def __pathname(self, utterance):
-        
         m = hashlib.md5(utterance.encode("utf-8"))
 
         if not self.config.get("dir_ui_reads"):
@@ -43,3 +51,13 @@ class Speaker:
             os.path.join(self.config.get("dir_ui_reads"),
             m.hexdigest() + ".mp3"))
 
+
+if __name__ == "__main__":
+    from config import MufiConfig
+    config = MufiConfig()
+    pygame.mixer.init()    
+
+    s = Speaker(config)
+    s.say("Aw ish")
+    print("done")
+    

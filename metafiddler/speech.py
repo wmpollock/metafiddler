@@ -28,7 +28,7 @@ class Speaker:
         return(pathname)
 
     def say(self, utterance):
-        audio = prepare(utterance)
+        audio = self.prepare(utterance)
         logging.debug("Playing " + audio)
         pygame.mixer.music.load(audio)
         

@@ -136,7 +136,7 @@ class MufiSong:
             exit(1)
             
     def playlist_add(self, playlist_id):
-        metafiddler.mechanise.favorite(playlist_id, self.mufi_id)
+        return metafiddler.mechanise.playlist_add(playlist_id, self.mufi_id)
 
     # Pull down all content, in the metafiddler context we want to keep "get" separate,
     # presumably (narf)
@@ -144,9 +144,6 @@ class MufiSong:
         self.get(**kwargs)
         self.get_title_read(**kwargs)
     
-    # def stop(self):
-    #     pygame.mixer.music.stop()
-
     # From https://gist.github.com/wassname/1393c4a57cfcbf03641dbc31886123b8
     def __clean_filename(self, filename):
         global valid_filename_chars

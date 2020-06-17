@@ -1,9 +1,14 @@
+import logging
+# logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
+
+
 import re
 import os
 import pathlib
 import yaml
-import logging
 from pathlib import Path
+
+
 
 class MufiConfig:
 
@@ -84,7 +89,7 @@ class MufiConfig:
 
     def playlist_config(self, playlist):
         if 'playlists' in self.vals:
-            if playlist in self.vals:
+            if playlist in self.vals['playlists']:
                 return self.vals['playlists'][playlist]
 
     def playlist_title(self, playlist):
@@ -96,6 +101,7 @@ class MufiConfig:
             
     def playlist_id(self, playlist): 
         playlist=self.playlist_config(playlist)
+        
         if playlist and 'list_title' in playlist:
             return playlist['list_id']
          
@@ -104,5 +110,13 @@ class MufiConfig:
             yaml.dump(self.vals, yaml_file)
 
         logging.debug("Wrote state file")
+
+if __name__ == "__main__":
+    logging.debug("Datatest")
+    config = MufiConfig()
     
     
+    import pprint
+    pp = pprint.PrettyPrinter(indent=4)
+    # pp.pprint(config.vals)
+    print(config.playlist_id("playlist_b"))

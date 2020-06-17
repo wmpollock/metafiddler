@@ -14,11 +14,9 @@
 # Command line promises made and undelivered:
 # need to pass --config_file down into metafiddler.config
 
-
 import os
 # Needs to be before we invoke pygame because thanks, pygame, IHI.
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-
 
 import logging
 
@@ -40,8 +38,8 @@ config = {}
 speaker = {}
 
 
-#  logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
-logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
+# logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
  
 # exit();
 
@@ -79,8 +77,8 @@ def setup():
         [
             ["Playlist A: ", config.playlist_title('playlist_a')],
             ["Playlist B: ", config.playlist_title('playlist_b')],
-            ["Playlist C: ", config.playlist_title('playlist_c')],
-            ["Playlist D: ", config.playlist_title('playlist_d')]
+            ["Playlist X: ", config.playlist_title('playlist_x')],
+            ["Playlist Y: ", config.playlist_title('playlist_y')]
         ], 
         tablefmt="grid"
     ))
@@ -196,7 +194,7 @@ def main():
                     # TODO: This should boom go into the appropriate playlist
                     # subdirectory...?
                 else:
-                    print("No playlist configured for that button in this config.")
+                    print("No playlist configured for that button in this config (" + e + ")")
                 song_actioned = True
                 
             
@@ -228,7 +226,6 @@ def main():
             current_page.provision()
         else:
             current_page = next_page
-        
 
 if __name__ == '__main__':
     main()

@@ -188,16 +188,18 @@ def main():
                     metafiddler.event.PLAYLIST_B,
                     metafiddler.event.PLAYLIST_X,
                     metafiddler.event.PLAYLIST_Y]:
+
                 pygame.mixer.music.fadeout(100)
                 if config.playlist_id(e):
-                    current_page.song.playlist_add(e)
+                    if not current_page.song.playlist_add(e):
+                        logging.info("Looks a bit sketchy: bailing")
+                        done = True
                     # TODO: This should boom go into the appropriate playlist
                     # subdirectory...?
                 else:
                     print("No playlist configured for that button in this config (" + e + ")")
                 song_actioned = True
                 
-            
             elif e == metafiddler.event.SEEK_BACK:
                 p = pygame.mixer.music.get_pos()
                 if p > 100:

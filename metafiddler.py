@@ -23,7 +23,7 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import logging
 
 from metafiddler.config import MufiConfig
-import metafiddler.controller
+from  metafiddler.input import Input
 import metafiddler.event 
 from metafiddler.page import MufiPage
 from metafiddler.speech import Speaker
@@ -72,7 +72,8 @@ def setup():
     current_page = MufiPage(config, config.current_page)
     done = False
 
-    metafiddler.controller.init()
+    input = metafiddler.Input()
+
     metafiddler.mechanise.init()
     
     print(tabulate(
@@ -131,7 +132,7 @@ def main():
             # with +1 events and, um, yes, wait for the next poll and 
             # pop them off your stack or something.
             try:
-                e = metafiddler.controller.poll()
+                e = input.poll()
             except KeyboardInterrupt:
                 speaker.say("I'm breaking out.")
                 logging.info("Inturruptus")

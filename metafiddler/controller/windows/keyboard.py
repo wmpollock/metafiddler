@@ -1,19 +1,19 @@
 import logging
-from metafiddler.events.input import Event
 import sys
-from tabulate import tabulate
+from metafiddler.events.input import Event
+from metafiddler.controller.keyboardinterface import KeyboardInterface
 
 
 import msvcrt
 
-class Keyboard(KeyboardInterrupt):
+class Keyboard(KeyboardInterface):
 
-    def init():
+    def __init__(self):
         if not sys.stdin.isatty():
             logging.critical("FATAL: this process is not a terminal.  Perhaps you need to prefix with winpty.")
             exit()
-        
-        self.bindings.update({}
+
+        self.bindings.update({
             # Well, IDK how I feel about using CHRs for BYTEs right about now
             # but they came out of the two-step polling process pretty tidy
             # as chars and I kinda like 'em.
@@ -61,16 +61,16 @@ class Keyboard(KeyboardInterrupt):
                 "desc": "↓"
             },
 
-            # escape: may not want to print this bad boi 
+            # escape: may not want to print this bad boi
             chr(27):  {
                 "return":  Event.STOP,
                 "desc": "escape"
             },
         })
 
-        self.print_bindings()        
+        self.print_bindings()
 
-    def poll():
+    def poll(self):
         if not sys.stdin.isatty():
             logging.critical("FATAL: this process is not a terminal.  Perhaps you need to prefix with winpty.")
             exit()
@@ -80,9 +80,9 @@ class Keyboard(KeyboardInterrupt):
         #keycode_signal = b'\000'
         try:
             if msvcrt.kbhit():
-                
+
                 ch = msvcrt.getch()
-                
+
                 # Arrow keys have a prefix
                 if ch in keycode_signals:
                     x = msvcrt.getch()
@@ -92,21 +92,10 @@ class Keyboard(KeyboardInterrupt):
                 else:
                     logging.error("WHAT?!?  No key for my key?!?")
 
-                if key in bindings:
-                    return bindings[key]["return"]
+                if key in self.bindings:
+                    return self.bindings[key]["return"]
         except KeyboardInterrupt:
-            raise
+            exit(1) # ?
 
 
         return Event.NONE
-
-if __name__ == "__main__":
-    init()
-    last_r = ""
-    print("Polling...")
-    while 1:
-        r = poll()
-        if not last_r == r:
-            if r:
-                print("Event:" + r)
-            last_r = r

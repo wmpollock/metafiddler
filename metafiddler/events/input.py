@@ -50,9 +50,6 @@ class Event:
         PLAYLIST_A, PLAYLIST_B, PLAYLIST_X, PLAYLIST_Y
     ]
 
-
-
-
     # And then of course you need a dangol event mangler to handle that non-seeennnnsee
     @classmethod
     def describe(cls, e):

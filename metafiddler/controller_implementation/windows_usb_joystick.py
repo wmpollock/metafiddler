@@ -16,7 +16,7 @@
 #  Being able to grab input no matter whether the app was active
 # or not was key to this whole thing working
 
-import metafiddler.event 
+import Event 
 
 from math import floor, ceil
 import time
@@ -241,42 +241,42 @@ def poll():
         # Value here is kind of not always == 1
         if x > .5:
             # X/Y to the left
-            return(metafiddler.event.NEXT)
+            return(Event.NEXT)
         elif x < -.5:
             # X/Y to the right
-            return(metafiddler.event.PREVIOUS)
+            return(Event.PREVIOUS)
         elif y  > .5:
             # X/Y down
-            return(metafiddler.event.VOLUME_DOWN)
+            return(Event.VOLUME_DOWN)
         elif y < -.5:
             # X/Y up
-            return(metafiddler.event.VOLUME_UP)
+            return(Event.VOLUME_UP)
         
         # Metabuttons
         # -----------------------------------------------------------------------------
         if (button_states.get("start")):
-            return(metafiddler.event.PLAY)
+            return(Event.PLAY)
         if (button_states.get("select")):
-            return(metafiddler.event.STOP)
+            return(Event.STOP)
        
         # PLAYER BUTTONS
         # -----------------------------------------------------------------------------
         if (button_states.get("a")):
-            return(metafiddler.event.PLAYLIST_A)
+            return(Event.PLAYLIST_A)
 
         if (button_states.get("b")):
-            return(metafiddler.event.PLAYLIST_B)
+            return(Event.PLAYLIST_B)
 
         if (button_states.get("x")):
-            return(metafiddler.event.PLAYLIST_X)
+            return(Event.PLAYLIST_X)
 
         if (button_states.get("y")):
-            return(metafiddler.event.PLAYLIST_Y)
+            return(Event.PLAYLIST_Y)
 
         if (button_states.get("left")):
-            return(metafiddler.event.SEEK_BACK)
+            return(Event.SEEK_BACK)
 
         if (button_states.get("right")):
-            return(metafiddler.event.SEEK_FORWARD)
+            return(Event.SEEK_FORWARD)
 
-    return(metafiddler.event.NONE)
+    return(Event.NONE)

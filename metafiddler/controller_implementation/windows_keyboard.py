@@ -1,6 +1,6 @@
 import logging
 import msvcrt
-import metafiddler.event
+import Event
 import sys
 from tabulate import tabulate
 
@@ -9,22 +9,22 @@ bindings = {
     # but they came out of the two-step polling process pretty tidy
     # as chars and I kinda like 'em.
     b'\000' + b'M': {
-        "return":  metafiddler.event.NEXT,
+        "return":  Event.NEXT,
         # "desc": "arrrow-forward"
         "desc": "→"
     },
     b'\000' + b'K': {
-        "return":  metafiddler.event.PREVIOUS,
+        "return":  Event.PREVIOUS,
         # "desc": "arrow-back"
         "desc": '←'
     },
     b'\000' + b'H': {
-        "return":  metafiddler.event.VOLUME_UP,
+        "return":  Event.VOLUME_UP,
         # "desc": "arrow-up"
         "desc": "↑"
     },
     b'\000' + b'P': {
-        "return":  metafiddler.event.VOLUME_DOWN,
+        "return":  Event.VOLUME_DOWN,
         # "desc": "arrow-down"
         "desc": "↓"
 
@@ -32,62 +32,62 @@ bindings = {
 
     # I don't get this second set but winpty seemed to need it?  Seems crass.
     b'\xe0' + b'M': {
-        "return":  metafiddler.event.NEXT,
+        "return":  Event.NEXT,
         # "desc": "arrrow-forward"
         "desc": "→"
     },
     b'\xe0' + b'K': {
-        "return":  metafiddler.event.PREVIOUS,
+        "return":  Event.PREVIOUS,
         # "desc": "arrow-back"
         "desc": '←'
     },
     b'\xe0' + b'H': {
-        "return":  metafiddler.event.VOLUME_UP,
+        "return":  Event.VOLUME_UP,
         # "desc": "arrow-up"
         "desc": "↑"
     },
     b'\xe0' + b'P': {
-        "return":  metafiddler.event.VOLUME_DOWN,
+        "return":  Event.VOLUME_DOWN,
         # "desc": "arrow-down"
         "desc": "↓"
     },
 
     # escape: may not want to print this bad boi 
     chr(27):  {
-        "return":  metafiddler.event.STOP,
+        "return":  Event.STOP,
         "desc": "escape"
     },
     's': {
-        "return":  metafiddler.event.STOP,
+        "return":  Event.STOP,
     },
     'q': {
-        "return":  metafiddler.event.STOP,
+        "return":  Event.STOP,
     },
 
     'p': {
-        "return":  metafiddler.event.PLAY,
+        "return":  Event.PLAY,
     }, 
     'z': {
-        "return":  metafiddler.event.SEEK_BACK,
+        "return":  Event.SEEK_BACK,
     }, 
     'x': {
-        "return":  metafiddler.event.SEEK_FORWARD,
+        "return":  Event.SEEK_FORWARD,
     },
 
     # PLAYLISTS
     # -----------------
     'a': {
-        "return":  metafiddler.event.PLAYLIST_A,
+        "return":  Event.PLAYLIST_A,
     },
     'b': {
-        "return":  metafiddler.event.PLAYLIST_B,
+        "return":  Event.PLAYLIST_B,
     },
     'y': {
-        "return":  metafiddler.event.PLAYLIST_Y,
+        "return":  Event.PLAYLIST_Y,
     },
 
     'w': {
-        "return":  metafiddler.event.GO_SOURCE,
+        "return":  Event.GO_SOURCE,
     }, 
 
 }
@@ -159,7 +159,7 @@ def poll():
         raise
 
 
-    return metafiddler.event.NONE
+    return Event.NONE
 
 if __name__ == "__main__":
     init()

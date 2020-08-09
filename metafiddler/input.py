@@ -7,7 +7,7 @@
 # Input however should be nonblocking.
 import metafiddler.controller_implementation.windows_keyboard
 import metafiddler.controller_implementation.windows_usb_joystick
-import metafiddler.event
+import Event
 
 # TODO: feels janky, load from files mebbe?
 controllers = [
@@ -17,7 +17,7 @@ controllers = [
 
 class Input:
     # Maybe debouncing here is the more humane thing to do?  Of course it is...
-    last_events = [metafiddler.event.NONE, metafiddler.event.NONE]
+    last_events = [Event.NONE, Event.NONE]
 
     def __init(self)__:
         global last_event
@@ -36,4 +36,4 @@ class Input:
                 last_events[x] = event
                 return event
 
-        return metafiddler.event.NONE
+        return Event.NONE

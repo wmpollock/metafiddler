@@ -23,8 +23,8 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import logging
 
 from metafiddler.config import MufiConfig
-from  metafiddler.input import Input
-import metafiddler.event 
+from metafiddler.input import Input
+from metafiddler.input.event import Event
 from metafiddler.page import MufiPage
 from metafiddler.speech import Speaker
 import multiprocessing
@@ -88,9 +88,9 @@ def setup():
 
     logging.debug("Setting up speech utterances.")
 
-    for e in metafiddler.event.events:
+    for e in Event.events:
         logging.debug("Preparing for event " + e)
-        speaker.prepare(metafiddler.event.describe(e))
+        speaker.prepare(Event.describe(e))
 
     logging.debug("Setting up current page")
     current_page.provision()
@@ -134,26 +134,28 @@ def main():
             try:
                 e = input.poll()
             except KeyboardInterrupt:
-                speaker.say("I'm breaking out.")
-                logging.info("Inturruptus")
+                speaker.say("Keyboard interrupt: exiting")
+                logging.info("Keyboard interrupt: exiting")
                 # Things just sort of hung otherwise...
-                exit(1)
-                current_page.song.stop()
-                # Not really on this but since we're going to come back here after we
-                # bail, should be A-OK.
-                song_actioned = False
-                done = True
+                if 1:
+                    exit(1)
+                # alternately just stop the song...
+                # current_page.song.stop()
+                # # Not really on this but since we're going to come back here after we
+                # # bail, should be A-OK.
+                # song_actioned = False
+                # done = True
                 
                
             # ** I really wanted to put all these into a magnificent map but python
             # does not have a multiline lambda and IDK if busting them functions is
             # more sensible?
             
-            if e and not e == metafiddler.event.NONE:
+            if e and not e ==Event.NONE:
                 logging.info("EVENT: " + e)
                 speaker.say(metafiddler.event.describe(e))
 
-            if e == metafiddler.event.STOP:
+            if e ==Event.STOP:
                 current_page.song.stop()
                 # Not really on this but since we're going to come back here after we
                 # bail, should be A-OK.
@@ -161,15 +163,15 @@ def main():
                 done = True
                 
             # Kind of useless w/o STOP =~ /pause??
-            elif e == metafiddler.event.PLAY:
+            elif e ==Event.PLAY:
                 # Maybe this should do something if its not playing?
                 current_page.song.play()
 
-            elif e == metafiddler.event.NEXT:
+            elif e == Event.NEXT:
                 pygame.mixer.music.fadeout(100)
                 song_actioned = True
 
-            elif e == metafiddler.event.PREVIOUS:
+            elif e == Event.PREVIOUS:
                 # TODO: variant behavior/naming.  We should also
                 # have a back navigationally.  There should be symmetry
                 # between seek/positional and navigational controls. 
@@ -177,20 +179,20 @@ def main():
                 pygame.mixer.music.fadeout(100)
                 song_actioned = True
 
-            elif e == metafiddler.event.VOLUME_UP:
+            elif e == Event.VOLUME_UP:
                 v = pygame.mixer.music.get_volume()
                 if v < 1:
                     pygame.mixer.music.set_volume(v + .1)
 
-            elif e == metafiddler.event.VOLUME_DOWN:
+            elif e == Event.VOLUME_DOWN:
                 v = pygame.mixer.music.get_volume()
                 if v > 0:
                     pygame.mixer.music.set_volume(v - .1)
  
-            elif e in [metafiddler.event.PLAYLIST_A,
-                    metafiddler.event.PLAYLIST_B,
-                    metafiddler.event.PLAYLIST_X,
-                    metafiddler.event.PLAYLIST_Y]:
+            elif e in [Event.PLAYLIST_A,
+                    Event.PLAYLIST_B,
+                    Event.PLAYLIST_X,
+                    Event.PLAYLIST_Y]:
 
                 pygame.mixer.music.fadeout(100)
                 if config.playlist_id(e):
@@ -203,7 +205,7 @@ def main():
                     print("No playlist configured for that button in this config (" + e + ")")
                 song_actioned = True
                 
-            elif e == metafiddler.event.SEEK_BACK:
+            elif e == Event.SEEK_BACK:
                 p = pygame.mixer.music.get_pos()
                 if p > 100:
                     pygame.mixer.music.rewind()
@@ -216,17 +218,17 @@ def main():
                     #pygame.mixer.music.set_pos(p-100)
                     #print("Now at ", pygame.mixer.music.get_pos())
 
-            elif e == metafiddler.event.SEEK_FORWARD:
+            elif e == Event.SEEK_FORWARD:
                 if current_page.song.playing():
                     # Fortunately only mp3s as seek is conditional on format :O
                     pygame.mixer.music.set_pos(100)
 
-            elif e == metafiddler.event.GO_SOURCE:
+            elif e == Event.GO_SOURCE:
                 webbrowser.open(current_page.audio_source_url, new=2)
         # This is the resolved end page which is already provisioned...
         next_page = queue.get(timeout=15)
         process.join()
-        if e == metafiddler.event.PREVIOUS:
+        if e == Event.PREVIOUS:
             current_page = current_page.links["older"]
             current_page.provision()
         else:

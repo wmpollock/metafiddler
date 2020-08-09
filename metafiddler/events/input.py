@@ -4,6 +4,16 @@
 
 # TODO -- tthe setup for the events is kind of cheesy - 
 # it should bear its own "say" responsibility.
+
+# Course then you get all sporty and want to pass the event as a value and then
+# changing it to a description doesn't fit athat 
+addl_desc = {
+    'playlist_a': 'Add to playlist A',
+    'playlist_b': 'Add to playlist B',
+    'playlist_x': 'Add to playlist X',
+    'playlist_y': 'Add to playlist Y'
+}
+
 class Event:
     # Some constants
     NONE = 'none'
@@ -25,6 +35,7 @@ class Event:
     PLAYLIST_X = 'playlist_x'
     PLAYLIST_Y = 'playlist_y'
 
+
     GO_SOURCE = 'Open source webpage'
 
     # And then you go, man, why didn't I just do something sensible when I
@@ -40,19 +51,11 @@ class Event:
     ]
 
 
-    # Course then you get all sporty and want to pass the event as a value and then
-    # changing it to a description doesn't fit athat 
-    addl_desc = {
-        'playlist_a': 'Add to playlist A',
-        'playlist_b': 'Add to playlist B',
-        'playlist_x': 'Add to playlist X',
-        'playlist_y': 'Add to playlist Y'
-    }
-
 
 
     # And then of course you need a dangol event mangler to handle that non-seeennnnsee
-    def describe(e):
+    @classmethod
+    def describe(cls, e):
         if e in addl_desc:
             return(addl_desc[e])
         else:

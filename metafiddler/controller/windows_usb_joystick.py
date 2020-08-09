@@ -16,7 +16,7 @@
 #  Being able to grab input no matter whether the app was active
 # or not was key to this whole thing working
 
-import Event 
+
 
 from math import floor, ceil
 import time
@@ -26,7 +26,7 @@ from tabulate import tabulate
 import winreg
 from ctypes.wintypes import WORD, UINT, DWORD
 from ctypes.wintypes import WCHAR as TCHAR
-
+from metafiddler.events.input import Event
 
 # Its possible the JS is not added and if so lets just get on with things
 joystick_provisioned = False

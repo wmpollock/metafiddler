@@ -3,25 +3,32 @@
 # and thinking of future use cases I decided to abstract this
 # I'm sure not quite enough.
 
-# I mean, this could be REST or captive KBD or who knows.
-# Input however should be nonblocking.
-import metafiddler.controller.windows_keyboard
-import metafiddler.controller.windows_usb_joystick
+controllers = []
+
+hasKeyboard = False
+
 from metafiddler.events.input import Event
 
-# TODO: feels janky, load from files mebbe?
-controllers = [
-   metafiddler.controller.windows_keyboard,
-   metafiddler.controller.windows_usb_joystick
-]
+import metafiddler.controller.keyboard
+controllers.append(metafiddler.controller.keyboard.Keyboard())
+
+# try:
+#    import metafiddler.controller.windows.usb_joystick
+#    controllers.append(metafiddler.controller.windows.usb_joystick.Joystick())
+# except:
+#     print("Can't add Windows USB Joystick")
+#     pass
+
+
 
 class Input:
     # Maybe debouncing here is the more humane thing to do?  Of course it is...
     last_events = [Event.NONE, Event.NONE]
 
     def __init__(self):
-        for controller in controllers:
-            controller.init()
+        if len(controllers) == 0:
+            print("FATAL: no input controllers found.")
+            exit(1)
 
     def poll(self):
         #for controller in controllers:

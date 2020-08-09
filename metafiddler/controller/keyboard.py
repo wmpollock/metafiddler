@@ -1,0 +1,81 @@
+import logging
+
+import select
+from metafiddler.events.input import Event
+from metafiddler.controller.keyboardinterface import KeyboardInterface
+from tabulate import tabulate
+import termios, fcntl, sys, os
+
+# Thanks, FAQ:
+# https://docs.python.org/2/faq/library.html#how-do-i-get-a-single-keypress-at-a-time
+class Keyboard(KeyboardInterface):
+
+
+
+    def __init__(self):
+        fd = self.fd = sys.stdin.fileno()
+
+        self.oldterm = termios.tcgetattr(fd)
+        newattr = termios.tcgetattr(fd)
+        newattr[3] = newattr[3] & ~termios.ICANON & ~termios.ECHO
+        termios.tcsetattr(fd, termios.TCSANOW, newattr)
+
+        self.oldflags = fcntl.fcntl(fd, fcntl.F_GETFL)
+        fcntl.fcntl(fd, fcntl.F_SETFL, self.oldflags | os.O_NONBLOCK)
+
+        self.bindings.update( {
+            '\x1b' + '[' + 'C': {
+                "return":  Event.NEXT,
+                # "desc": "arrrow-forward"
+                "desc": "→"
+            },
+            '\x1b' + '[' + 'C': {
+                "return":  Event.NEXT,
+                # "desc": "arrrow-forward"
+                "desc": "→"
+            },
+            '\x1b' + '[' + 'D': {
+                "return":  Event.PREVIOUS,
+                # "desc": "arrow-back"
+                "desc": '←'
+            },
+            '\x1b' + '[' + 'A': {
+                "return":  Event.VOLUME_UP,
+                # "desc": "arrow-up"
+                "desc": "↑"
+            },
+            '\x1b' + '[' + 'B': {
+                "return":  Event.VOLUME_DOWN,
+                # "desc": "arrow-down"
+                "desc": "↓"
+
+            },
+        })
+
+        self.print_bindings()
+
+
+    def __del__(self):
+        termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.oldterm)
+        fcntl.fcntl(self.fd, fcntl.F_SETFL, self.oldflags)
+
+    def poll(self):
+        try:
+            c = sys.stdin.read(1)
+            if c: 
+                char = repr(c)
+                # CONTROLLL SEQUEEENCE
+                if c == '\x1b':
+                    esc = sys.stdin.read(1)
+                    arrow = sys.stdin.read(1)
+                    lookup = c + esc + arrow
+                    if lookup in self.bindings:
+                        return self.bindings[lookup]["desc"]
+                elif char in self.bindings:             
+                    return char
+            
+        except IOError: pass
+
+        return Event.NONE
+ 
+    

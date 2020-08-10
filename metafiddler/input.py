@@ -6,13 +6,17 @@ from metafiddler.events.input import Event
 controllers = []
 
 try:
+    # This of course uses mscvrt which is not available on linux
     import metafiddler.controller.windows.keyboard
-    controllers.append(metafiddler.controller.windows.keybord.Keyboard())
+    controllers.append(metafiddler.controller.windows.keyboard.Keyboard())
 except:
     print("Can't add Windows USB Keyboard")
-
-    import metafiddler.controller.keyboard
-    controllers.append(metafiddler.controller.keyboard.Keyboard())
+    try:
+        # And over here this is only
+        import metafiddler.controller.unix.keyboard
+        controllers.append(metafiddler.controller.keyboard.unix.Keyboard())
+    except Exception as e:
+        print("Can't add Unix system keyboard")
 
 try:
     import metafiddler.controller.windows.usb_joystick

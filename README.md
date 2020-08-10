@@ -3,6 +3,14 @@
 A sequential player and catalogger for music.metafilter.com
 
 
+## Configuring
+
+There are two useful files that can be set up but neither are necessary
+
+~/.metafiddler.config -- a YAML file describing playlist mappings and directory overrides
+~/.metafiddler.current -- a file containing the last URL accessed
+
+
 
 ## Launching
 
@@ -11,19 +19,20 @@ Installing on linux required some prerequisites (https://www.pygame.org/wiki/Com
 
 ```sh
 
-
 sudo apt-get install git python-dev python-numpy python-opengl \
     libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsmpeg-dev \
     libsdl1.2-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev \
     libtiff5-dev libx11-6 libx11-dev fluid-soundfont-gm timgm6mb-soundfont \
     xfonts-base xfonts-100dpi xfonts-75dpi xfonts-cyrillic fontconfig fonts-freefont-ttf libfreetype6-dev
 
-
 ```
 
 ```sh
 pip install -r requirements.txt
+# Windows
 ./metafiddler.sh
+# Linux
+./run.py
 ```
 
 ## Process model

@@ -1,10 +1,17 @@
-import logging
+"""Keyboard controller with UNIX-y leanings
 
-import select
+This is the standard python solution for reading keyboads except
+ for (some)? form of windows which is of course lulzy
+
+"""
+import fcntl
+import os
+import termios
+import sys
+
 from metafiddler.events.input import Event
 from metafiddler.controller.keyboardinterface import KeyboardInterface
-from tabulate import tabulate
-import termios, fcntl, sys, os
+
 
 # Thanks, FAQ:
 # https://docs.python.org/2/faq/library.html#how-do-i-get-a-single-keypress-at-a-time
@@ -60,6 +67,7 @@ class Keyboard(KeyboardInterface):
         fcntl.fcntl(self.fd, fcntl.F_SETFL, self.oldflags)
 
     def poll(self):
+        """See if there is any input on this device"""
         try:
             c = sys.stdin.read(1)
             if c: 

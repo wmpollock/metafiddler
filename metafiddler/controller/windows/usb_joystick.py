@@ -1,7 +1,9 @@
+"""Windows USB Joysick consumer
 
-# Windows USB Joysick consumer
+There's a good chance that I probably should have used pygame for this(?)
+but the horse was bit out of the barn before I came around to pygame I think.
 
-
+"""
 
 # Adapted from:
 # https://gist.github.com/rdb/8883307
@@ -18,8 +20,6 @@
 
 
 
-from math import floor, ceil
-import time
 import ctypes
 import logging
 from tabulate import tabulate
@@ -53,17 +53,19 @@ JOY_RETURNRAWDATA = 0x100
 JOY_RETURNPOVCTS = 0x200
 JOY_RETURNCENTERED = 0x400
 JOY_USEDEADZONE = 0x800
-JOY_RETURNALL = JOY_RETURNX | JOY_RETURNY | JOY_RETURNZ | JOY_RETURNR | JOY_RETURNU | JOY_RETURNV | JOY_RETURNPOV | JOY_RETURNBUTTONS
+JOY_RETURNALL = (JOY_RETURNX | JOY_RETURNY | JOY_RETURNZ | JOY_RETURNR | 
+                JOY_RETURNU | JOY_RETURNV | JOY_RETURNPOV | JOY_RETURNBUTTONS)
 
 # Name mappings to make content marginally less arbitrary
 # xbox mappings
 # button_names = ['a', 'b', 'x', 'y', 'tl', 'tr', 'back', 'start', 'thumbl', 'thumbr']
 # This is the mapping for the NES/SNES USBs I have, different from the XBOX mapping this came ith by a fair mile.:
-button_names = ['x', 'a', 'b', 'y', 'left','right', 'NONE-A', 'NONE-B', 'select', 'start']
+button_names = ['x', 'a', 'b', 'y', 'left', 'right', 'NONE-A', 'NONE-B', 'select', 'start']
 
 
-# Define some structures from WinMM that we will use in function calls.
+
 class JOYCAPS(ctypes.Structure):
+    """Define some structures from WinMM that we will use in function calls."""
     _fields_ = [
         ('wMid', WORD),
         ('wPid', WORD),
@@ -118,7 +120,6 @@ class JOYINFOEX(ctypes.Structure):
 
 class Joystick:
     def __init__(self):
-        global p_info
         global info
         global caps
         global button_states
@@ -136,7 +137,7 @@ class Joystick:
         info = JOYINFO()
         p_info = ctypes.pointer(info)
         if joyGetPos(0, p_info) != 0:
-            logging.info("Joystick %d not plugged in." % (joy_id + 1))
+            logging.info("Joystick %d not plugged in.", (joy_id + 1))
             
         else:
             print("\n" +
@@ -148,12 +149,12 @@ class Joystick:
                     ["[left]", "prev"],
                     ["[up]", "volume up"],
                     ["[down]", "volume down"],
-                    ["[sel]","stop"],
-                    ["[start]","start"],
-                    ["left","seek back"],
-                    ["right","seek forward"],
-                    ["A","Playlist A"],
-                    ["B","Playlist B"],
+                    ["[sel]", "stop"],
+                    ["[start]", "start"],
+                    ["left", "seek back"],
+                    ["right", "seek forward"],
+                    ["A", "Playlist A"],
+                    ["B", "Playlist B"],
                     ["X", "Playlist X"],
                     ["Y", "Playlist Y"],
                 ], 
@@ -202,7 +203,8 @@ class Joystick:
             p_info = ctypes.pointer(info)
 
     # Fetch new joystick data until it returns non-0 (that is, it has been unplugged)
-    def poll(): 
+    def poll(self): 
+        """See if there is any input on this device"""
         global p_info
         global info
         global caps
@@ -241,42 +243,42 @@ class Joystick:
             # Value here is kind of not always == 1
             if x > .5:
                 # X/Y to the left
-                return(Event.NEXT)
+                return Event.NEXT
             elif x < -.5:
                 # X/Y to the right
-                return(Event.PREVIOUS)
+                return Event.PREVIOUS
             elif y  > .5:
                 # X/Y down
-                return(Event.VOLUME_DOWN)
+                return Event.VOLUME_DOWN
             elif y < -.5:
                 # X/Y up
-                return(Event.VOLUME_UP)
+                return Event.VOLUME_UP
             
             # Metabuttons
             # -----------------------------------------------------------------------------
             if (button_states.get("start")):
-                return(Event.PLAY)
+                return Event.PLAY
             if (button_states.get("select")):
-                return(Event.STOP)
+                return Event.STOP
         
             # PLAYER BUTTONS
             # -----------------------------------------------------------------------------
             if (button_states.get("a")):
-                return(Event.PLAYLIST_A)
+                return Event.PLAYLIST_A
 
             if (button_states.get("b")):
-                return(Event.PLAYLIST_B)
+                return Event.PLAYLIST_B
 
             if (button_states.get("x")):
-                return(Event.PLAYLIST_X)
+                return Event.PLAYLIST_X
 
             if (button_states.get("y")):
-                return(Event.PLAYLIST_Y)
+                return Event.PLAYLIST_Y
 
             if (button_states.get("left")):
-                return(Event.SEEK_BACK)
+                return Event.SEEK_BACK
 
             if (button_states.get("right")):
-                return(Event.SEEK_FORWARD)
+                return Event.SEEK_FORWARD
 
-        return(Event.NONE)
+        return Event.NONE

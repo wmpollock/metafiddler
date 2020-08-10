@@ -54,6 +54,6 @@ class Event:
     @classmethod
     def describe(cls, e):
         if e in addl_desc:
-            return(addl_desc[e])
+            return addl_desc[e]
         else:
-            return(e)
+            return e

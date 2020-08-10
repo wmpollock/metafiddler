@@ -14,7 +14,7 @@ class KeyboardInterface:
         'p': {
             "return":  Event.PLAY,
         }, 
-        ',': {
+        ', ': {
             "return":  Event.SEEK_BACK,
         }, 
         '.': {

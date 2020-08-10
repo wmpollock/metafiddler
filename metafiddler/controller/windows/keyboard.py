@@ -1,13 +1,21 @@
+"""Keyboard controller with specific windows-mappings.
+
+IDK, now having the "standard" solution maybe this is not 
+entirely necessary for my use cases (GitBash)
+
+"""
+
+
 import logging
 import sys
+import msvcrt
 from metafiddler.events.input import Event
 from metafiddler.controller.keyboardinterface import KeyboardInterface
 
 
-import msvcrt
 
 class Keyboard(KeyboardInterface):
-
+    """Windows-based keyboard events"""
     def __init__(self):
         if not sys.stdin.isatty():
             logging.critical("FATAL: this process is not a terminal.  Perhaps you need to prefix with winpty.")
@@ -71,6 +79,7 @@ class Keyboard(KeyboardInterface):
         self.print_bindings()
 
     def poll(self):
+        """See if there is any input on this device"""
         if not sys.stdin.isatty():
             logging.critical("FATAL: this process is not a terminal.  Perhaps you need to prefix with winpty.")
             exit()

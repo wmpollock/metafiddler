@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
-
+#!/usr/bin/env PYGAME_HIDE_SUPPORT_PROMPT=hide python3
+"""Play through Metafilter Music one song at a time"""
 #  __  __      _         __ _     _     _ _
 # |  \/  | ___| |_ __ _ / _(_) __| | __| | | ___ _ __
 # | |\/| |/ _ \ __/ _` | |_| |/ _` |/ _` | |/ _ \ '__|
@@ -16,34 +16,28 @@
 # Command line promises made and undelivered:
 # need to pass --config_file down into metafiddler.config
 
-import os
 # Needs to be before we invoke pygame because thanks, pygame, IHI.
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+# rm'd -- IDK that the shebang line counts in Windows land, I think maybe no :/
+#   but with this in place ZOMG how pylint complains.
+# import os
+# os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 import logging
+import multiprocessing
+import webbrowser
+import sys
 
+import pygame
+from tabulate import tabulate
+
+import metafiddler.mechanise
 from metafiddler.config import MufiConfig
 from metafiddler.input import Input
 from metafiddler.events.input import Event
 from metafiddler.page import MufiPage
 from metafiddler.speech import Speaker
-import multiprocessing
-import os.path
-import pygame
-import sys
-from tabulate import tabulate
-import webbrowser
-import metafiddler.mechanise
-
-done = 0
-current_page = {}
-config = {}
-speaker = {}
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
-# logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
-
-# exit();
 
 # Starts at 1K, w/o it the pickling of the object is a no, go: maybe
 # we got something else bad in here...
@@ -58,11 +52,8 @@ def provision_next_page(queue, page):
 
 
 def setup():
-    global config
-    global current_page
-    global done
-    global speaker
-    global user_input
+    """Pre-run configurations"""
+
     config = MufiConfig()
 
     speaker = Speaker(config)
@@ -70,7 +61,6 @@ def setup():
     speaker.say("Setting up current page.")
 
     current_page = MufiPage(config, config.current_page)
-    done = False
 
     user_input = Input()
 
@@ -89,18 +79,19 @@ def setup():
     logging.debug("Setting up speech utterances.")
 
     for e in Event.events:
-        logging.debug(f"Preparing for event {e}")
+        logging.debug("Preparing for event %s", e)
         speaker.prepare(Event.describe(e))
 
     logging.debug("Setting up current page")
     current_page.provision()
+    return config, current_page, user_input, speaker
 
 def main():
-    setup()
-    global done
-    global current_page
+    """Primary entrance point"""
+    config, current_page, user_input, speaker = setup()
+    done = False
 
-    while not(done):
+    while not done:
 
         # Download the next page while we're listening to this one so we're
         # good to go.
@@ -150,11 +141,11 @@ def main():
             # does not have a multiline lambda and IDK if busting them functions is
             # more sensible?
 
-            if e and not e ==Event.NONE:
-                logging.info("EVENT: " + e)
+            if e and e != Event.NONE:
+                logging.info("EVENT: %s", e)
                 speaker.say(Event.describe(e))
 
-            if e ==Event.STOP:
+            if e == Event.STOP:
                 current_page.song.stop()
                 # Not really on this but since we're going to come back here after we
                 # bail, should be A-OK.
@@ -162,7 +153,7 @@ def main():
                 done = True
 
             # Kind of useless w/o STOP =~ /pause??
-            elif e ==Event.PLAY:
+            elif e == Event.PLAY:
                 # Maybe this should do something if its not playing?
                 current_page.song.play()
 
@@ -188,7 +179,8 @@ def main():
                 if v > 0:
                     pygame.mixer.music.set_volume(v - .1)
 
-            elif e in [Event.PLAYLIST_A,
+            elif e in [
+                    Event.PLAYLIST_A,
                     Event.PLAYLIST_B,
                     Event.PLAYLIST_X,
                     Event.PLAYLIST_Y]:

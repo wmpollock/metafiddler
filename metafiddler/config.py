@@ -13,11 +13,12 @@ import yaml
 class MufiConfig:
     """Holds file and some state information"""
     config_file = str(pathlib.Path.home() / ".metafiddler.yaml")
+    state_file = str(pathlib.Path.home() / ".metafiddler.current")
 
     # Define some base configurations.
     vals = {}
 
-    def __init__(self, **kwargs):
+    def __init__(self):
 
         self.vals = {
             "metafiddler_root": os.path.join(str(Path.home()), "Music", "MetaFilter"),
@@ -25,11 +26,15 @@ class MufiConfig:
             # These will have the same filename as the songs they are for
             "subdir_title_reads": "Title-Reads",
             "subdir_ui_reads": "User-Interface",
+            "current_page": "https://music.metafilter.com/8"
         }
+        self._read_configfile()
+        self._read_statefile()
+
+
+    def _read_configfile(self):
+
         try:
-            # I mean, we'd need to hook it...
-            if 'config_file' in kwargs:
-                self.config_file = kwargs['config_file']
 
             with open(self.config_file) as yaml_file:
                 self.vals.update(yaml.load(yaml_file, Loader=yaml.FullLoader))
@@ -37,7 +42,7 @@ class MufiConfig:
         except FileNotFoundError:
             logging.warning("No config file %s", self.config_file)
             # Hah, well, I guess we can start at the beginning then.
-            self.current_page = "https://music.metafilter.com/8"
+
 
         # We're going to wash some values across so we're not using/
         # forcing a subdir configuration: one could configure all the paths
@@ -45,10 +50,12 @@ class MufiConfig:
         # work with them as a configurable.
         # s/subdir_foo/di_roo
         # Have to extract since filter will get fussy about changing dict mideway
-        subdirs = list(filter(lambda x: re.search('subdir_', x), self.vals.keys()))
         if not self.vals['metafiddler_root']:
             logging.critical("Metafiddler root not set")
             raise ValueError("Metafiddler root not set")
+
+        # Generate fuller subdirectory names for quicker use
+        subdirs = list(filter(lambda x: re.search('subdir_', x), self.vals.keys()))
         for subdir in subdirs:
             dir_opt_name = re.sub("^subdir", "dir", subdir)
             if not dir_opt_name in self.vals:
@@ -59,6 +66,18 @@ class MufiConfig:
                 logging.debug("Set %s to %s", dir_opt_name, self.vals[dir_opt_name])
                 if not os.path.exists(self.vals[dir_opt_name]):
                     os.makedirs(self.vals[dir_opt_name])
+
+
+    def _read_statefile(self):
+        """I feel badly about having this separate and liked it all in one file but this
+        content is the sharable, not-system-dependent part so ot needs to be separate"""
+        try:
+            with open(self.state_file, mode='r') as file:
+                self.vals['current_page'] = file.read()
+                logging.debug("Loaded state file %s", self.state_file)
+        except FileNotFoundError:
+            logging.debug("State file %s does not exist.", self.state_file)
+
 
     def get(self, value):
         # TODO -- feels janky
@@ -82,6 +101,13 @@ class MufiConfig:
     def current_page(self, url):
         """Set the value for the current page"""
         self.vals['current_page'] = url
+
+        # Storing state file!
+        with open(self.state_file, mode='w') as file:
+            file.write(url)
+
+        logging.debug("Wrote state file")
+
 
     @property
     def song_save_dir(self):
@@ -110,11 +136,3 @@ class MufiConfig:
         if playlist and 'list_title' in playlist:
             return playlist['list_id']
 
-    # TODO -- migrate to State
-    def save(self):
-        """Store state"""
-
-        with open(self.config_file, 'w') as yaml_file:
-            yaml.dump(self.vals, yaml_file)
-
-        logging.debug("Wrote state file")

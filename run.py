@@ -103,7 +103,6 @@ def main():
         # Yeahhhh, we're potentially writing what we just read but it keeps
         # current current, ya know?
         config.current_page = current_page.audio_source_url
-        config.save()
 
         # Start playing
         current_page.song.play_title()

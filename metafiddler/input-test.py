@@ -12,9 +12,6 @@ class TestConroller(unittest.TestCase):
         e = Event.NONE
         while e == Event.NONE:
             e = input.poll()
-        
+
         print("Got event", Event.describe(e))
         return True
-   
-    
-    

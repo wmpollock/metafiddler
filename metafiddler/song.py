@@ -8,7 +8,7 @@ import unicodedata
 import string
 
 import pygame.mixer
-import metafiddler.mechanise
+import metafiddler.mechanize
 
 from metafiddler.speech import Speaker
 
@@ -143,8 +143,8 @@ class MufiSong:
             exit(1)
 
     def playlist_add(self, playlist_id):
-        """Add this song to a playlist (deleates to .mechanise)"""
-        return metafiddler.mechanise.playlist_add(playlist_id, self.mufi_id)
+        """Add this song to a playlist (deleates to .mechanize)"""
+        return metafiddler.mechanize.playlist_add(playlist_id, self.mufi_id)
 
     def provision(self, **kwargs):
         """Pull down all content, in the metafiddler context we want to keep "get" separate,

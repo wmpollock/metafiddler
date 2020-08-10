@@ -30,7 +30,7 @@ import sys
 import pygame
 from tabulate import tabulate
 
-import metafiddler.mechanise
+import metafiddler.mechanize
 from metafiddler.config import MufiConfig
 from metafiddler.input import Input
 from metafiddler.events.input import Event
@@ -64,7 +64,7 @@ def setup():
 
     user_input = Input()
 
-    metafiddler.mechanise.init()
+    metafiddler.mechanize.init()
 
     print(tabulate(
         [

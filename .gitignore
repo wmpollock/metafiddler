@@ -6,3 +6,4 @@ config.json
 _dev/js_winmm.py
 *.pyc
 .vscode/settings.json
+.coverage

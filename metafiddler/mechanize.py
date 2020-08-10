@@ -13,7 +13,6 @@ jarfile = pathlib.Path.home() / ".metafiddler.cookiejar"
 
 def init():
     """Set up jarfile and other housekeeping"""
-    global jarfile
     global cj
 
     cj = mechanize.LWPCookieJar()
@@ -21,7 +20,7 @@ def init():
 
     # I guess we'll assume good until we get evidence otherwise...
     if jarfile.exists():
-        logging.debug("Loading jarfile: %S", str(jarfile))
+        logging.debug("Loading jarfile: %s", str(jarfile))
         cj.load(jarfile)
         br.set_cookiejar(cj)
     else:
@@ -33,9 +32,6 @@ logged_in = 0
 
 def login():
     """Log into MeFi"""
-    global jarfile
-    global br
-    global cj
     global logged_in
 
     if not logged_in:
@@ -50,7 +46,7 @@ def login():
         br["user_pass"] = password
 
         response = br.submit()
-        print("Response code: ", response.code)
+        logging.debug("Response code: %s", response.code)
         # So at this point we should have a number of clues:
         # the response.read() text should has a li.profile .extra-label
         # that contains the user_name
@@ -62,7 +58,6 @@ def login():
 
 def playlist_add(playlist_id, mufi_id):
     """Add an entry to the specified playlist"""
-    global cj
     login()
     try:
         response = br.open(

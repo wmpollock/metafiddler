@@ -1,6 +1,6 @@
 """Keyboard controller with specific windows-mappings.
 
-IDK, now having the "standard" solution maybe this is not 
+IDK, now having the "standard" solution maybe this is not
 entirely necessary for my use cases (GitBash)
 
 """
@@ -8,7 +8,8 @@ entirely necessary for my use cases (GitBash)
 
 import logging
 import sys
-import msvcrt
+# https://stackoverflow.com/questions/9602811/how-to-tell-pylint-to-ignore-certain-imports
+import msvcrt # pylint: disable=import-error
 from metafiddler.events.input import Event
 from metafiddler.controller.keyboardinterface import KeyboardInterface
 

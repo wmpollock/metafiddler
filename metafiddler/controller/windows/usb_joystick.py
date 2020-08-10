@@ -263,7 +263,7 @@ class Joystick:
 
             # Figure out which buttons are pressed.
             for b in range(caps.wNumButtons):
-                pressed = 0 != (1 << b) & info.dwButtons
+                pressed =  (1 << b) & info.dwButtons != 0
                 name = button_names[b]
 
                 if pressed and not button_states[name] == pressed:

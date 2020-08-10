@@ -19,7 +19,6 @@ but the horse was bit out of the barn before I came around to pygame I think.
 # or not was key to this whole thing working
 
 
-
 import ctypes
 import logging
 from tabulate import tabulate
@@ -53,70 +52,92 @@ JOY_RETURNRAWDATA = 0x100
 JOY_RETURNPOVCTS = 0x200
 JOY_RETURNCENTERED = 0x400
 JOY_USEDEADZONE = 0x800
-JOY_RETURNALL = (JOY_RETURNX | JOY_RETURNY | JOY_RETURNZ | JOY_RETURNR | 
-                JOY_RETURNU | JOY_RETURNV | JOY_RETURNPOV | JOY_RETURNBUTTONS)
+JOY_RETURNALL = (
+    JOY_RETURNX
+    | JOY_RETURNY
+    | JOY_RETURNZ
+    | JOY_RETURNR
+    | JOY_RETURNU
+    | JOY_RETURNV
+    | JOY_RETURNPOV
+    | JOY_RETURNBUTTONS
+)
 
 # Name mappings to make content marginally less arbitrary
 # xbox mappings
 # button_names = ['a', 'b', 'x', 'y', 'tl', 'tr', 'back', 'start', 'thumbl', 'thumbr']
 # This is the mapping for the NES/SNES USBs I have, different from the XBOX mapping this came ith by a fair mile.:
-button_names = ['x', 'a', 'b', 'y', 'left', 'right', 'NONE-A', 'NONE-B', 'select', 'start']
-
+button_names = [
+    "x",
+    "a",
+    "b",
+    "y",
+    "left",
+    "right",
+    "NONE-A",
+    "NONE-B",
+    "select",
+    "start",
+]
 
 
 class JOYCAPS(ctypes.Structure):
     """Define some structures from WinMM that we will use in function calls."""
+
     _fields_ = [
-        ('wMid', WORD),
-        ('wPid', WORD),
-        ('szPname', TCHAR * MAXPNAMELEN),
-        ('wXmin', UINT),
-        ('wXmax', UINT),
-        ('wYmin', UINT),
-        ('wYmax', UINT),
-        ('wZmin', UINT),
-        ('wZmax', UINT),
-        ('wNumButtons', UINT),
-        ('wPeriodMin', UINT),
-        ('wPeriodMax', UINT),
-        ('wRmin', UINT),
-        ('wRmax', UINT),
-        ('wUmin', UINT),
-        ('wUmax', UINT),
-        ('wVmin', UINT),
-        ('wVmax', UINT),
-        ('wCaps', UINT),
-        ('wMaxAxes', UINT),
-        ('wNumAxes', UINT),
-        ('wMaxButtons', UINT),
-        ('szRegKey', TCHAR * MAXPNAMELEN),
-        ('szOEMVxD', TCHAR * MAX_JOYSTICKOEMVXDNAME),
+        ("wMid", WORD),
+        ("wPid", WORD),
+        ("szPname", TCHAR * MAXPNAMELEN),
+        ("wXmin", UINT),
+        ("wXmax", UINT),
+        ("wYmin", UINT),
+        ("wYmax", UINT),
+        ("wZmin", UINT),
+        ("wZmax", UINT),
+        ("wNumButtons", UINT),
+        ("wPeriodMin", UINT),
+        ("wPeriodMax", UINT),
+        ("wRmin", UINT),
+        ("wRmax", UINT),
+        ("wUmin", UINT),
+        ("wUmax", UINT),
+        ("wVmin", UINT),
+        ("wVmax", UINT),
+        ("wCaps", UINT),
+        ("wMaxAxes", UINT),
+        ("wNumAxes", UINT),
+        ("wMaxButtons", UINT),
+        ("szRegKey", TCHAR * MAXPNAMELEN),
+        ("szOEMVxD", TCHAR * MAX_JOYSTICKOEMVXDNAME),
     ]
+
 
 class JOYINFO(ctypes.Structure):
     _fields_ = [
-        ('wXpos', UINT),
-        ('wYpos', UINT),
-        ('wZpos', UINT),
-        ('wButtons', UINT),
+        ("wXpos", UINT),
+        ("wYpos", UINT),
+        ("wZpos", UINT),
+        ("wButtons", UINT),
     ]
+
 
 class JOYINFOEX(ctypes.Structure):
     _fields_ = [
-        ('dwSize', DWORD),
-        ('dwFlags', DWORD),
-        ('dwXpos', DWORD),
-        ('dwYpos', DWORD),
-        ('dwZpos', DWORD),
-        ('dwRpos', DWORD),
-        ('dwUpos', DWORD),
-        ('dwVpos', DWORD),
-        ('dwButtons', DWORD),
-        ('dwButtonNumber', DWORD),
-        ('dwPOV', DWORD),
-        ('dwReserved1', DWORD),
-        ('dwReserved2', DWORD),
+        ("dwSize", DWORD),
+        ("dwFlags", DWORD),
+        ("dwXpos", DWORD),
+        ("dwYpos", DWORD),
+        ("dwZpos", DWORD),
+        ("dwRpos", DWORD),
+        ("dwUpos", DWORD),
+        ("dwVpos", DWORD),
+        ("dwButtons", DWORD),
+        ("dwButtonNumber", DWORD),
+        ("dwPOV", DWORD),
+        ("dwReserved1", DWORD),
+        ("dwReserved2", DWORD),
     ]
+
 
 class Joystick:
     def __init__(self):
@@ -138,30 +159,33 @@ class Joystick:
         p_info = ctypes.pointer(info)
         if joyGetPos(0, p_info) != 0:
             logging.info("Joystick %d not plugged in.", (joy_id + 1))
-            
+
         else:
-            print("\n" +
-                tabulate([["Joystick mapping"]], tablefmt="github") + 
-                "\n"+
-                tabulate(
-                [       
-                    ["[right]", "next"],
-                    ["[left]", "prev"],
-                    ["[up]", "volume up"],
-                    ["[down]", "volume down"],
-                    ["[sel]", "stop"],
-                    ["[start]", "start"],
-                    ["left", "seek back"],
-                    ["right", "seek forward"],
-                    ["A", "Playlist A"],
-                    ["B", "Playlist B"],
-                    ["X", "Playlist X"],
-                    ["Y", "Playlist Y"],
-                ], 
-                tablefmt="grid"))
+            print(
+                "\n"
+                + tabulate([["Joystick mapping"]], tablefmt="github")
+                + "\n"
+                + tabulate(
+                    [
+                        ["[right]", "next"],
+                        ["[left]", "prev"],
+                        ["[up]", "volume up"],
+                        ["[down]", "volume down"],
+                        ["[sel]", "stop"],
+                        ["[start]", "start"],
+                        ["left", "seek back"],
+                        ["right", "seek forward"],
+                        ["A", "Playlist A"],
+                        ["B", "Playlist B"],
+                        ["X", "Playlist X"],
+                        ["Y", "Playlist Y"],
+                    ],
+                    tablefmt="grid",
+                )
+            )
 
             joystick_provisioned = True
-            
+
             # Get device capabilities.
             caps = JOYCAPS()
             if joyGetDevCaps(joy_id, ctypes.pointer(caps), ctypes.sizeof(JOYCAPS)) != 0:
@@ -169,22 +193,30 @@ class Joystick:
                 exit()
 
             # logging.debug("Driver name: " + caps.szPname)
-            
+
             # Fetch the name from registry.
             key = None
             if len(caps.szRegKey) > 0:
                 try:
-                    key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "System\\CurrentControlSet\\Control\\MediaResources\\Joystick\\%s\\CurrentJoystickSettings" % (caps.szRegKey))
+                    key = winreg.OpenKey(
+                        winreg.HKEY_CURRENT_USER,
+                        "System\\CurrentControlSet\\Control\\MediaResources\\Joystick\\%s\\CurrentJoystickSettings"
+                        % (caps.szRegKey),
+                    )
                 except WindowsError:
                     key = None
 
             if key:
                 oem_name = winreg.QueryValueEx(key, "Joystick%dOEMName" % (joy_id + 1))
                 if oem_name:
-                    key2 = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "System\\CurrentControlSet\\Control\\MediaProperties\\PrivateProperties\\Joystick\\OEM\\%s" % (oem_name[0]))
+                    key2 = winreg.OpenKey(
+                        winreg.HKEY_CURRENT_USER,
+                        "System\\CurrentControlSet\\Control\\MediaProperties\\PrivateProperties\\Joystick\\OEM\\%s"
+                        % (oem_name[0]),
+                    )
                     if key2:
                         oem_name = winreg.QueryValueEx(key2, "OEMName")
-                        logging.debug( "OEM name: " + oem_name[0])
+                        logging.debug("OEM name: " + oem_name[0])
                     key2.Close()
 
             # Set the initial button states.
@@ -199,11 +231,20 @@ class Joystick:
             # Initialise the JOYINFOEX structure.
             info = JOYINFOEX()
             info.dwSize = ctypes.sizeof(JOYINFOEX)
-            info.dwFlags = JOY_RETURNBUTTONS | JOY_RETURNCENTERED | JOY_RETURNPOV | JOY_RETURNU | JOY_RETURNV | JOY_RETURNX | JOY_RETURNY | JOY_RETURNZ
+            info.dwFlags = (
+                JOY_RETURNBUTTONS
+                | JOY_RETURNCENTERED
+                | JOY_RETURNPOV
+                | JOY_RETURNU
+                | JOY_RETURNV
+                | JOY_RETURNX
+                | JOY_RETURNY
+                | JOY_RETURNZ
+            )
             p_info = ctypes.pointer(info)
 
     # Fetch new joystick data until it returns non-0 (that is, it has been unplugged)
-    def poll(self): 
+    def poll(self):
         """See if there is any input on this device"""
         global p_info
         global info
@@ -211,11 +252,10 @@ class Joystick:
         global button_states
         global joystick_provisioned
 
-        
         # No joystick provisioned, lets bounce.
         if not joystick_provisioned:
             return
-        
+
         if joyGetPosEx(0, p_info) == 0:
             # Remap the values to float
             x = (info.dwXpos - 32767) / 32768.0
@@ -223,62 +263,61 @@ class Joystick:
 
             # Figure out which buttons are pressed.
             for b in range(caps.wNumButtons):
-                pressed = (0 != (1 << b) & info.dwButtons)
+                pressed = 0 != (1 << b) & info.dwButtons
                 name = button_names[b]
 
-                if pressed and not button_states[name] == pressed: 
+                if pressed and not button_states[name] == pressed:
                     logging.debug("button '" + name + "'pressed'")
 
                 button_states[name] = pressed
 
-            
             # Format a list of currently pressed buttons.
             buttons_text = ""
             for btn in button_names:
                 if button_states.get(btn):
-                    buttons_text += btn + ' '
+                    buttons_text += btn + " "
 
             # X/Y JOYSTICK EVENTS
             # -----------------------------------------------------------------------------
             # Value here is kind of not always == 1
-            if x > .5:
+            if x > 0.5:
                 # X/Y to the left
                 return Event.NEXT
-            elif x < -.5:
+            elif x < -0.5:
                 # X/Y to the right
                 return Event.PREVIOUS
-            elif y  > .5:
+            elif y > 0.5:
                 # X/Y down
                 return Event.VOLUME_DOWN
-            elif y < -.5:
+            elif y < -0.5:
                 # X/Y up
                 return Event.VOLUME_UP
-            
+
             # Metabuttons
             # -----------------------------------------------------------------------------
-            if (button_states.get("start")):
+            if button_states.get("start"):
                 return Event.PLAY
-            if (button_states.get("select")):
+            if button_states.get("select"):
                 return Event.STOP
-        
+
             # PLAYER BUTTONS
             # -----------------------------------------------------------------------------
-            if (button_states.get("a")):
+            if button_states.get("a"):
                 return Event.PLAYLIST_A
 
-            if (button_states.get("b")):
+            if button_states.get("b"):
                 return Event.PLAYLIST_B
 
-            if (button_states.get("x")):
+            if button_states.get("x"):
                 return Event.PLAYLIST_X
 
-            if (button_states.get("y")):
+            if button_states.get("y"):
                 return Event.PLAYLIST_Y
 
-            if (button_states.get("left")):
+            if button_states.get("left"):
                 return Event.SEEK_BACK
 
-            if (button_states.get("right")):
+            if button_states.get("right"):
                 return Event.SEEK_FORWARD
 
         return Event.NONE

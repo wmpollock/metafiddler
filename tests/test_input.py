@@ -7,6 +7,7 @@ from metafiddler.events.input import Event
 
 class TestConroller(unittest.TestCase):
     """Test controller functions"""
+
     def test_controls(self):
         """Test general control surface"""
         user_input = Input()

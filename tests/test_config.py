@@ -6,6 +6,7 @@ from metafiddler.config import MufiConfig
 
 class TestConfig(unittest.TestCase):
     """Test configuration methods"""
+
     def test_config(self):
         """Test configuration load/setup"""
         config = MufiConfig()

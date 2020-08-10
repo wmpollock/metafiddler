@@ -16,9 +16,6 @@ from metafiddler.controller.keyboardinterface import KeyboardInterface
 # Thanks, FAQ:
 # https://docs.python.org/2/faq/library.html#how-do-i-get-a-single-keypress-at-a-time
 class Keyboard(KeyboardInterface):
-
-
-
     def __init__(self):
         fd = self.fd = sys.stdin.fileno()
 
@@ -30,37 +27,47 @@ class Keyboard(KeyboardInterface):
         self.oldflags = fcntl.fcntl(fd, fcntl.F_GETFL)
         fcntl.fcntl(fd, fcntl.F_SETFL, self.oldflags | os.O_NONBLOCK)
 
-        self.bindings.update( {
-            '\x1b' + '[' + 'C': {
-                "return":  Event.NEXT,
-                # "desc": "arrrow-forward"
-                "desc": "→"
-            },
-            '\x1b' + '[' + 'C': {
-                "return":  Event.NEXT,
-                # "desc": "arrrow-forward"
-                "desc": "→"
-            },
-            '\x1b' + '[' + 'D': {
-                "return":  Event.PREVIOUS,
-                # "desc": "arrow-back"
-                "desc": '←'
-            },
-            '\x1b' + '[' + 'A': {
-                "return":  Event.VOLUME_UP,
-                # "desc": "arrow-up"
-                "desc": "↑"
-            },
-            '\x1b' + '[' + 'B': {
-                "return":  Event.VOLUME_DOWN,
-                # "desc": "arrow-down"
-                "desc": "↓"
-
-            },
-        })
+        self.bindings.update(
+            {
+                "\x1b"
+                + "["
+                + "C": {
+                    "return": Event.NEXT,
+                    # "desc": "arrrow-forward"
+                    "desc": "→",
+                },
+                "\x1b"
+                + "["
+                + "C": {
+                    "return": Event.NEXT,
+                    # "desc": "arrrow-forward"
+                    "desc": "→",
+                },
+                "\x1b"
+                + "["
+                + "D": {
+                    "return": Event.PREVIOUS,
+                    # "desc": "arrow-back"
+                    "desc": "←",
+                },
+                "\x1b"
+                + "["
+                + "A": {
+                    "return": Event.VOLUME_UP,
+                    # "desc": "arrow-up"
+                    "desc": "↑",
+                },
+                "\x1b"
+                + "["
+                + "B": {
+                    "return": Event.VOLUME_DOWN,
+                    # "desc": "arrow-down"
+                    "desc": "↓",
+                },
+            }
+        )
 
         self.print_bindings()
-
 
     def __del__(self):
         termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.oldterm)
@@ -70,20 +77,19 @@ class Keyboard(KeyboardInterface):
         """See if there is any input on this device"""
         try:
             c = sys.stdin.read(1)
-            if c: 
+            if c:
                 char = repr(c)
                 # CONTROLLL SEQUEEENCE
-                if c == '\x1b':
+                if c == "\x1b":
                     esc = sys.stdin.read(1)
                     arrow = sys.stdin.read(1)
                     lookup = c + esc + arrow
                     if lookup in self.bindings:
                         return self.bindings[lookup]["desc"]
-                elif char in self.bindings:             
+                elif char in self.bindings:
                     return char
-            
-        except IOError: pass
+
+        except IOError:
+            pass
 
         return Event.NONE
- 
-    

@@ -8,26 +8,29 @@ controllers = []
 try:
     # This of course uses mscvrt which is not available on linux
     import metafiddler.controller.windows.keyboard
+
     controllers.append(metafiddler.controller.windows.keyboard.Keyboard())
 except:
     print("Can't add Windows USB Keyboard")
     try:
         # And over here this is only
         import metafiddler.controller.unix.keyboard
+
         controllers.append(metafiddler.controller.keyboard.unix.Keyboard())
     except Exception as e:
         print("Can't add Unix system keyboard")
 
 try:
     import metafiddler.controller.windows.usb_joystick
+
     controllers.append(metafiddler.controller.windows.usb_joystick.Joystick())
 except Exception as e:
     print("Can't add Windows USB Joystick")
 
 
-
 class Input:
     """Class to streamline all input events from the user"""
+
     last_events = [Event.NONE, Event.NONE]
 
     def __init__(self):

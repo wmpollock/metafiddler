@@ -7,12 +7,16 @@ import os
 import pygame.mixer
 import gtts
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(
+    level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 class Speaker:
     """Class for generating, storing and recovering TTS utterances"""
+
     config = {}
+
     def __init__(self, conf):
         self.config = conf
 
@@ -24,7 +28,7 @@ class Speaker:
             tts.save(file)
 
     def prepare(self, utterance):
-        '''Pre-render the utterance so it is ready the moment we need it'''
+        """Pre-render the utterance so it is ready the moment we need it"""
         pathname = self.__pathname(utterance)
 
         if not os.path.exists(pathname):
@@ -45,14 +49,10 @@ class Speaker:
         while pygame.mixer.music.get_busy():
             pygame.time.Clock().tick(10)
 
-
     def __pathname(self, utterance):
         m = hashlib.md5(utterance.encode("utf-8"))
 
         if not self.config.get("dir_ui_reads"):
             logging.critical("FAILED to get dir_ui_reads for UI utterance")
 
-        return(
-            os.path.join(
-                self.config.get("dir_ui_reads"),
-                m.hexdigest() + ".mp3"))
+        return os.path.join(self.config.get("dir_ui_reads"), m.hexdigest() + ".mp3")

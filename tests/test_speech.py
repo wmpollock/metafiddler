@@ -3,7 +3,7 @@ from metafiddler.config import MufiConfig
 
 if __name__ == "__main__":
     config = MufiConfig()
-    pygame.mixer.init()    
+    pygame.mixer.init()
 
     s = Speaker(config)
     s.say("Audio test complete.")

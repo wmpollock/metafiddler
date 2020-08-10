@@ -37,7 +37,9 @@ from metafiddler.events.input import Event
 from metafiddler.page import MufiPage
 from metafiddler.speech import Speaker
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
+logging.basicConfig(
+    level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 # Starts at 1K, w/o it the pickling of the object is a no, go: maybe
 # we got something else bad in here...
@@ -46,7 +48,7 @@ sys.setrecursionlimit(10000)
 
 def provision_next_page(queue, page):
     """ Callback from fork to provision the next page """
-    #queue.put(page.provision())
+    # queue.put(page.provision())
     r = page.provision()
     queue.put(r, False, 2)
 
@@ -66,15 +68,17 @@ def setup():
 
     metafiddler.mechanize.init()
 
-    print(tabulate(
-        [
-            ["Playlist A: ", config.playlist_title('playlist_a')],
-            ["Playlist B: ", config.playlist_title('playlist_b')],
-            ["Playlist X: ", config.playlist_title('playlist_x')],
-            ["Playlist Y: ", config.playlist_title('playlist_y')]
-        ],
-        tablefmt="grid"
-    ))
+    print(
+        tabulate(
+            [
+                ["Playlist A: ", config.playlist_title("playlist_a")],
+                ["Playlist B: ", config.playlist_title("playlist_b")],
+                ["Playlist X: ", config.playlist_title("playlist_x")],
+                ["Playlist Y: ", config.playlist_title("playlist_y")],
+            ],
+            tablefmt="grid",
+        )
+    )
 
     logging.debug("Setting up speech utterances.")
 
@@ -85,6 +89,7 @@ def setup():
     logging.debug("Setting up current page")
     current_page.provision()
     return config, current_page, user_input, speaker
+
 
 def main():
     """Primary entrance point"""
@@ -98,7 +103,9 @@ def main():
         # --------------------------------------------------------------------
         next_page = current_page.links["newer"]
         queue = multiprocessing.Queue()
-        process = multiprocessing.Process(target=provision_next_page, args=(queue, next_page))
+        process = multiprocessing.Process(
+            target=provision_next_page, args=(queue, next_page)
+        )
         process.start()
         # Yeahhhh, we're potentially writing what we just read but it keeps
         # current current, ya know?
@@ -135,7 +142,6 @@ def main():
                 # song_actioned = False
                 # done = True
 
-
             # ** I really wanted to put all these into a magnificent map but python
             # does not have a multiline lambda and IDK if busting them functions is
             # more sensible?
@@ -171,18 +177,19 @@ def main():
             elif e == Event.VOLUME_UP:
                 v = pygame.mixer.music.get_volume()
                 if v < 1:
-                    pygame.mixer.music.set_volume(v + .1)
+                    pygame.mixer.music.set_volume(v + 0.1)
 
             elif e == Event.VOLUME_DOWN:
                 v = pygame.mixer.music.get_volume()
                 if v > 0:
-                    pygame.mixer.music.set_volume(v - .1)
+                    pygame.mixer.music.set_volume(v - 0.1)
 
             elif e in [
-                    Event.PLAYLIST_A,
-                    Event.PLAYLIST_B,
-                    Event.PLAYLIST_X,
-                    Event.PLAYLIST_Y]:
+                Event.PLAYLIST_A,
+                Event.PLAYLIST_B,
+                Event.PLAYLIST_X,
+                Event.PLAYLIST_Y,
+            ]:
 
                 pygame.mixer.music.fadeout(100)
                 if config.playlist_id(e):
@@ -192,7 +199,11 @@ def main():
                     # TODO: This should boom go into the appropriate playlist
                     # subdirectory...?
                 else:
-                    print("No playlist configured for that button in this config (" + e + ")")
+                    print(
+                        "No playlist configured for that button in this config ("
+                        + e
+                        + ")"
+                    )
                 song_actioned = True
 
             elif e == Event.SEEK_BACK:
@@ -205,8 +216,8 @@ def main():
                     #   For absolute positioning in an MP3 file, first call rewind()
                     # But this is kind of nonsense because if when you fire this it
                     # ends up going to some not-this number and then bailing :/
-                    #pygame.mixer.music.set_pos(p-100)
-                    #print("Now at ", pygame.mixer.music.get_pos())
+                    # pygame.mixer.music.set_pos(p-100)
+                    # print("Now at ", pygame.mixer.music.get_pos())
 
             elif e == Event.SEEK_FORWARD:
                 if current_page.song.playing():
@@ -224,5 +235,6 @@ def main():
         else:
             current_page = next_page
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

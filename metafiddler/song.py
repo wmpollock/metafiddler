@@ -13,7 +13,6 @@ import metafiddler.mechanize
 from metafiddler.speech import Speaker
 
 
-
 VALID_FILENAME_CHARS = "-_.() %s%s" % (string.ascii_letters, string.digits)
 CHAR_LIMIT = 255
 
@@ -24,20 +23,21 @@ pygame.mixer.init()
 
 class MufiSong:
     """Audio-file-centric view of a MuFi song allong with metadata."""
+
     config = {}
     # MP3-taglike data
-    title = ''
-    artist = ''
-    audio_file_url = ''
-    audio_source_url = ''
-    local_path = ''
+    title = ""
+    artist = ""
+    audio_file_url = ""
+    audio_source_url = ""
+    local_path = ""
     mufi_id = 0
     # TTS object for the speaker, s/b consistent but maybe not the same
     # as UI
     speaker = {}
 
     # Location of mp3 for title read
-    title_read_path = ''
+    title_read_path = ""
     # Flag whether we've gotten data -- I'm sure I had a purpose...
     provisioned = 0
 
@@ -46,8 +46,7 @@ class MufiSong:
         self.speaker = Speaker(self.config)
 
     def __str__(self):
-        return str({"title", self.title,
-                    "artist", self.artist})
+        return str({"title", self.title, "artist", self.artist})
 
     def get(self, **kwargs):
         """Retrieve the audio file if it doesn't exist locally already"""
@@ -56,8 +55,8 @@ class MufiSong:
             # we've got a specific home for them (playlist folders: currently
             # just vestigal from metafodder)
             if "dir" not in kwargs:
-                if self.config.get('dir_song_save'):
-                    kwargs["dir"] = self.config.get('dir_song_save')
+                if self.config.get("dir_song_save"):
+                    kwargs["dir"] = self.config.get("dir_song_save")
                 else:
                     logging.critical("FATAL: unable no 'dir_song_save' config")
                     exit(1)
@@ -71,11 +70,9 @@ class MufiSong:
             logging.debug("%s already exists", self.local_path)
         else:
             logging.debug("Downloading %s ", self.local_path)
-            if 'callback' in kwargs:
+            if "callback" in kwargs:
                 urllib.request.urlretrieve(
-                    self.audio_file_url,
-                    self.local_path,
-                    kwargs.get('callback')
+                    self.audio_file_url, self.local_path, kwargs.get("callback")
                 )
             else:
                 urllib.request.urlretrieve(self.audio_file_url, self.local_path)
@@ -87,9 +84,11 @@ class MufiSong:
         # Like, its tempting to make a tempfile for this buuuuut I want to be able to re-run a
         # given page to a given stage so when I pick it up I don't need to reprovision...
         # IDK, maybe more pickling is what this all calls for....
-        #tts_file = tempfile.mktemp(suffix="mp3")
+        # tts_file = tempfile.mktemp(suffix="mp3")
         if self.title_read_path == "":
-            self.title_read_path = self.__get_outpath(dir=self.config.get('dir_title_reads'))
+            self.title_read_path = self.__get_outpath(
+                dir=self.config.get("dir_title_reads")
+            )
 
         if os.path.exists(self.title_read_path):
             logging.debug("Title read %s already exists.", self.title_read_path)
@@ -133,7 +132,6 @@ class MufiSong:
         while pygame.mixer.music.get_busy():
             pygame.time.Clock().tick(10)
 
-
     def playing(self):
         """Determine whether a song is currently playing"""
         try:
@@ -159,14 +157,20 @@ class MufiSong:
         #     filename = filename.replace(r, '_')
 
         # keep only valid ascii chars
-        cleaned_filename = unicodedata.normalize('NFKD', filename)\
-                                      .encode('ASCII', 'ignore').decode()
+        cleaned_filename = (
+            unicodedata.normalize("NFKD", filename).encode("ASCII", "ignore").decode()
+        )
 
         # keep only whitelisted chars
-        cleaned_filename = ''.join(c for c in cleaned_filename if c in VALID_FILENAME_CHARS)
+        cleaned_filename = "".join(
+            c for c in cleaned_filename if c in VALID_FILENAME_CHARS
+        )
         if len(cleaned_filename) > CHAR_LIMIT:
-            logging.warning("Warning, filename truncated because it was over %s. "\
-                "Filenames may no longer be unique", CHAR_LIMIT)
+            logging.warning(
+                "Warning, filename truncated because it was over %s. "
+                "Filenames may no longer be unique",
+                CHAR_LIMIT,
+            )
         return cleaned_filename[:CHAR_LIMIT]
 
     def __get_outpath(self, **kwargs):
@@ -179,12 +183,12 @@ class MufiSong:
         # I'm going to the content in a per-playlist folder because I keep
         # my xmas music segregated and kind of don't want to load it on the
         # accidental.  Tempting to lump 'em all together in oen subdir tho
-        if 'dir' not in kwargs:
+        if "dir" not in kwargs:
 
             logging.fatal("Yikes, outpath invoked without 'dir'")
             exit(1)
 
-        outdir = kwargs['dir']
+        outdir = kwargs["dir"]
 
         # I was like, nah, but then, yeah, with this config nonsense
         if not outdir:

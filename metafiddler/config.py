@@ -128,5 +128,5 @@ class MufiConfig:
         """Return the playlist's ID"""
         playlist = self.playlist_config(playlist)
 
-        if playlist and "list_title" in playlist:
+        if playlist and "list_id" in playlist:
             return playlist["list_id"]

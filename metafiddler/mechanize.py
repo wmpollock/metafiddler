@@ -7,24 +7,24 @@ import pathlib
 import mechanize
 
 
-
 jarfile = pathlib.Path.home() / ".metafiddler.cookiejar"
 
 class Browser:
+    """ Handle macro interactions w/MeFi """
     logged_in = False
-
-    def __init__(self, config ):
+    browser = {}
+    def __init__(self, config):
         """Set up jarfile and other housekeeping"""
-         self.cj = mechanize.LWPCookieJar()
-        br = self.br = mechanize.Browser()
-        br.set_cookiejar(self.cj)
+        self.cookiejar = mechanize.LWPCookieJar()
+        browser = self.browser = mechanize.Browser()
+        browser.set_cookiejar(self.cookiejar)
         self.config = config
 
         # I guess we'll assume good until we get evidence otherwise...
         if jarfile.exists():
             logging.debug("Loading jarfile: %s", str(jarfile))
-            cj.load(jarfile)
-            br.set_cookiejar(self.cj)
+            self.cookiejar.load(jarfile)
+            browser.set_cookiejar(self.cookiejar)
         else:
             self.login()
 
@@ -34,49 +34,52 @@ class Browser:
             logging.warning("Cannot perform login as there are no credentials defined in the environment.")
             return False
 
-        if self.logged_in == False:
-            br = self.br
-            br.open("https://login.metafilter.com")
+        if not self.logged_in:
+            browser = self.browser
+            browser.open("https://login.metafilter.com")
 
-            br.select_form(action="logging-in.mefi")
+            browser.select_form(action="logging-in.mefi")
 
-            br["user_name"] = self.config.mefi_login
-            br["user_pass"] = self.config.mefi_password
+            browser["user_name"] = self.config.mefi_login # pylint: disable=unsupported-assignment-operation
+            browser["user_pass"] = self.config.mefi_password # pylint: disable=unsupported-assignment-operation
 
-            response = br.submit()
+            response = browser.submit()
             logging.debug("Response code: %s", response.code)
-            # So at this point we should have a number of clues:
-            # the response.read() text should has a li.profile .extra-label
-            # that contains the user_name
-            # the cookie jar will contain USER_NAME
+            if response.code == 200:
+                # So at this point we should have a number of clues:
+                # the response.read() text should has a li.profile .extra-label
+                # that contains the user_name
+                # the cookie jar will contain USER_NAME
 
-            self.cj.save(jarfile)
-            self.logged_in = True
+                self.cookiejar.save(jarfile)
+                self.logged_in = True
+            else:
+                logging.warning("The reponse code from logging in was unexpectedly %d", response.code)
 
 
     def playlist_add(self, playlist_id, mufi_id):
         """Add an entry to the specified playlist"""
-        login()
+        self.login()
         try:
-            response = self.br.open(
+            response = self.browser.open(
                 "https://music.metafilter.com/contribute/add_to_playlist.mefi?id="
                 + str(mufi_id)
-            )
+            ) # pylint: disable=assignment-from-none
             print("Response code: ", response.code)
 
-            # if br.form == None:
+            # if browser.form == None:
             #     #logging.critical("Did not receive page with form.")
             #     print("Did not receive page with form.")
             #     exit()
-
-            br.select_form(action="track-add.mefi")
-            br["playlist_id"] = (str(playlist_id),)
-            response = br.submit()
+            browser = {}
+            browser = self.browser
+            browser.select_form(action="track-add.mefi")
+            browser["playlist_id"] = (str(playlist_id),) # pylint: disable=unsupported-assignment-operation
+            response = browser.submit()
             print("Response code: ", response.code)
             return True
-        except:
-            logging.fatal("Could not submit to playlist.  We have no reason left to live.")
+        except Exception as e:
+            logging.fatal("Could not submit to playlist.  We have no reason left to live: %s", e)
             return False
 
-        # print(response.read())
-        cj.save(jarfile)
+        self.cookiejar.save(jarfile)

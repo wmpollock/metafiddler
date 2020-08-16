@@ -52,7 +52,7 @@ class Speaker:
     def __pathname(self, utterance):
         m = hashlib.md5(utterance.encode("utf-8"))
 
-        if not self.config.get("dir_ui_reads"):
+        if not self.config.ui_reads_dir:
             logging.critical("FAILED to get dir_ui_reads for UI utterance")
 
-        return os.path.join(self.config.get("dir_ui_reads"), m.hexdigest() + ".mp3")
+        return os.path.join(self.config.ui_reads_dir, m.hexdigest() + ".mp3")

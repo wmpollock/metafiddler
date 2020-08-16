@@ -55,8 +55,8 @@ class MufiSong:
             # we've got a specific home for them (playlist folders: currently
             # just vestigal from metafodder)
             if "dir" not in kwargs:
-                if self.config.get("dir_song_save"):
-                    kwargs["dir"] = self.config.get("dir_song_save")
+                if self.config.song_save_dir:
+                    kwargs["dir"] = self.config.song_save_dir
                 else:
                     logging.critical("FATAL: unable no 'dir_song_save' config")
                     exit(1)
@@ -87,7 +87,7 @@ class MufiSong:
         # tts_file = tempfile.mktemp(suffix="mp3")
         if self.title_read_path == "":
             self.title_read_path = self.__get_outpath(
-                dir=self.config.get("dir_title_reads")
+                dir=self.config.title_reads_dir
             )
 
         if os.path.exists(self.title_read_path):

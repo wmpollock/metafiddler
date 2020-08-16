@@ -12,10 +12,6 @@
     "python.linting.pylintArgs": [
         //  Nasty hax :/
         "--init-hook", "import sys; sys.path.append('/home/bill/Git/metafiddler/')",
-        //  The default len is a bit too natty and complains about "camel_case" arg
-        // violations -  https://github.com/PyCQA/pylint/issues/2018
-        "--variable-rgx", "^[a-z][a-z0-9]*((_[a-z0-9]+)*)?$",
-        "--argument-rgx", "^[a-z][a-z0-9]*((_[a-z0-9]+)*)?$"
     ],
     "files.exclude": {
         "**/__pycache__": true,

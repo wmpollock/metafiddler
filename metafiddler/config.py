@@ -8,6 +8,7 @@ from pathlib import Path
 import base64
 import yaml
 
+from metafiddler.mechanize import Browser
 
 class MufiConfig:
     """Holds file and some state information"""
@@ -35,6 +36,13 @@ class MufiConfig:
     def __init__(self):
         self.mefi_login = self._de64("MEFI_LOGIN")
         self.mefi_password = self._de64("MEFI_PASSWORD")
+
+        # Because this is going to hit the login and needs to maintain
+        # its state after so doing we're going to persist this as much as possible
+        # ... This should really go into a metaclass that's used as the
+        # base instead of config but its getting kinda late meyabe
+        self.browser = Browser(self)
+
 
         self._read_configfile()
         self._read_statefile()
@@ -105,3 +113,5 @@ class MufiConfig:
 
         if playlist and "list_id" in playlist:
             return playlist["list_id"]
+        else:
+            logging.warning("No playlist found matching %s", playlist_label)

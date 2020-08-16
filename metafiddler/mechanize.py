@@ -6,6 +6,7 @@ import pathlib
 
 import mechanize
 
+OK = 200
 
 jarfile = pathlib.Path.home() / ".metafiddler.cookiejar"
 
@@ -31,7 +32,7 @@ class Browser:
     def login(self):
         """Log into MeFi"""
         if not self.config.mefi_login:
-            logging.warning("Cannot perform login as there are no credentials defined in the environment.")
+            logging.warning("Cannot perform login as there are no credentials defined.")
             return False
 
         if not self.logged_in:
@@ -54,32 +55,47 @@ class Browser:
                 self.cookiejar.save(jarfile)
                 self.logged_in = True
             else:
-                logging.warning("The reponse code from logging in was unexpectedly %d", response.code)
+                logging.warning("Unexpected reponse code from logging in %d", response.code)
 
 
     def playlist_add(self, playlist_id, mufi_id):
         """Add an entry to the specified playlist"""
-        self.login()
-        try:
-            response = self.browser.open(
-                "https://music.metafilter.com/contribute/add_to_playlist.mefi?id="
-                + str(mufi_id)
-            ) # pylint: disable=assignment-from-none
-            print("Response code: ", response.code)
+        if not playlist_id:
+            logging.fatal("Called without a playlist_id")
+        
+        if not mufi_id:
+            logging.fatal("Called without a mufi_id")
 
-            # if browser.form == None:
-            #     #logging.critical("Did not receive page with form.")
-            #     print("Did not receive page with form.")
-            #     exit()
-            browser = {}
-            browser = self.browser
-            browser.select_form(action="track-add.mefi")
-            browser["playlist_id"] = (str(playlist_id),) # pylint: disable=unsupported-assignment-operation
-            response = browser.submit()
-            print("Response code: ", response.code)
-            return True
-        except Exception as e:
-            logging.fatal("Could not submit to playlist.  We have no reason left to live: %s", e)
-            return False
+        self.login()
+
+        # try:
+        response = self.browser.open(  # pylint: disable=assignment-from-none
+            "https://music.metafilter.com/contribute/add_to_playlist.mefi?id="
+            + str(mufi_id)
+        )
+        print("Response code: ", response.code)
+
+        # if browser.form == None:
+        #     #logging.critical("Did not receive page with form.")
+        #     print("Did not receive page with form.")
+        #     exit()
+        browser = {}
+        browser = self.browser
+        browser.select_form(action="track-add.mefi")
+        
+        
+        browser["playlist_id"] = (str(playlist_id),) # pylint: disable=unsupported-assignment-operation
+        response = browser.submit()
+        if response.code == OK:
+            logging.info("Added sweet, sib! s( ^ ‿ ^)-b")
+        else:
+            logging.warning("This did not go well, we recieved response %d", response.code)
+
+        return True
+        # except Exception as exception:
+        #print(browser)
+        #     logging.fatal("Could not submit to playlist." \
+        #         "We have no reason left to live: %s", exception)
+        #     return False
 
         self.cookiejar.save(jarfile)

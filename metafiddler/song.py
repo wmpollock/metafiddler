@@ -2,13 +2,11 @@
 import logging
 import os
 import os.path
-
 import urllib
 import unicodedata
 import string
 
 import pygame.mixer
-import metafiddler.mechanize
 
 from metafiddler.speech import Speaker
 
@@ -44,6 +42,7 @@ class MufiSong:
     def __init__(self, c):
         self.config = c
         self.speaker = Speaker(self.config)
+
 
     def __str__(self):
         return str({"title", self.title, "artist", self.artist})
@@ -142,7 +141,7 @@ class MufiSong:
 
     def playlist_add(self, playlist_id):
         """Add this song to a playlist (deleates to .mechanize)"""
-        return metafiddler.mechanize.playlist_add(playlist_id, self.mufi_id)
+        return self.config.browser.playlist_add(playlist_id, self.mufi_id)
 
     def provision(self, **kwargs):
         """Pull down all content, in the metafiddler context we want to keep "get" separate,

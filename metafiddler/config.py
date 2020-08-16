@@ -2,7 +2,6 @@
 
 import logging
 
-import re
 import os
 import pathlib
 from pathlib import Path
@@ -17,13 +16,15 @@ class MufiConfig:
 
     # All the below values are overridable in the config
     state_file = str(pathlib.Path.home() / ".metafiddler.current")
+    jar_file = str(pathlib.Path.home() / ".metafiddler.jar")
     app_root_dir = os.path.join(str(Path.home()), "Music", "MetaFilter")
     song_save_dir = os.path.join(app_root_dir, "Songs")
     # These will have the same filename as the songs they are for
     title_reads_dir = os.path.join(app_root_dir, "Title-Reads")
     ui_reads_dir = os.path.join(app_root_dir, "User-Interface")
+    # We need to bind the property set to save state
     _current_page = "https://music.metafilter.com/8" # earliest playable track
-    
+
     # These are derived from ENV{MEFI_LOGIN} & ENV{MEFI_PASSWORD}, both
     # of which are bin64'd for a modicum of privacy :/
     mefi_login = ""
@@ -92,8 +93,8 @@ class MufiConfig:
 
     def playlist_title(self, playlist_label):
         """Return the playlist title"""
-        playlist = self.playlist_by_label(playlist)
-        if playlist and "list_title" in playlist_label:
+        playlist = self.playlist_by_label(playlist_label)
+        if playlist and "list_title" in playlist:
             return playlist["list_title"]
         else:
             return ""

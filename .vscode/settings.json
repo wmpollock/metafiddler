@@ -17,5 +17,6 @@
         "**/__pycache__": true,
 "**/__init__.py": true,
         "**/*.pyc": true
-    }
+    },
+    "remote.SSH.useLocalServer": false
 }

@@ -5,26 +5,31 @@ import logging
 import os
 import pathlib
 from pathlib import Path
+
 import base64
 import yaml
+import requests
 
 from metafiddler.mechanize import Browser
 
 class MufiConfig:
     """Holds file and some state information"""
 
-    config_file = str(pathlib.Path.home() / ".metafiddler.yaml")
-
-    # All the below values are overridable in the config
-    state_file = str(pathlib.Path.home() / ".metafiddler.current")
-    jar_file = str(pathlib.Path.home() / ".metafiddler.jar")
+    # We need to bind the property set to save state
+    _current_page = "https://music.metafilter.com/8" # earliest playable track
     app_root_dir = os.path.join(str(Path.home()), "Music", "MetaFilter")
+    config_file = str(pathlib.Path.home() / ".metafiddler.yaml")
+    # Remote URLs for storage -- almost went SCP but this integrates with my questionable
+    # online tool O_o -- Needs more auth :]
+    current_page_get_url = ""
+    current_page_post_url = ""
+    # All the below values are overridable in the config
+    jar_file = str(pathlib.Path.home() / ".metafiddler.jar")
+    state_file = str(pathlib.Path.home() / ".metafiddler.current")
     song_save_dir = os.path.join(app_root_dir, "Songs")
     # These will have the same filename as the songs they are for
     title_reads_dir = os.path.join(app_root_dir, "Title-Reads")
     ui_reads_dir = os.path.join(app_root_dir, "User-Interface")
-    # We need to bind the property set to save state
-    _current_page = "https://music.metafilter.com/8" # earliest playable track
 
     # These are derived from ENV{MEFI_LOGIN} & ENV{MEFI_PASSWORD}, both
     # of which are bin64'd for a modicum of privacy :/
@@ -43,9 +48,19 @@ class MufiConfig:
         # base instead of config but its getting kinda late meyabe
         self.browser = Browser(self)
 
-
         self._read_configfile()
         self._read_statefile()
+
+        if self.current_page_get_url:
+            logging.info("Polling remote store.")
+            response = requests.get(url=self.current_page_get_url)
+            if response.status_code == 200:
+                logging.info("Server response '%s'", response.text)
+                # Lulzy -- OG architecture was clean IDs
+                self._current_page = f"https://music.metafilter.com/{response.text}"
+            else:
+                logging.fatal("Got unexpected error code polling remote: %s", response.status_code)
+
 
     def _de64(self, env_name):
         env_val = os.getenv(env_name)
@@ -91,8 +106,16 @@ class MufiConfig:
         # Storing state file!
         with open(self.state_file, mode="w") as file:
             file.write(url)
+            logging.debug("Updated state file")
 
-        logging.debug("Updated state file")
+        if self.current_page_post_url:
+            logging.info("Updating remote store.")
+            response = requests.post(url=self.current_page_post_url, data=url)
+            if response.status_code == 200:
+                logging.info("Success")
+            else:
+                logging.fatal("Unexpected server response %s", response.text)
+
 
     def playlist_by_label(self, playlist_label):
         """Return the playlist configuration"""

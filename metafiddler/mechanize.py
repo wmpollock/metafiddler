@@ -62,7 +62,7 @@ class Browser:
         """Add an entry to the specified playlist"""
         if not playlist_id:
             logging.fatal("Called without a playlist_id")
-        
+
         if not mufi_id:
             logging.fatal("Called without a mufi_id")
 
@@ -82,8 +82,8 @@ class Browser:
         browser = {}
         browser = self.browser
         browser.select_form(action="track-add.mefi")
-        
-        
+
+
         browser["playlist_id"] = (str(playlist_id),) # pylint: disable=unsupported-assignment-operation
         response = browser.submit()
         if response.code == OK:
@@ -91,11 +91,5 @@ class Browser:
         else:
             logging.warning("This did not go well, we recieved response %d", response.code)
 
-        return True
-        # except Exception as exception:
-        #print(browser)
-        #     logging.fatal("Could not submit to playlist." \
-        #         "We have no reason left to live: %s", exception)
-        #     return False
-
         self.cookiejar.save(jarfile)
+        return True

@@ -30,7 +30,11 @@ class TestConfig(unittest.TestCase):
         config = MufiConfig()
         # https://github.com/otrabalhador/python-testing-by-examples/blob/master/docs/en/mocking/examples/reading-writing-on-files.md#writing-on-files
         with patch('builtins.open', mock_open()) as mocked_file:
-            test_value = 'foo'
+            # This is a pretty janky case since we're just laying it down
+            # but as its halfassedly mocked ATM its hitting live backend :O
+            
+            test_value = config.current_page
+            print(f"Setting current page to {test_value}")
             config.current_page = test_value
             mocked_file.assert_called_once_with(config.state_file, mode='w')
             mocked_file().write.assert_called_once_with(test_value)

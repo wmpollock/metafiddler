@@ -1,9 +1,10 @@
 """Provides abstract interface into the wild and wolly world of TTS for our reads."""
-# TTS class
 
-import hashlib
+# import hashlib
 import logging
 import os
+import re
+import sys
 import pygame.mixer
 import gtts
 
@@ -20,7 +21,8 @@ class Speaker:
     def __init__(self, conf):
         self.config = conf
 
-    def store(self, utterance, file):
+    @classmethod
+    def store(cls, utterance, file):
         """Save an utterance to a given file"""
         if not os.path.exists(file):
             tts = gtts.gTTS(utterance)
@@ -29,7 +31,7 @@ class Speaker:
 
     def prepare(self, utterance):
         """Pre-render the utterance so it is ready the moment we need it"""
-        pathname = self.__pathname(utterance)
+        pathname = self.__utterance_path(utterance)
 
         if not os.path.exists(pathname):
             logging.info("Generating %s", pathname)
@@ -49,10 +51,21 @@ class Speaker:
         while pygame.mixer.music.get_busy():
             pygame.time.Clock().tick(10)
 
-    def __pathname(self, utterance):
-        m = hashlib.md5(utterance.encode("utf-8"))
+    def __utterance_path(self, utterance):
+        # Too cute by far.
+        # m = hashlib.md5(utterance.encode("utf-8"))
+        # filename = m.hexdigest() + ".mp3"
+        # Lets generate a humanish-readable 
+        filename = re.sub("[^a-zA-Z0-9_-]", "_", utterance)
+        filename = re.sub("(^_|_$)", "", filename)
+        filename = re.sub("__+", "_", filename)
+
+        # Truncate overly long  file names, I guess potential overlap
+        # but this s/b for internal commands so sort it out.
+        filename = (filename[:50] ) if len(filename) > 50 else filename
+        filename += ".mp3"
 
         if not self.config.ui_reads_dir:
             logging.critical("FAILED to get dir_ui_reads for UI utterance")
 
-        return os.path.join(self.config.ui_reads_dir, m.hexdigest() + ".mp3")
+        return os.path.join(self.config.ui_reads_dir, filename)

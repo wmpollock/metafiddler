@@ -16,16 +16,18 @@
 # Command line promises made and undelivered:
 # need to pass --config_file down into metafiddler.config
 
-# Needs to be before we invoke pygame because thanks, pygame, IHI.
-# rm'd -- IDK that the shebang line counts in Windows land, I think maybe no :/
-#   but with this in place ZOMG how pylint complains.
-# import os
-# os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 import logging
 import multiprocessing
 import webbrowser
 import sys
+
+# Needs to be before we invoke pygame because thanks, pygame, IHI.
+# rm'd -- IDK that the shebang line counts in Windows land, I think maybe no :/
+#   but with this in place ZOMG how pylint complains.
+import os
+
+
 
 import pygame
 from tabulate import tabulate
@@ -35,6 +37,8 @@ from metafiddler.input import Input
 from metafiddler.events.input import Event
 from metafiddler.page import MufiPage
 from metafiddler.speech import Speaker
+
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(message)s"
@@ -48,8 +52,8 @@ sys.setrecursionlimit(10000)
 def provision_next_page(queue, page):
     """ Callback from fork to provision the next page """
     # queue.put(page.provision())
-    r = page.provision()
-    queue.put(r, False, 2)
+    next_page = page.provision()
+    queue.put(next_page, False, 2)
 
 
 def setup():
@@ -79,9 +83,10 @@ def setup():
 
     logging.debug("Setting up speech utterances.")
 
-    for e in Event.events:
-        logging.debug("Preparing for event %s", e)
-        speaker.prepare(Event.describe(e))
+    speaker.say("Setting up speech utterances.")
+    for event in Event.events:
+        logging.debug("Preparing for event %s", event)
+        speaker.prepare(Event.describe(event))
 
     logging.debug("Setting up current page")
     current_page.provision()
@@ -126,12 +131,12 @@ def main():
             # with +1 events and, um, yes, wait for the next poll and
             # pop them off your stack or something.
             try:
-                e = user_input.poll()
+                event = user_input.poll()
             except KeyboardInterrupt:
                 speaker.say("Keyboard interrupt: exiting")
                 logging.info("Keyboard interrupt: exiting")
                 # Things just sort of hung otherwise...
-                exit(1)
+                sys.exit(1)
                 # alternately just stop the song...
                 # current_page.song.stop()
                 # # Not really on this but since we're going to come back here after we
@@ -143,11 +148,11 @@ def main():
             # does not have a multiline lambda and IDK if busting them functions is
             # more sensible?
 
-            if e and e != Event.NONE:
-                logging.info("EVENT: %s", e)
-                speaker.say(Event.describe(e))
+            if event and event != Event.NONE:
+                logging.info("EVENT: %s", event)
+                speaker.say(Event.describe(event))
 
-            if e == Event.STOP:
+            if event == Event.STOP:
                 current_page.song.stop()
                 # Not really on this but since we're going to come back here after we
                 # bail, should be A-OK.
@@ -155,33 +160,31 @@ def main():
                 done = True
 
             # Kind of useless w/o STOP =~ /pause??
-            elif e == Event.PLAY:
+            elif event == Event.PLAY:
                 # Maybe this should do something if its not playing?
                 current_page.song.play()
 
-            elif e == Event.NEXT:
+            elif event == Event.NEXT:
                 pygame.mixer.music.fadeout(100)
                 song_actioned = True
 
-            elif e == Event.PREVIOUS:
-                # TODO: variant behavior/naming.  We should also
-                # have a back navigationally.  There should be symmetry
-                # between seek/positional and navigational controls.
+            elif event == Event.PREVIOUS:
                 # Back = "Seek back" sounds maybe sensible?
                 pygame.mixer.music.fadeout(100)
                 song_actioned = True
 
-            elif e == Event.VOLUME_UP:
-                v = pygame.mixer.music.get_volume()
-                if v < 1:
-                    pygame.mixer.music.set_volume(v + 0.1)
+            elif event == Event.VOLUME_UP:
+                volume = pygame.mixer.music.get_volume()
+                if volume < 1:
+                    pygame.mixer.music.set_volume(volume + 0.1)
 
-            elif e == Event.VOLUME_DOWN:
-                v = pygame.mixer.music.get_volume()
-                if v > 0:
-                    pygame.mixer.music.set_volume(v - 0.1)
+            elif event == Event.VOLUME_DOWN:
+                volume = pygame.mixer.music.get_volume()
+                if volume > 0:
+                    pygame.mixer.music.set_volume(volume - 0.1)
 
-            elif e in [
+            elif event in [
+                # Black + pylint disagree :O pylint: disable=bad-continuation
                 Event.PLAYLIST_A,
                 Event.PLAYLIST_B,
                 Event.PLAYLIST_X,
@@ -189,8 +192,8 @@ def main():
             ]:
 
                 pygame.mixer.music.fadeout(100)
-                if config.playlist_id(e):
-                    if not current_page.song.playlist_add(e):
+                if config.playlist_id(event):
+                    if not current_page.song.playlist_add(event):
                         logging.info("Looks a bit sketchy: bailing")
                         done = True
                     # TODO: This should boom go into the appropriate playlist
@@ -198,14 +201,14 @@ def main():
                 else:
                     print(
                         "No playlist configured for that button in this config ("
-                        + e
+                        + event
                         + ")"
                     )
                 song_actioned = True
 
-            elif e == Event.SEEK_BACK:
-                p = pygame.mixer.music.get_pos()
-                if p > 100:
+            elif event == Event.SEEK_BACK:
+                position = pygame.mixer.music.get_pos()
+                if position > 100:
                     pygame.mixer.music.rewind()
                     pygame.mixer.music.play()
 
@@ -216,17 +219,17 @@ def main():
                     # pygame.mixer.music.set_pos(p-100)
                     # print("Now at ", pygame.mixer.music.get_pos())
 
-            elif e == Event.SEEK_FORWARD:
+            elif event == Event.SEEK_FORWARD:
                 if current_page.song.playing():
                     # Fortunately only mp3s as seek is conditional on format :O
                     pygame.mixer.music.set_pos(100)
 
-            elif e == Event.GO_SOURCE:
+            elif event == Event.GO_SOURCE:
                 webbrowser.open(current_page.audio_source_url, new=2)
         # This is the resolved end page which is already provisioned...
         next_page = queue.get(timeout=15)
         process.join()
-        if e == Event.PREVIOUS:
+        if event == Event.PREVIOUS:
             current_page = current_page.links["older"]
             current_page.provision()
         else:

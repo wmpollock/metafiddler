@@ -1,6 +1,7 @@
 """Given a variety of potential input means, the Input class seeks to simplify them
 into a singular access point and let this sort things out"""
 
+import sys
 from metafiddler.events.input import Event
 
 controllers = []
@@ -10,22 +11,22 @@ try:
     import metafiddler.controller.windows.keyboard
 
     controllers.append(metafiddler.controller.windows.keyboard.Keyboard())
-except:
-    print("Can't add Windows USB Keyboard")
-    try:
+except ModuleNotFoundError:
+    print("Can't add Windows USB Keyboard.")
+    # try:
         # And over here this is only
-        import metafiddler.controller.unix.keyboard
+    import metafiddler.controller.unix.keyboard
 
-        controllers.append(metafiddler.controller.keyboard.unix.Keyboard())
-    except Exception as e:
-        print("Can't add Unix system keyboard")
+    controllers.append(metafiddler.controller.unix.keyboard.Keyboard())
+    # except Exception as e:
+    #     print("Can't add Unix system keyboard")
 
 try:
     import metafiddler.controller.windows.usb_joystick
 
     controllers.append(metafiddler.controller.windows.usb_joystick.Joystick())
-except Exception as e:
-    print("Can't add Windows USB Joystick")
+except ModuleNotFoundError:
+    print("Can't add Windows USB Joystick.")
 
 
 class Input:
@@ -36,15 +37,14 @@ class Input:
     def __init__(self):
         if len(controllers) == 0:
             print("FATAL: no input controllers found.")
-            exit(1)
+            sys.exit(1)
 
     def poll(self):
         """See if there is any input on this device"""
-        for x in range(len(controllers)):
-            controller = controllers[x]
+        for index, controller in enumerate(controllers):
             event = controller.poll()
-            if self.last_events[x] != event:
-                self.last_events[x] = event
+            if self.last_events[index] != event:
+                self.last_events[index] = event
                 return event
 
         return Event.NONE

@@ -32,7 +32,7 @@ class TestConfig(unittest.TestCase):
         with patch('builtins.open', mock_open()) as mocked_file:
             # This is a pretty janky case since we're just laying it down
             # but as its halfassedly mocked ATM its hitting live backend :O
-            
+
             test_value = config.current_page
             print(f"Setting current page to {test_value}")
             config.current_page = test_value

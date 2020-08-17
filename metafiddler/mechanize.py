@@ -14,6 +14,8 @@ class Browser:
     """ Handle macro interactions w/MeFi """
     logged_in = False
     browser = {}
+    # Pylint can't read the 1001 instances of browser
+    # pylint: disable=no-member
     def __init__(self, config):
         """Set up jarfile and other housekeeping"""
         self.cookiejar = mechanize.LWPCookieJar()
@@ -56,6 +58,8 @@ class Browser:
                 self.logged_in = True
             else:
                 logging.warning("Unexpected reponse code from logging in %d", response.code)
+
+        return self.logged_in
 
 
     def playlist_add(self, playlist_id, mufi_id):

@@ -5,7 +5,7 @@ import os.path
 import urllib
 import unicodedata
 import string
-
+import sys
 import pygame.mixer
 
 from metafiddler.speech import Speaker
@@ -58,7 +58,7 @@ class MufiSong:
                     kwargs["dir"] = self.config.song_save_dir
                 else:
                     logging.critical("FATAL: unable no 'dir_song_save' config")
-                    exit(1)
+                    sys.exit(1)
 
             self.local_path = self.__get_outpath(**kwargs)
 
@@ -101,18 +101,21 @@ class MufiSong:
 
     # I tried subclassing self as part of pygame.mixer.music but I'm obv. doing
     # something wrong :/
-    def pause(self):
+    @classmethod
+    def pause(cls):
+
         """Suspend playing music"""
         pygame.mixer.music.pause()
 
-    def stop(self):
+    @classmethod
+    def stop(cls):
         """Stop playing music: position is lost."""
         pygame.mixer.music.stop()
 
     def play(self):
         """Begin playing the song"""
         if self.local_path:
-            logging.info("Playing song: %s")
+            logging.info("Playing song: %s", self.local_path)
             pygame.mixer.music.load(self.local_path)
         else:
             raise SystemExit("Local path has not been defined -- content missing :[")
@@ -131,13 +134,14 @@ class MufiSong:
         while pygame.mixer.music.get_busy():
             pygame.time.Clock().tick(10)
 
-    def playing(self):
+    @classmethod
+    def playing(cls):
         """Determine whether a song is currently playing"""
         try:
             return pygame.mixer.music.get_busy()
         except KeyboardInterrupt:
             print("Ending on keyboard termination.")
-            exit(1)
+            sys.exit(1)
 
     def playlist_add(self, playlist_id):
         """Add this song to a playlist (deleates to .mechanize)"""
@@ -150,7 +154,8 @@ class MufiSong:
         self.get_title_read(**kwargs)
 
     # From https://gist.github.com/wassname/1393c4a57cfcbf03641dbc31886123b8
-    def __clean_filename(self, filename):
+    @classmethod
+    def __clean_filename(cls, filename):
         """ replace arbitrary things with underscore (default nuffin')"""
         # for r in replace:
         #     filename = filename.replace(r, '_')
@@ -185,7 +190,7 @@ class MufiSong:
         if "dir" not in kwargs:
 
             logging.fatal("Yikes, outpath invoked without 'dir'")
-            exit(1)
+            sys.exit(1)
 
         outdir = kwargs["dir"]
 

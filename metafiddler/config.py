@@ -61,14 +61,14 @@ class MufiConfig:
             else:
                 logging.fatal("Got unexpected error code polling remote: %s", response.status_code)
 
-
-    def _de64(self, env_name):
+    @classmethod
+    def _de64(cls, env_name):
         env_val = os.getenv(env_name)
         if env_val:
             return base64.decodebytes(env_val.encode('utf-8')).decode('utf-8')
-        else:
-            logging.info("No %s value -- won't be able to playlist/favorite", env_name)
-        return
+
+        logging.info("No %s value -- won't be able to playlist/favorite", env_name)
+        return ""
 
     def _read_configfile(self):
         """ Load the YAML configuration file and override any class defaults """
@@ -121,14 +121,15 @@ class MufiConfig:
         """Return the playlist configuration"""
         if playlist_label in self.playlists:
             return self.playlists[playlist_label]
+        return None
 
     def playlist_title(self, playlist_label):
         """Return the playlist title"""
         playlist = self.playlist_by_label(playlist_label)
         if playlist and "list_title" in playlist:
             return playlist["list_title"]
-        else:
-            return ""
+
+        return ""
 
     def playlist_id(self, playlist_label):
         """Return the playlist's ID"""
@@ -136,5 +137,7 @@ class MufiConfig:
 
         if playlist and "list_id" in playlist:
             return playlist["list_id"]
-        else:
-            logging.warning("No playlist found matching %s", playlist_label)
+
+        logging.warning("No playlist found matching %s", playlist_label)
+        return None
+       

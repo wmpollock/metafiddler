@@ -1,13 +1,14 @@
-# We need labels to use and we need constants that may or may not mean
-# anything.  This intersection seems as good a place as any to pile
-# labels to misuse in configuration map dumps.
-
+"""
+We need labels to use and we need constants that may or may not mean
+anything.  This intersection seems as good a place as any to pile
+labels to misuse in configuration map dumps.
+"""
 # TODO -- tthe setup for the events is kind of cheesy -
 # it should bear its own "say" responsibility.
 
 # Course then you get all sporty and want to pass the event as a value and then
 # changing it to a description doesn't fit athat
-addl_desc = {
+ADDL_DESC = {
     "playlist_a": "Add to playlist A",
     "playlist_b": "Add to playlist B",
     "playlist_x": "Add to playlist X",
@@ -16,6 +17,7 @@ addl_desc = {
 
 
 class Event:
+    """ Constants and methods for input """
     # Some constants
     NONE = "none"
     STOP = "stop"
@@ -31,6 +33,7 @@ class Event:
     VOLUME_DOWN = "quieter"
 
     # These values are passed through checkes for playlist_id
+    # ...unfortunately constraining
     PLAYLIST_A = "playlist_a"
     PLAYLIST_B = "playlist_b"
     PLAYLIST_X = "playlist_x"
@@ -59,8 +62,9 @@ class Event:
 
     # And then of course you need a dangol event mangler to handle that non-seeennnnsee
     @classmethod
-    def describe(cls, e):
-        if e in addl_desc:
-            return addl_desc[e]
+    def describe(cls, event):
+        """ Get the description for the event """
+        if event in ADDL_DESC:
+            return ADDL_DESC[event]
         else:
-            return e
+            return event

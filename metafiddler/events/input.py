@@ -66,5 +66,5 @@ class Event:
         """ Get the description for the event """
         if event in ADDL_DESC:
             return ADDL_DESC[event]
-        else:
-            return event
+
+        return event

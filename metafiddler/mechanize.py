@@ -8,7 +8,7 @@ import mechanize
 
 OK = 200
 
-jarfile = pathlib.Path.home() / ".metafiddler.cookiejar"
+JARFILE = pathlib.Path.home() / ".metafiddler.cookiejar"
 
 class Browser:
     """ Handle macro interactions w/MeFi """
@@ -17,16 +17,16 @@ class Browser:
     # Pylint can't read the 1001 instances of browser
     # pylint: disable=no-member
     def __init__(self, config):
-        """Set up jarfile and other housekeeping"""
+        """Set up JARFILE and other housekeeping"""
         self.cookiejar = mechanize.LWPCookieJar()
         browser = self.browser = mechanize.Browser()
         browser.set_cookiejar(self.cookiejar)
         self.config = config
 
         # I guess we'll assume good until we get evidence otherwise...
-        if jarfile.exists():
-            logging.debug("Loading jarfile: %s", str(jarfile))
-            self.cookiejar.load(jarfile)
+        if JARFILE.exists():
+            logging.debug("Loading jarfile: %s", str(JARFILE))
+            self.cookiejar.load(JARFILE)
             browser.set_cookiejar(self.cookiejar)
         else:
             self.login()
@@ -54,7 +54,7 @@ class Browser:
                 # that contains the user_name
                 # the cookie jar will contain USER_NAME
 
-                self.cookiejar.save(jarfile)
+                self.cookiejar.save(JARFILE)
                 self.logged_in = True
             else:
                 logging.warning("Unexpected reponse code from logging in %d", response.code)
@@ -95,5 +95,5 @@ class Browser:
         else:
             logging.warning("This did not go well, we recieved response %d", response.code)
 
-        self.cookiejar.save(jarfile)
+        self.cookiejar.save(JARFILE)
         return True

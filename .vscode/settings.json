@@ -19,5 +19,6 @@
         "**/*.pyc": true
     },
     "remote.SSH.useLocalServer": false,
-    "python.linting.pylintCategorySeverity.refactor": "Information"
+    "python.linting.pylintCategorySeverity.refactor": "Information",
+    "python.linting.pylintUseMinimalCheckers": false
 }

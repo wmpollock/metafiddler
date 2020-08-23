@@ -1,4 +1,4 @@
-#!/usr/bin/env PYGAME_HIDE_SUPPORT_PROMPT=hide python3
+#!/usr/bin/env python3
 """Play through Metafilter Music one song at a time"""
 #  __  __      _         __ _     _     _ _
 # |  \/  | ___| |_ __ _ / _(_) __| | __| | | ___ _ __

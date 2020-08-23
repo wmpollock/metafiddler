@@ -98,7 +98,7 @@ class MufiConfig:
         """Return the value for the current page"""
         return self._current_page
 
-    @current_page.setter
+    @current_page_url.setter
     def current_page_url(self, url):
         """Set the value for the current page"""
         self._current_page = url

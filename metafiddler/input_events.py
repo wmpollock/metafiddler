@@ -7,7 +7,7 @@ labels to misuse in configuration map dumps.
 import re
 
 class EventType: # pylint: disable=too-few-public-methods
-    """ Individual even types """
+    """ Individual event types """
 
     PLAYLIST = "playlsit"
 

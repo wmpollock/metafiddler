@@ -16,7 +16,7 @@ class MufiConfig:
     """Holds file and some state information"""
 
     # We need to bind the property set to save state
-    _current_page = "https://music.metafilter.com/8" # earliest playable track
+    _curent_page_url = "https://music.metafilter.com/8" # earliest playable track
     app_root_dir = os.path.join(str(Path.home()), "Music", "MetaFilter")
     config_file = str(pathlib.Path.home() / ".metafiddler.yaml")
     # Remote URLs for storage -- almost went SCP but this integrates with my questionable
@@ -57,7 +57,7 @@ class MufiConfig:
             if response.status_code == 200:
                 logging.info("Server response '%s'", response.text)
                 # Lulzy -- OG architecture was clean IDs
-                self._current_page = f"https://music.metafilter.com/{response.text}"
+                self._curent_page_url = f"https://music.metafilter.com/{response.text}"
             else:
                 logging.fatal("Got unexpected error code polling remote: %s", response.status_code)
 
@@ -86,7 +86,7 @@ class MufiConfig:
         content is the sharable, not-system-dependent part so ot needs to be separate"""
         try:
             with open(self.state_file, mode="r") as file:
-                self._current_page = file.read()
+                self._curent_page_url = file.read()
                 logging.debug("Loaded state file %s", self.state_file)
         except FileNotFoundError:
             logging.debug("State file %s does not exist.", self.state_file)
@@ -96,12 +96,12 @@ class MufiConfig:
     @property
     def current_page_url(self):
         """Return the value for the current page"""
-        return self._current_page
+        return self._curent_page_url
 
     @current_page_url.setter
     def current_page_url(self, url):
         """Set the value for the current page"""
-        self._current_page = url
+        self._curent_page_url = url
 
         # Storing state file!
         with open(self.state_file, mode="w") as file:

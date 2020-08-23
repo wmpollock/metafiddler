@@ -1,9 +1,7 @@
-"""Test for metafiddler.events.inpyt """
+"""Test for metafiddler.input_events """
 import logging
-import pprint
 import unittest
-from unittest.mock import patch, mock_open
-from metafiddler.input_events import InputInputEvents, InputEventType
+from metafiddler.input_events import InputEvent, EventType
 
 class TestConfig(unittest.TestCase):
     """Test configuration methods"""
@@ -14,9 +12,13 @@ class TestConfig(unittest.TestCase):
         )
 
     def test_init(self):
-        event = InputEventType("stop", "in the name of love")
+        """ Make sure the init works as advertised """
+        event = EventType("stop", "in the name of love")
         self.assertNotEqual(event, None)
-        self.assertNotEqual(InputEvents.NONE, EVENTS.PLAY)
+        self.assertNotEqual(InputEvent.NONE, InputEvent.PLAY)
 
     def test_list_events(self):
-        
+        """ Test events method """
+        events = InputEvent.events()
+        print(events)
+        self.assertNotEqual(events, None)

@@ -4,20 +4,21 @@ anything.  This intersection seems as good a place as any to pile
 labels to misuse in configuration map dumps.
 """
 
+import re
 
-class EventType:
+class EventType: # pylint: disable=too-few-public-methods
     """ Individual even types """
-    
+
     PLAYLIST = "playlsit"
 
-    def __init__(self, description, id="", type=""):
-        self.id = id
+    def __init__(self, description, event_id="", event_type=""):
+        self.event_id = event_id
         self.description = description
-        self.type = type
+        self.type = event_type
 
 
 
-class InputEvents:
+class InputEvent: # pylint: disable=too-few-public-methods
     """ Class containing input events """
     NONE = EventType("Nothing happened.")
     STOP = EventType("Stop playing current track", "stop")
@@ -27,7 +28,7 @@ class InputEvents:
 
     SEEK_FORWARD = EventType("Fast forward in track", "seek_forward")
     SEEK_BACK = EventType("Seek back in track", "seek_back")
-    
+
     VOLUME_UP = EventType("Volume up", "volume_up")
     VOLUME_DOWN = EventType("Volume down", "volume_down")
 
@@ -39,23 +40,7 @@ class InputEvents:
 
     GO_SOURCE = EventType("Open source webpage")
 
-    # And then you go, man, why didn't I just do something sensible when I
-    # created this in the damnedfirstplace and maybe its not too late yet.
-    # But it is.
-    events = [
-        NONE,
-        STOP,
-        PLAY,
-        NEXT,
-        PREVIOUS,
-        SEEK_FORWARD,
-        SEEK_BACK,
-        VOLUME_UP,
-        VOLUME_DOWN,
-        PLAYLIST_A,
-        PLAYLIST_B,
-        PLAYLIST_X,
-        PLAYLIST_Y,
-    ]
-
-
+    @classmethod
+    def events(cls):
+        """ List all defined events """
+        return list(filter(lambda x: re.match(r'^[A-Z]+\w+$', x), cls.__dict__.keys()))

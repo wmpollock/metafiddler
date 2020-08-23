@@ -2,7 +2,6 @@
 
 A sequential player and catalogger for music.metafilter.com
 
-
 ## Configuring
 
 There are two useful files that can be set up but neither are necessary
@@ -10,12 +9,11 @@ There are two useful files that can be set up but neither are necessary
 ~/.metafiddler.config -- a YAML file describing playlist mappings and directory overrides
 ~/.metafiddler.current -- a file containing the last URL accessed
 
-
+echo -e "\nsource ~/Git/lifebuoy/bash/bashrc-common.sh\nsource ~/Git/lifebuoy/bash/bashrc-linux.sh\n" >> ~/.bashrc
 
 ## Launching
 
-Installing on linux required some prerequisites (https://www.pygame.org/wiki/CompileUbuntu).  On ubuntu:
-
+Installing on linux required some prerequisites ([https://www.pygame.org/wiki/CompileUbuntu]).  On ubuntu:
 
 ```sh
 
@@ -36,6 +34,7 @@ pip install -r requirements.txt
 ```
 
 ## Process model
+
 ![Process diagram](.media/process-diagram.png)
 
 ## Background
@@ -51,9 +50,6 @@ I didn't want to miss anything good so when I started I started at the first tra
 From there down the sequential road I travelled.
 
 I cobbled up a web interface wrapper but I wanted a headless interface, one I didn't need to select into, it would just be there, monitoring and running.
-
-And here we are :D
-
 
 ## Disclaimer
 

@@ -23,5 +23,5 @@ class TestConfig(unittest.TestCase):
         self.assertNotEqual(events, None)
 
         print(events)
-        for event in InputEvent.events:
-
+        for event in events:
+            print(event.description)

@@ -1,11 +1,13 @@
+""" Body of the metafiddler application """
+
 import logging
 import multiprocessing
 import webbrowser
 import sys
-import os
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+#import os
+#os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
-import pygame
+import pygame #
 from tabulate import tabulate
 
 from metafiddler.config import MufiConfig
@@ -45,12 +47,10 @@ class Run:
         self.speaker = Speaker(config)
 
         self.speaker.say("Setting up current page.")
-# TODO:  necessary?
-       # doesn't seem like it, just goes via config self.current_page_url = MufiPage(config, config.current_page_url)
+
+        self.current_page = MufiPage(config, config.current_page_url)
 
         self.user_input = Input()
-
- 
 
         print(
             tabulate(
@@ -67,16 +67,17 @@ class Run:
         logging.debug("Setting up speech utterances.")
 
         self.speaker.say("Setting up speech utterances.")
-        for event in InputEvent.events:
+        events = InputEvent.events()
+        for event in events:
             logging.debug("Preparing for event %s", event)
             self.speaker.prepare(event.description)
 
         logging.debug("Setting up current page")
         self.current_page.provision()
-        
+
     def main(self):
         """Primary entrance point"""
-        
+
         done = False
 
         while not done:
@@ -86,9 +87,9 @@ class Run:
             # --------------------------------------------------------------------
             current_page = self.current_page
 
-            # Set the value as 
-            self.config.current_page_url= current_page.audio_source_url
-            
+            # Set the value as
+            self.config.current_page_url = current_page.audio_source_url
+
             song = current_page.song
             next_page = current_page.links["newer"]
 
@@ -98,7 +99,7 @@ class Run:
                 target=self.provision_next_page, args=(queue, next_page)
             )
             process.start()
-            
+
             # Start playing
             song.play_title()
             song.play()
@@ -109,7 +110,7 @@ class Run:
             input_prompted = False
             while song.playing() and not self.song_actioned:
                 if not (song.playing() or input_prompted):
-                    # May as well not burn (reporting) cycles.                    
+                    # May as well not burn (reporting) cycles.
                     input_prompted = True
                     logging.info("Waiting for user for input.")
 
@@ -122,7 +123,7 @@ class Run:
                     logging.info("Keyboard interrupt: exiting")
                     self.speaker.say("Keyboard interrupt: exiting")
                     sys.exit(1)
-                    
+
                 # ** I really wanted to put all these into a magnificent map but python
                 # does not have a multiline lambda and IDK if busting them functions is
                 # more sensible?
@@ -193,13 +194,14 @@ class Run:
             # TODO: This should go into the appropriate playlist
             # subdirectory...?
         else:
-            logging.warning(           
+            logging.warning(
                 "No playlist configured for that button in this config (%s)",
                 playlist_id)
-            
+
         self.song_actioned = True
 
-    def seek_back(self):
+    @classmethod
+    def seek_back(cls):
         """ Go backwards in the currenly playing track """
         position = pygame.mixer.music.get_pos()
         if position > 100:
@@ -221,10 +223,4 @@ class Run:
 
     def open_source_page(self):
         """ Open the webpage for the currently playing file """
-        webbrowser.open(current_page.audio_source_url, new=2)
-
-
-if __name__ == "__main__":
-
-    run = Run()
-    run.main()
+        webbrowser.open(self.current_page.audio_source_url, new=2)

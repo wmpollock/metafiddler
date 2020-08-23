@@ -16,8 +16,6 @@ class EventType: # pylint: disable=too-few-public-methods
         self.description = description
         self.type = event_type
 
-
-
 class InputEvent: # pylint: disable=too-few-public-methods
     """ Class containing input events """
     NONE = EventType("Nothing happened.")
@@ -40,7 +38,9 @@ class InputEvent: # pylint: disable=too-few-public-methods
 
     GO_SOURCE = EventType("Open source webpage")
 
+
     @classmethod
     def events(cls):
         """ List all defined events """
-        return list(filter(lambda x: re.match(r'^[A-Z]+\w+$', x), cls.__dict__.keys()))
+
+        return filter(lambda x: re.match(r'^[A-Z]+\w+$', x), cls.__dict__.keys())

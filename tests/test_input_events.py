@@ -20,5 +20,8 @@ class TestConfig(unittest.TestCase):
     def test_list_events(self):
         """ Test events method """
         events = InputEvent.events()
-        print(events)
         self.assertNotEqual(events, None)
+
+        print(events)
+        for event in InputEvent.events:
+

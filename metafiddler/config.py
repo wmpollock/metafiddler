@@ -1,4 +1,4 @@
-"""Manage configuration, its persistance and the propagation of the persistence."""
+ """Manage configuration, its persistance and the propagation of the persistence."""
 
 import logging
 

@@ -22,7 +22,7 @@ class TestConfig(unittest.TestCase):
         pretty = pprint.PrettyPrinter(indent=4)
         pretty.pprint(vars(config))
         print(config.playlist_id("playlist_b"))
-        print("Current page:", config.current_page)
+        print("Current page:", config.current_page_url)
         print("Song save dir:", config.song_save_dir)
 
     def test_update(self):
@@ -33,8 +33,8 @@ class TestConfig(unittest.TestCase):
             # This is a pretty janky case since we're just laying it down
             # but as its halfassedly mocked ATM its hitting live backend :O
 
-            test_value = config.current_page
+            test_value = config.current_page_url
             print(f"Setting current page to {test_value}")
-            config.current_page = test_value
+            config.current_page_url = test_value
             mocked_file.assert_called_once_with(config.state_file, mode='w')
             mocked_file().write.assert_called_once_with(test_value)

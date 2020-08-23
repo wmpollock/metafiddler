@@ -2,7 +2,7 @@
 
 import unittest
 from metafiddler.input import Input
-from metafiddler.events.input import Event
+from metafiddler.input_events import InputEvent
 
 
 class TestConroller(unittest.TestCase):
@@ -13,9 +13,9 @@ class TestConroller(unittest.TestCase):
         user_input = Input()
         e = user_input.poll()
         print("Gimme anyol input:")
-        e = Event.NONE
-        while e == Event.NONE:
+        e = InputEvent.NONE
+        while e == InputEvent.NONE:
             e = user_input.poll()
 
-        print("Got event", Event.describe(e))
+        print("Got event", InputEvent.describe(e))
         return True

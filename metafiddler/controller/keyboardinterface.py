@@ -1,22 +1,22 @@
-from metafiddler.events.input import Event
+from metafiddler.input_events import InputEvent
 from tabulate import tabulate
 
 
 class KeyboardInterface:
 
     bindings = {
-        "s": {"return": Event.STOP,},
-        "q": {"return": Event.STOP,},
-        "p": {"return": Event.PLAY,},
-        ", ": {"return": Event.SEEK_BACK,},
-        ".": {"return": Event.SEEK_FORWARD,},
+        "s": {"return": InputEvent.STOP,},
+        "q": {"return": InputEvent.STOP,},
+        "p": {"return": InputEvent.PLAY,},
+        ", ": {"return": InputEvent.SEEK_BACK,},
+        ".": {"return": InputEvent.SEEK_FORWARD,},
         # PLAYLISTS
         # -----------------
-        "a": {"return": Event.PLAYLIST_A,},
-        "b": {"return": Event.PLAYLIST_B,},
-        "x": {"return": Event.PLAYLIST_X,},
-        "y": {"return": Event.PLAYLIST_Y,},
-        "w": {"return": Event.GO_SOURCE,},
+        "a": {"return": InputEvent.PLAYLIST_A,},
+        "b": {"return": InputEvent.PLAYLIST_B,},
+        "x": {"return": InputEvent.PLAYLIST_X,},
+        "y": {"return": InputEvent.PLAYLIST_Y,},
+        "w": {"return": InputEvent.GO_SOURCE,},
     }
 
     def print_bindings(self):

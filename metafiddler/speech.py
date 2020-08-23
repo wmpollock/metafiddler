@@ -4,7 +4,6 @@
 import logging
 import os
 import re
-import sys
 import pygame.mixer
 import gtts
 
@@ -55,14 +54,14 @@ class Speaker:
         # Too cute by far.
         # m = hashlib.md5(utterance.encode("utf-8"))
         # filename = m.hexdigest() + ".mp3"
-        # Lets generate a humanish-readable 
+        # Lets generate a humanish-readable
         filename = re.sub("[^a-zA-Z0-9_-]", "_", utterance)
         filename = re.sub("(^_|_$)", "", filename)
         filename = re.sub("__+", "_", filename)
 
         # Truncate overly long  file names, I guess potential overlap
         # but this s/b for internal commands so sort it out.
-        filename = (filename[:50] ) if len(filename) > 50 else filename
+        filename = (filename[:50]) if len(filename) > 50 else filename
         filename += ".mp3"
 
         if not self.config.ui_reads_dir:

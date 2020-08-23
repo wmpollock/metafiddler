@@ -94,12 +94,12 @@ class MufiConfig:
 
     # One-off the actual property so we can hook into setting the current_page
     @property
-    def current_page(self):
+    def current_page_url(self):
         """Return the value for the current page"""
         return self._current_page
 
     @current_page.setter
-    def current_page(self, url):
+    def current_page_url(self, url):
         """Set the value for the current page"""
         self._current_page = url
 

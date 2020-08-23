@@ -10,7 +10,7 @@ import logging
 import sys
 # https://stackoverflow.com/questions/9602811/how-to-tell-pylint-to-ignore-certain-imports
 import msvcrt # pylint: disable=import-error
-from metafiddler.events.input import Event
+from metafiddler.input_events import InputEvent
 from metafiddler.controller.keyboardinterface import KeyboardInterface
 
 
@@ -31,55 +31,55 @@ class Keyboard(KeyboardInterface):
                 # as chars and I kinda like 'em.
                 b"\000"
                 + b"M": {
-                    "return": Event.NEXT,
+                    "return": InputEvent.NEXT,
                     # "desc": "arrrow-forward"
                     "desc": "→",
                 },
                 b"\000"
                 + b"K": {
-                    "return": Event.PREVIOUS,
+                    "return": InputEvent.PREVIOUS,
                     # "desc": "arrow-back"
                     "desc": "←",
                 },
                 b"\000"
                 + b"H": {
-                    "return": Event.VOLUME_UP,
+                    "return": InputEvent.VOLUME_UP,
                     # "desc": "arrow-up"
                     "desc": "↑",
                 },
                 b"\000"
                 + b"P": {
-                    "return": Event.VOLUME_DOWN,
+                    "return": InputEvent.VOLUME_DOWN,
                     # "desc": "arrow-down"
                     "desc": "↓",
                 },
                 # I don't get this second set but winpty seemed to need it?  Seems crass.
                 b"\xe0"
                 + b"M": {
-                    "return": Event.NEXT,
+                    "return": InputEvent.NEXT,
                     # "desc": "arrrow-forward"
                     "desc": "→",
                 },
                 b"\xe0"
                 + b"K": {
-                    "return": Event.PREVIOUS,
+                    "return": InputEvent.PREVIOUS,
                     # "desc": "arrow-back"
                     "desc": "←",
                 },
                 b"\xe0"
                 + b"H": {
-                    "return": Event.VOLUME_UP,
+                    "return": InputEvent.VOLUME_UP,
                     # "desc": "arrow-up"
                     "desc": "↑",
                 },
                 b"\xe0"
                 + b"P": {
-                    "return": Event.VOLUME_DOWN,
+                    "return": InputEvent.VOLUME_DOWN,
                     # "desc": "arrow-down"
                     "desc": "↓",
                 },
                 # escape: may not want to print this bad boi
-                chr(27): {"return": Event.STOP, "desc": "escape"},
+                chr(27): {"return": InputEvent.STOP, "desc": "escape"},
             }
         )
 
@@ -115,4 +115,4 @@ class Keyboard(KeyboardInterface):
         except KeyboardInterrupt:
             exit(1)  # ?
 
-        return Event.NONE
+        return InputEvent.NONE

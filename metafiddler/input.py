@@ -2,7 +2,7 @@
 into a singular access point and let this sort things out"""
 
 import sys
-from metafiddler.events.input import Event
+from metafiddler.input_events import InputEvent
 
 controllers = []
 
@@ -32,7 +32,7 @@ except ModuleNotFoundError:
 class Input:
     """Class to streamline all input events from the user"""
 
-    last_events = [Event.NONE, Event.NONE]
+    last_events = [InputEvent.NONE, InputEvent.NONE]
 
     def __init__(self):
         if len(controllers) == 0:
@@ -47,4 +47,4 @@ class Input:
                 self.last_events[index] = event
                 return event
 
-        return Event.NONE
+        return InputEvent.NONE

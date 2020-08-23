@@ -25,7 +25,7 @@ from tabulate import tabulate
 import winreg
 from ctypes.wintypes import WORD, UINT, DWORD
 from ctypes.wintypes import WCHAR as TCHAR
-from metafiddler.events.input import Event
+from metafiddler.input_events import InputEvent
 
 # Its possible the JS is not added and if so lets just get on with things
 joystick_provisioned = False
@@ -282,42 +282,42 @@ class Joystick:
             # Value here is kind of not always == 1
             if x > 0.5:
                 # X/Y to the left
-                return Event.NEXT
+                return InputEvent.NEXT
             elif x < -0.5:
                 # X/Y to the right
-                return Event.PREVIOUS
+                return InputEvent.PREVIOUS
             elif y > 0.5:
                 # X/Y down
-                return Event.VOLUME_DOWN
+                return InputEvent.VOLUME_DOWN
             elif y < -0.5:
                 # X/Y up
-                return Event.VOLUME_UP
+                return InputEvent.VOLUME_UP
 
             # Metabuttons
             # -----------------------------------------------------------------------------
             if button_states.get("start"):
-                return Event.PLAY
+                return InputEvent.PLAY
             if button_states.get("select"):
-                return Event.STOP
+                return InputEvent.STOP
 
             # PLAYER BUTTONS
             # -----------------------------------------------------------------------------
             if button_states.get("a"):
-                return Event.PLAYLIST_A
+                return InputEvent.PLAYLIST_A
 
             if button_states.get("b"):
-                return Event.PLAYLIST_B
+                return InputEvent.PLAYLIST_B
 
             if button_states.get("x"):
-                return Event.PLAYLIST_X
+                return InputEvent.PLAYLIST_X
 
             if button_states.get("y"):
-                return Event.PLAYLIST_Y
+                return InputEvent.PLAYLIST_Y
 
             if button_states.get("left"):
-                return Event.SEEK_BACK
+                return InputEvent.SEEK_BACK
 
             if button_states.get("right"):
-                return Event.SEEK_FORWARD
+                return InputEvent.SEEK_FORWARD
 
-        return Event.NONE
+        return InputEvent.NONE

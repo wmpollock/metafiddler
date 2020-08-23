@@ -9,7 +9,7 @@ import os
 import termios
 import sys
 
-from metafiddler.events.input import Event
+from metafiddler.input_events import InputEvent
 from metafiddler.controller.keyboardinterface import KeyboardInterface
 
 
@@ -32,35 +32,35 @@ class Keyboard(KeyboardInterface):
                 "\x1b"
                 + "["
                 + "C": {
-                    "return": Event.NEXT,
+                    "return": InputEvent.NEXT,
                     # "desc": "arrrow-forward"
                     "desc": "→",
                 },
                 "\x1b"
                 + "["
                 + "C": {
-                    "return": Event.NEXT,
+                    "return": InputEvent.NEXT,
                     # "desc": "arrrow-forward"
                     "desc": "→",
                 },
                 "\x1b"
                 + "["
                 + "D": {
-                    "return": Event.PREVIOUS,
+                    "return": InputEvent.PREVIOUS,
                     # "desc": "arrow-back"
                     "desc": "←",
                 },
                 "\x1b"
                 + "["
                 + "A": {
-                    "return": Event.VOLUME_UP,
+                    "return": InputEvent.VOLUME_UP,
                     # "desc": "arrow-up"
                     "desc": "↑",
                 },
                 "\x1b"
                 + "["
                 + "B": {
-                    "return": Event.VOLUME_DOWN,
+                    "return": InputEvent.VOLUME_DOWN,
                     # "desc": "arrow-down"
                     "desc": "↓",
                 },
@@ -92,4 +92,4 @@ class Keyboard(KeyboardInterface):
         except IOError:
             pass
 
-        return Event.NONE
+        return InputEvent.NONE

@@ -29,7 +29,7 @@ except ModuleNotFoundError:
     print("Can't add Windows USB Joystick.")
 
 
-class Input:
+class Input: # pylint: disable=too-few-public-methods
     """Class to streamline all input events from the user"""
 
     last_events = [InputEvent.NONE, InputEvent.NONE]

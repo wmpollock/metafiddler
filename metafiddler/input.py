@@ -4,7 +4,7 @@ into a singular access point and let this sort things out"""
 import sys
 from metafiddler.input_events import InputEvent
 
-controllers = []
+controllers = [] # pylint: disable=invalid-name
 
 try:
     # This of course uses mscvrt which is not available on linux
@@ -35,7 +35,7 @@ class Input:
     last_events = [InputEvent.NONE, InputEvent.NONE]
 
     def __init__(self):
-        if len(controllers) == 0:
+        if not controllers:
             print("FATAL: no input controllers found.")
             sys.exit(1)
 

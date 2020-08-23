@@ -18,5 +18,6 @@
 "**/__init__.py": true,
         "**/*.pyc": true
     },
-    "remote.SSH.useLocalServer": false
+    "remote.SSH.useLocalServer": false,
+    "python.linting.pylintCategorySeverity.refactor": "Information"
 }

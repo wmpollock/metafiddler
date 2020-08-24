@@ -31,7 +31,7 @@ class KeyboardInterface:
                 label = key
 
             # ?print("\t%-15s %s" %(label + ":", bindings[key]["return"]))
-            table.append([label, bindings[key]["return"]])
+            table.append([label, bindings[key]["return"].description])
 
         print(tabulate([["Keyboard mapping"]], tablefmt="github"))
 

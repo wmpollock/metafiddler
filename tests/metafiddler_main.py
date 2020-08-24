@@ -1,9 +1,9 @@
 
 """ """
 import unittest            
-import metafiddler.speech
+import metafiddler.main
 
-class Metafiddler.speechTest(unittest.TestCase):
+class Metafiddler.mainTest(unittest.TestCase):
     """ """
     def test_something(self):
         """ """

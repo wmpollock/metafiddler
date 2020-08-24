@@ -1,21 +1,9 @@
-"""Providing for metafiddler.input"""
 
-import unittest
-from metafiddler.input import Input
-from metafiddler.input_events import InputEvent
+""" """
+import unittest            
+import metafiddler.input
 
-
-class TestConroller(unittest.TestCase):
-    """Test controller functions"""
-
-    def test_controls(self):
-        """Test general control surface"""
-        user_input = Input()
-        e = user_input.poll()
-        print("Gimme anyol input:")
-        e = InputEvent.NONE
-        while e == InputEvent.NONE:
-            e = user_input.poll()
-
-        print("Got event", InputEvent.describe(e))
-        return True
+class Metafiddler.inputTest(unittest.TestCase):
+    """ """
+    def test_something(self):
+        """ """

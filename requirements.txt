@@ -12,3 +12,4 @@ pygame
 requests
 # For better output
 tabulate
+requests_mock

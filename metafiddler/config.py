@@ -1,8 +1,9 @@
- """Manage configuration, its persistance and the propagation of the persistence."""
+"""Manage configuration, its persistance and the propagation of the persistence."""
 
 import logging
 
 import os
+import sys
 import pathlib
 from pathlib import Path
 
@@ -59,7 +60,8 @@ class MufiConfig:
                 # Lulzy -- OG architecture was clean IDs
                 self._curent_page_url = f"https://music.metafilter.com/{response.text}"
             else:
-                logging.fatal("Got unexpected error code polling remote: %s", response.status_code)
+                logging.critical("Got unexpected error code polling remote: %s", response.status_code)
+                sys.exit(1)
 
     @classmethod
     def _de64(cls, env_name):
@@ -114,7 +116,8 @@ class MufiConfig:
             if response.status_code == 200:
                 logging.info("Success")
             else:
-                logging.fatal("Unexpected server response %s", response.text)
+                logging.critical("Unexpected server response %s", response.text)
+                sys.exit(1)
 
 
     def playlist_by_label(self, playlist_label):

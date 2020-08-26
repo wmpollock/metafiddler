@@ -189,7 +189,7 @@ class MufiSong:
         # accidental.  Tempting to lump 'em all together in oen subdir tho
         if "dir" not in kwargs:
 
-            logging.fatal("Yikes, outpath invoked without 'dir'")
+            logging.critical("Yikes, outpath invoked without 'dir'")
             sys.exit(1)
 
         outdir = kwargs["dir"]

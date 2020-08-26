@@ -3,8 +3,10 @@
 # https://stackoverflow.com/a/33214851/8446930
 import logging
 import pathlib
+import sys
 
 import mechanize
+
 
 OK = 200
 
@@ -65,10 +67,12 @@ class Browser:
     def playlist_add(self, playlist_id, mufi_id):
         """Add an entry to the specified playlist"""
         if not playlist_id:
-            logging.fatal("Called without a playlist_id")
+            logging.critical("Called without a playlist_id")
+            sys.exit(1)
 
         if not mufi_id:
-            logging.fatal("Called without a mufi_id")
+            logging.critical("Called without a mufi_id")
+            sys.exit(1)
 
         self.login()
 
@@ -80,7 +84,7 @@ class Browser:
         print("Response code: ", response.code)
 
         # if browser.form == None:
-        #     #logging.critical("Did not receive page with form.")
+        #     #logging.critical(("Did not receive page with form.")
         #     print("Did not receive page with form.")
         #     exit()
         browser = {}

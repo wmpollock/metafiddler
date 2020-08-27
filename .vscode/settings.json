@@ -20,5 +20,6 @@
     },
     "remote.SSH.useLocalServer": false,
     "python.linting.pylintCategorySeverity.refactor": "Information",
-    "python.linting.pylintUseMinimalCheckers": false
+    "python.linting.pylintUseMinimalCheckers": false,
+    "plantuml.java": "C:\\Program Files\\AdoptOpenJDK\\jre-14.0.2.12-hotspot\\bin\\java.exe"
 }

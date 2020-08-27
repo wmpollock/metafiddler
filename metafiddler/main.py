@@ -128,6 +128,8 @@ class Run:
                 # does not have a multiline lambda and IDK if busting them functions is
                 # more sensible?
 
+
+
                 if event and event != InputEvent.NONE:
                     logging.info("EVENT: %s", event)
                     self.speaker.say(event.description)

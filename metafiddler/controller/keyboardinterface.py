@@ -1,9 +1,11 @@
-from metafiddler.input_events import InputEvent
+""" Abstract class to base keyboard controllers on """
+
 from tabulate import tabulate
+from metafiddler.input_events import InputEvent
 
 
 class KeyboardInterface:
-
+    """ Abstract keyboard class """
     bindings = {
         "s": {"return": InputEvent.STOP,},
         "q": {"return": InputEvent.STOP,},
@@ -20,6 +22,7 @@ class KeyboardInterface:
     }
 
     def print_bindings(self):
+        """ Display the bindings for a given key """
         table = []
         bindings = self.bindings
         for key in bindings.keys():

@@ -1,4 +1,4 @@
-"""Provides abstract interface into the wild and wolly world of TTS for our reads."""
+d"""Provides abstract interface into the wild and wolly world of TTS for our reads."""
 
 # import hashlib
 import logging

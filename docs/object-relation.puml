@@ -1,0 +1,157 @@
+@startuml
+
+package metafiddler {
+
+  package main {
+    class Run {
+      song_actioned
+      queue
+      done
+      config
+      speaker
+      current_page
+      user_input
+      main()
+      stop()
+      play()
+      next()
+      previous()
+      volume_up()
+      volume_down()
+      playlist(playlist_id)
+      seek_back()
+      seek_forward()
+      open_source_page()
+  } 
+}
+
+  package keyboadinterface {
+    interface KeyboardInterface {
+      print_bindings()
+    }
+  }
+
+  package config {
+    class MufiConfig {
+      playlist_by_label(playlist_label),
+      playlist_title(playlist_label)
+      playlist_id(playlist_label)
+    }
+  }
+  package input {
+    Input : poll()  
+  }
+
+  package input_events {
+    class EventType
+    class InputEvent {
+      NONE
+      STOP
+      PLAY
+      NEXT
+      PREVIOUS
+      SEEK_FORWARD  
+      SEEK_BACK
+      VOLUME_UP
+      VOLUME_DOWN
+      PLAYLIST_A
+      PLAYLIST_B
+      PLAYLIST_X
+      PLAYLIST_y
+      events()
+    }
+  }
+  class Run
+  package mechanise {
+    class Browser {
+      login()
+      playlist_add()
+    }
+  }
+  package page {
+    class MufiPage {
+        song
+        audio_source_url
+        config
+        links
+        get()
+        provision()
+    }
+  }
+ package song {
+    class MufiSong {
+      config
+      title
+      artist
+      audio_file_url
+      local_path
+      mufi_id
+      speaker
+      title_read_path
+      provisioned
+      get()
+      get_title_read()
+      pause()
+      stop()
+      play()
+      play_title()
+      playing()
+      playlist_add()
+      provision()
+    }
+    MufiSong --> Browser : playlist_add()
+   }
+  
+  package speech {
+    class Speaker {
+      store(utterance, file)
+      prepare(utterance)
+      say(utterance)
+    }
+  }
+
+  package controller {
+    package windows {
+      class Keyboard {
+        poll()
+      }
+      
+      Keyboard --> KeyboardInterface
+      class Joystick {
+        poll()
+      }
+    }   
+    package unix {
+      class "Keyboard" as kbdunix {
+        poll()
+      }
+      kbdunix -> KeyboardInterface 
+      
+    }   
+
+  }
+}
+
+run --> Run 
+  MufiConfig --> Browser
+
+Run --> MufiPage
+Run --> Speaker
+Run --> InputEvent
+Run --> EventType
+Run --> MufiConfig 
+Run --> Input
+
+Input --> InputEvent
+Input --> Keyboard
+Input --> Joystick
+Input --> kbdunix
+
+Keyboard-->InputEvent
+Joystick-->InputEvent
+kbdunix-->InputEvent
+
+MufiPage --> MufiSong
+MufiSong --> Speaker
+
+@enduml

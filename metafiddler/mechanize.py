@@ -12,22 +12,19 @@ OK = 200
 
 JARFILE = pathlib.Path.home() / ".metafiddler.cookiejar"
 
-class Browser(mechanize.Browwser):
+class Browser(mechanize.Browser):
     """ Handle macro interactions w/MeFi """
     logged_in = False
     # Pylint can't read the 1001 instances of browser
     # pylint: disable=no-member
     def __init__(self, config):
         """Set up JARFILE and other housekeeping"""
-        self.cookiejar = mechanize.LWPCookieJar()
-        self.set_cookiejar(self.cookiejar)
         self.config = config
 
         # I guess we'll assume good until we get evidence otherwise...
         if JARFILE.exists():
             logging.debug("Loading jarfile: %s", str(JARFILE))
-            self.cookiejar.load(JARFILE)
-            self.set_cookiejar(self.cookiejar)
+            self.cookiejar = mechanize.LWPCookieJar(JARfiLE)
         else:
             self.login()
 

@@ -7,3 +7,4 @@ _dev/js_winmm.py
 *.pyc
 .coverage
 .scannerwork/*
+htmlcov/*

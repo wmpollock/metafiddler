@@ -6,11 +6,6 @@ import re
 import pygame.mixer
 import gtts
 
-logging.basicConfig(
-    level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(message)s"
-)
-
-
 class Speaker:
     """Class for generating, storing and recovering TTS utterances"""
 

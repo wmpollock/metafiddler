@@ -41,12 +41,6 @@ class TestConfig(unittest.TestCase):
             print(f"Setting current page to {test_value}")
 
             config.current_page_url = test_value
-            import pprint
-            pretty = pprint.PrettyPrinter(indent=4)
-            pretty.pprint(vars(mocked_file))
-            
-            #self.assertTrue(mocked_file.assert_called_once_with(config.state_file, mode="w"))
             mocked_file.assert_called_once_with('/home/bill/.metafiddler.current', mode='w')
-           
 
             

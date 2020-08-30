@@ -12,9 +12,9 @@ class TestConroller(unittest.TestCase):
         """Test general control surface"""
         user_input = Input()
         print("Gimme anyol input:")
-        e = InputEvent.NONE
-        while e == InputEvent.NONE:
-            e = user_input.poll()
+        event = InputEvent.NONE
+        while event == InputEvent.NONE:
+            event = user_input.poll()
 
-        print("Got event", InputEvent.describe(e))
+        print("Got event", event.description)
         return True

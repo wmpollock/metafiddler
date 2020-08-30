@@ -157,7 +157,7 @@ class MufiSong:
     @classmethod
     def __clean_filename(cls, filename):
         """ replace arbitrary things with underscore (default nuffin')"""
- 
+
         # keep only valid ascii chars
         cleaned_filename = (
             unicodedata.normalize("NFKD", filename).encode("ASCII", "ignore").decode()

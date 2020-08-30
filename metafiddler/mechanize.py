@@ -3,29 +3,31 @@
 # https://stackoverflow.com/a/33214851/8446930
 import logging
 import pathlib
-import sys
 
 import mechanize
-
 
 OK = 200
 
 JARFILE = pathlib.Path.home() / ".metafiddler.cookiejar"
 
-class Browser(mechanize.Browser):
+class Browser:
     """ Handle macro interactions w/MeFi """
     logged_in = False
+    browser = {}
     # Pylint can't read the 1001 instances of browser
     # pylint: disable=no-member
     def __init__(self, config):
         """Set up JARFILE and other housekeeping"""
+        self.cookiejar = mechanize.LWPCookieJar()
+        browser = self.browser = mechanize.Browser()
+        browser.set_cookiejar(self.cookiejar)
         self.config = config
-        self.set_cookiejar(mechanize.LWPCookieJar())
-    
+
         # I guess we'll assume good until we get evidence otherwise...
         if JARFILE.exists():
             logging.debug("Loading jarfile: %s", str(JARFILE))
             self.cookiejar.load(JARFILE)
+            browser.set_cookiejar(self.cookiejar)
         else:
             self.login()
 
@@ -36,14 +38,15 @@ class Browser(mechanize.Browser):
             return False
 
         if not self.logged_in:
-            self.open("https://login.metafilter.com")
+            browser = self.browser
+            browser.open("https://login.metafilter.com")
 
-            self.select_form(action="logging-in.mefi")
+            browser.select_form(action="logging-in.mefi")
 
-            self["user_name"] = self.config.mefi_login # pylint: disable=unsupported-assignment-operation
-            self["user_pass"] = self.config.mefi_password # pylint: disable=unsupported-assignment-operation
+            browser["user_name"] = self.config.mefi_login # pylint: disable=unsupported-assignment-operation
+            browser["user_pass"] = self.config.mefi_password # pylint: disable=unsupported-assignment-operation
 
-            response = self.submit()
+            response = browser.submit()
             logging.debug("Response code: %s", response.code)
             if response.code == 200:
                 # So at this point we should have a number of clues:
@@ -62,27 +65,31 @@ class Browser(mechanize.Browser):
     def playlist_add(self, playlist_id, mufi_id):
         """Add an entry to the specified playlist"""
         if not playlist_id:
-            logging.critical("Called without a playlist_id")
-            sys.exit(1)
+            logging.fatal("Called without a playlist_id")
 
         if not mufi_id:
-            logging.critical("Called without a mufi_id")
-            sys.exit(1)
+            logging.fatal("Called without a mufi_id")
 
         self.login()
 
         # try:
-        response = self.open(  # pylint: disable=assignment-from-none
+        response = self.browser.open(  # pylint: disable=assignment-from-none
             "https://music.metafilter.com/contribute/add_to_playlist.mefi?id="
             + str(mufi_id)
         )
         print("Response code: ", response.code)
 
-        self.select_form(action="track-add.mefi")
+        # if browser.form == None:
+        #     #logging.critical("Did not receive page with form.")
+        #     print("Did not receive page with form.")
+        #     exit()
+        browser = {}
+        browser = self.browser
+        browser.select_form(action="track-add.mefi")
 
 
-        self["playlist_id"] = (str(playlist_id),) # pylint: disable=unsupported-assignment-operation
-        response = self.submit()
+        browser["playlist_id"] = (str(playlist_id),) # pylint: disable=unsupported-assignment-operation
+        response = browser.submit()
         if response.code == OK:
             logging.info("Added sweet, sib! s( ^ ‿ ^)-b")
         else:

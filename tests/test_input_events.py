@@ -3,8 +3,8 @@ import logging
 import unittest
 from metafiddler.input_events import InputEvent, EventType
 
-class TestConfig(unittest.TestCase):
-    """Test configuration methods"""
+class TestInputEvents(unittest.TestCase):
+    """Test input_events methods"""
 
     def setUp(self):
         logging.basicConfig(
@@ -21,7 +21,5 @@ class TestConfig(unittest.TestCase):
         """ Test events method """
         events = InputEvent.events()
         self.assertNotEqual(events, None)
-
-        print(events)
         for event in events:
-            print(event.description)
+            self.assertIsNotNone(event.description)

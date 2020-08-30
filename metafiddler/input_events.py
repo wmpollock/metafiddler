@@ -43,4 +43,7 @@ class InputEvent: # pylint: disable=too-few-public-methods
     def events(cls):
         """ List all defined events """
 
-        return filter(lambda x: re.match(r'^[A-Z]+\w+$', x), cls.__dict__.keys())
+        return list(map(lambda x: cls.__dict__[x], 
+                        filter(lambda x: re.match(r'^[A-Z]+\w+$', x), cls.__dict__.keys())
+                        )
+        )

@@ -305,7 +305,7 @@ class Joystick:
             }
             for button in buttonmap.keys():
                 if button_states.get(button):
-                    return buttonmap[buttton]
+                    return buttonmap[button]
 
 
         return InputEvent.NONE

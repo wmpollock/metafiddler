@@ -157,9 +157,7 @@ class MufiSong:
     @classmethod
     def __clean_filename(cls, filename):
         """ replace arbitrary things with underscore (default nuffin')"""
-        # for r in replace:
-        #     filename = filename.replace(r, '_')
-
+ 
         # keep only valid ascii chars
         cleaned_filename = (
             unicodedata.normalize("NFKD", filename).encode("ASCII", "ignore").decode()
@@ -196,7 +194,7 @@ class MufiSong:
 
         # I was like, nah, but then, yeah, with this config nonsense
         if not outdir:
-            raise Exception("FATAL: Need to invoke with 'dir' defined")
+            raise ValueError("FATAL: Need to invoke with 'dir' defined")
 
         if not os.path.exists(outdir):
             os.makedirs(outdir)

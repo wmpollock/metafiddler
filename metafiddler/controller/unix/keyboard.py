@@ -31,7 +31,7 @@ class Keyboard(KeyboardInterface):
 
         self.bindings.update(
             {
-                ARROW_PREFIX + C: {
+                ARROW_PREFIX + "C": {
                     "return": InputEvent.NEXT,
                     # "desc": "arrrow-forward"
                     "desc": "→",

@@ -50,82 +50,84 @@ class MufiPage:
     def get(self):
         """Retrieve the page components"""
         if self.audio_source_url:
-            # logging.debug("Getting " + self.audio_source_url)
-            with urllib.request.urlopen(self.audio_source_url) as url:
-                content = url.read()
-                soup = BeautifulSoup(content, features="lxml")
-
-                # Title
-                # ------------------------------------------------------------
-                # <meta property="og:title" content="Down a Hole">
-                title_elm = soup.find("meta", property="og:title")
-                self.song.title = title_elm["content"]
-
-                # Artist
-                # ------------------------------------------------------------
-                # <span class="smallcopy">posted by <a href="http://www.metafilter.com/user/124932" target="_self">TheNegativeInfluence</a>
-
-                # I'm going to crack this egg rather than try to rely on a href regexp test
-                # which IDK seems jankier?
-                # artist_elm = soup.find("span", class="smallcopy", text=re.compile(r'posted by') )
-                artist_elm = soup.find(
-                    "a", href=re.compile(r"www.metafilter.com/user/")
-                )
-                self.song.artist = artist_elm.string
-
-                # MP3 URL
-                # ------------------------------------------------------------
-                #  <link rel="canonical" href="http://music.metafilter.com/8716/Down-a-Hole" id="canonical">
-                self.song.audio_file_url = soup.find("link", rel="canonical")["href"]
-                script = soup.find("script", text=MP3_URL_REGEXP)
-                if script:
-                    match = MP3_URL_REGEXP.search(script.text)
-                    if match:
-                        # Browser fiddles about with native method, https is fine for us.
-                        self.song.audio_file_url = "https:" + match.group(0)
-
-                # "Older" and "Newer" links
-                # ------------------------------------------------------------
-                links = {
-                    "older": {"regexp": re.compile(r"Older")},
-                    "newer": {"regexp": re.compile(r"Newer")},
-                }
-                for link_name, link_vals in links.items():
-                    # The title for this is contained in nothing partiularly semantic, just hanging:
-                    # out in a .comments > .whitesmallcopy containing this here a
-                    # <a (newer)/> TITLE_A | TITLE_B <a (older)/>
-                    # IDK, I don't have a strong use case (maybe)
-                    anchor = soup.find("a", text=link_vals["regexp"])
-                    if anchor:
-                        # Links are not (currently) fully qualified
-
-                        self.links[link_name] = MufiPage(
-                            self.config, "https://music.metafilter.com" + anchor["href"]
-                        )
-                        logging.debug(
-                            "Found %s: https://music.metafilter.com%s",
-                            link_name,
-                            anchor["href"],
-                        )
-                    else:
-                        # Natural state for first/last tune:
-                        # we set the former state for a first-time run
-                        logging.warning("WARNING: no '%s' field.", link_name)
-
-                # "mufi_id" - post number used for favorites, URLs
-                # ------------------------------------------------------------
-                match = MUFI_ID_REGEXP.search(self.audio_source_url)
-                if match:
-                    self.song.mufi_id = match.group(1)
-                else:
-                    logging.critical(
-                        "FATAL coudln't find mufi_id in %s", self.audio_source_url
-                    )
-                    exit()
-
-        else:
             logging.critical("FATAL: no audio source url provided to metafiddler.page")
             exit()
+
+            
+        logging.debug("Getting " + self.audio_source_url)
+        with urllib.request.urlopen(self.audio_source_url) as url:
+            content = url.read()
+            soup = BeautifulSoup(content, features="lxml")
+            self.parse_page(self)
+
+    def parse_page(self, )
+            # Title
+            # ------------------------------------------------------------
+            # <meta property="og:title" content="Down a Hole">
+            title_elm = soup.find("meta", property="og:title")
+            self.song.title = title_elm["content"]
+
+            # Artist
+            # ------------------------------------------------------------
+            # <span class="smallcopy">posted by <a href="http://www.metafilter.com/user/124932" target="_self">TheNegativeInfluence</a>
+
+            # I'm going to crack this egg rather than try to rely on a href regexp test
+            # which IDK seems jankier?
+            # artist_elm = soup.find("span", class="smallcopy", text=re.compile(r'posted by') )
+            artist_elm = soup.find(
+                "a", href=re.compile(r"www.metafilter.com/user/")
+            )
+            self.song.artist = artist_elm.string
+
+            # MP3 URL
+            # ------------------------------------------------------------
+            #  <link rel="canonical" href="http://music.metafilter.com/8716/Down-a-Hole" id="canonical">
+            self.song.audio_file_url = soup.find("link", rel="canonical")["href"]
+            script = soup.find("script", text=MP3_URL_REGEXP)
+            if script:
+                match = MP3_URL_REGEXP.search(script.text)
+                if match:
+                    # Browser fiddles about with native method, https is fine for us.
+                    self.song.audio_file_url = "https:" + match.group(0)
+
+            # "Older" and "Newer" links
+            # ------------------------------------------------------------
+            links = {
+                "older": {"regexp": re.compile(r"Older")},
+                "newer": {"regexp": re.compile(r"Newer")},
+            }
+            for link_name, link_vals in links.items():
+                # The title for this is contained in nothing partiularly semantic, just hanging:
+                # out in a .comments > .whitesmallcopy containing this here a
+                # <a (newer)/> TITLE_A | TITLE_B <a (older)/>
+                # IDK, I don't have a strong use case (maybe)
+                anchor = soup.find("a", text=link_vals["regexp"])
+                if anchor:
+                    # Links are not (currently) fully qualified
+
+                    self.links[link_name] = MufiPage(
+                        self.config, "https://music.metafilter.com" + anchor["href"]
+                    )
+                    logging.debug(
+                        "Found %s: https://music.metafilter.com%s",
+                        link_name,
+                        anchor["href"],
+                    )
+                else:
+                    # Natural state for first/last tune:
+                    # we set the former state for a first-time run
+                    logging.warning("WARNING: no '%s' field.", link_name)
+
+            # "mufi_id" - post number used for favorites, URLs
+            # ------------------------------------------------------------
+            match = MUFI_ID_REGEXP.search(self.audio_source_url)
+            if match:
+                self.song.mufi_id = match.group(1)
+            else:
+                logging.critical(
+                    "FATAL coudln't find mufi_id in %s", self.audio_source_url
+                )
+                exit()
 
     def provision(self, **kwargs):
         """Download the page and its components"""

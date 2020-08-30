@@ -1,5 +1,8 @@
 @startuml
 
+scale 1024 width 
+scale 768 height 
+
 package metafiddler {
 
   package main {
@@ -61,7 +64,6 @@ package metafiddler {
       events()
     }
   }
-  class Run
   package mechanise {
     class Browser {
       login()
@@ -133,14 +135,14 @@ package metafiddler {
 }
 
 run --> Run 
-  MufiConfig --> Browser
+MufiConfig --> Browser
 
-Run --> MufiPage
+Run -> MufiPage
 Run --> Speaker
 Run --> InputEvent
 Run --> EventType
-Run --> MufiConfig 
-Run --> Input
+Run -> MufiConfig 
+Run -> Input
 
 Input --> InputEvent
 Input --> Keyboard

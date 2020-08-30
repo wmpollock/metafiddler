@@ -1,24 +1,21 @@
 """Test for metafiddler.config"""
 import logging
-import os
 import pprint
 import unittest
 
 from unittest.mock import patch, mock_open
-import requests
 import requests_mock
 
 from metafiddler.config import MufiConfig
 
-
 class TestConfig(unittest.TestCase):
     """Test configuration methods"""
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         logging.basicConfig(
             level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(message)s"
         )
-
 
     def test_config(self):
         """Test configuration load/setup"""
@@ -31,28 +28,25 @@ class TestConfig(unittest.TestCase):
         print("Song save dir:", config.song_save_dir)
         self.assertIsNotNone(config.current_page_url)
 
-    def test_update(self):
+    @requests_mock.Mocker()
+    def test_update(self, request):
         """Test whether update works"""
+
+        request.register_uri(requests_mock.ANY, requests_mock.ANY, text='7734')
+        print("PAGE:", MufiConfig.current_page_post_url)
         config = MufiConfig()
-        config.current_page_post_url = "mock://foo.foo"
         # https://github.com/otrabalhador/python-testing-by-examples/blob/master/docs/en/mocking/examples/reading-writing-on-files.md#writing-on-files
-
-        session = requests.Session()
-        adapter = requests_mock.Adapter()
-        session.mount('mock://', adapter)
-
-        adapter.register_uri('GET', 'mock://foo.foo', text='data')
         with patch('builtins.open', mock_open()) as mocked_file:
-
-            # Make sure we're testing safely...
-            original_config_mtime = os.path.getmtime(config.config_file)
-
             test_value = config.current_page_url
             print(f"Setting current page to {test_value}")
 
             config.current_page_url = test_value
-            mocked_file.assert_called_once_with(config.state_file, mode='w')
-            self.assertTrue(mocked_file().write.assert_called_once_with(test_value))
+            import pprint
+            pretty = pprint.PrettyPrinter(indent=4)
+            pretty.pprint(vars(mocked_file))
+            
+            #self.assertTrue(mocked_file.assert_called_once_with(config.state_file, mode="w"))
+            mocked_file.assert_called_once_with('/home/bill/.metafiddler.current', mode='w')
+           
 
-            new_config_mtime = os.path.getmtime(config.config_file)
-            self.assertEqual(original_config_mtime, new_config_mtime)
+            

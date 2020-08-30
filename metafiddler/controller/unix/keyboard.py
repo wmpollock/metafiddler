@@ -12,9 +12,11 @@ import sys
 from metafiddler.input_events import InputEvent
 from metafiddler.controller.keyboardinterface import KeyboardInterface
 
+ARROW_PREFIX =  "\x1b["
 
 # Thanks, FAQ:
 # https://docs.python.org/2/faq/library.html#how-do-i-get-a-single-keypress-at-a-time
+
 class Keyboard(KeyboardInterface):
     def __init__(self):
         fd = self.fd = sys.stdin.fileno()
@@ -29,37 +31,22 @@ class Keyboard(KeyboardInterface):
 
         self.bindings.update(
             {
-                "\x1b"
-                + "["
-                + "C": {
+                ARROW_PREFIX + C: {
                     "return": InputEvent.NEXT,
                     # "desc": "arrrow-forward"
                     "desc": "→",
                 },
-                "\x1b"
-                + "["
-                + "C": {
-                    "return": InputEvent.NEXT,
-                    # "desc": "arrrow-forward"
-                    "desc": "→",
-                },
-                "\x1b"
-                + "["
-                + "D": {
+                ARROW_PREFIX + "D": {
                     "return": InputEvent.PREVIOUS,
                     # "desc": "arrow-back"
                     "desc": "←",
                 },
-                "\x1b"
-                + "["
-                + "A": {
+                ARROW_PREFIX + "A": {
                     "return": InputEvent.VOLUME_UP,
                     # "desc": "arrow-up"
                     "desc": "↑",
                 },
-                "\x1b"
-                + "["
-                + "B": {
+                ARROW_PREFIX + "B": {
                     "return": InputEvent.VOLUME_DOWN,
                     # "desc": "arrow-down"
                     "desc": "↓",

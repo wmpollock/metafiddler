@@ -2,10 +2,12 @@
 import logging
 import os
 import pprint
+import unittest
+
+from unittest.mock import patch, mock_open
 import requests
 import requests_mock
-import unittest
-from unittest.mock import patch, mock_open
+
 from metafiddler.config import MufiConfig
 
 

@@ -4,8 +4,6 @@ import logging
 import multiprocessing
 import webbrowser
 import sys
-#import os
-#os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 import pygame #
 from tabulate import tabulate

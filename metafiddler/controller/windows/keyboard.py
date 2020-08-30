@@ -93,9 +93,8 @@ class Keyboard(KeyboardInterface):
             )
             exit()
 
-        # Had this commented out in favor of the singleton which didn't catch Winpty I guess?
+        # Second one necessary for winpty
         keycode_signals = [b"\000", b"\xe0"]
-        # keycode_signal = b'\000'
         try:
             if msvcrt.kbhit():
 

@@ -7,7 +7,7 @@ Mocking pain points:
 import logging
 import pprint
 import unittest
-# from unittest.mock import MagicMock, patch, Mock
+
 from unittest.mock import MagicMock
 
 from metafiddler.config import MufiConfig
@@ -15,7 +15,6 @@ from metafiddler.mechanize import Browser
 
 
 HOT_TEST = True
-# HOT_TEST = False
 
 class TestMechanise(unittest.TestCase):
     """Test configuration methods"""
@@ -34,10 +33,6 @@ class TestMechanise(unittest.TestCase):
         if not HOT_TEST:
             print("SUBSTITUTING BROWSER")
             self.browser.browser = MagicMock(name='Browser()')
-
-        # print(browser.cookiejar)
-        # print(browser.browser)
-        # self.browser.login()
 
     def test_playlist_add(self):
         """Invoke adding a record to the playlist"""

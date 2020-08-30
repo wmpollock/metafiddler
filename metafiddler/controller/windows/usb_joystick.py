@@ -271,12 +271,6 @@ class Joystick:
 
                 button_states[name] = pressed
 
-            # Format a list of currently pressed buttons.
-            buttons_text = ""
-            for btn in button_names:
-                if button_states.get(btn):
-                    buttons_text += btn + " "
-
             # X/Y JOYSTICK EVENTS
             # -----------------------------------------------------------------------------
             # Value here is kind of not always == 1
@@ -295,29 +289,23 @@ class Joystick:
 
             # Metabuttons
             # -----------------------------------------------------------------------------
-            if button_states.get("start"):
-                return InputEvent.PLAY
-            if button_states.get("select"):
-                return InputEvent.STOP
 
             # PLAYER BUTTONS
             # -----------------------------------------------------------------------------
-            if button_states.get("a"):
-                return InputEvent.PLAYLIST_A
+            buttonmap = {
+                "a": InputEvent.PLAYLIST_A,
+                "b": InputEvent.PLAYLIST_B,
+                "x": InputEvent.PLAYLIST_X,
+                "y": InputEvent.PLAYLIST_Y,
+                "left": InputEvent.SEEK_BACK,
+                "right":  InputEvent.SEEK_FORWARD,
+                "start": InputEvent.PLAY,
+                "select": InputEvent.STOP
 
-            if button_states.get("b"):
-                return InputEvent.PLAYLIST_B
+            }
+            for button in buttonmap.keys():
+                if button_states.get(button):
+                    return buttonmap[buttton]
 
-            if button_states.get("x"):
-                return InputEvent.PLAYLIST_X
-
-            if button_states.get("y"):
-                return InputEvent.PLAYLIST_Y
-
-            if button_states.get("left"):
-                return InputEvent.SEEK_BACK
-
-            if button_states.get("right"):
-                return InputEvent.SEEK_FORWARD
 
         return InputEvent.NONE

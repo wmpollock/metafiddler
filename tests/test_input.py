@@ -11,7 +11,6 @@ class TestConroller(unittest.TestCase):
     def test_controls(self):
         """Test general control surface"""
         user_input = Input()
-        e = user_input.poll()
         print("Gimme anyol input:")
         e = InputEvent.NONE
         while e == InputEvent.NONE:

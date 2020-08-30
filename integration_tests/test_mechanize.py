@@ -5,7 +5,6 @@ Mocking pain points:
 
 """
 import logging
-import pprint
 import unittest
 
 from unittest.mock import MagicMock
@@ -14,7 +13,7 @@ from metafiddler.config import MufiConfig
 from metafiddler.mechanize import Browser
 
 
-HOT_TEST = True
+HOT_TEST = False
 
 class TestMechanise(unittest.TestCase):
     """Test configuration methods"""

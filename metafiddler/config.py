@@ -60,8 +60,13 @@ class MufiConfig:
                 # Lulzy -- OG architecture was clean IDs
                 self._curent_page_url = f"https://music.metafilter.com/{response.text}"
             else:
-                logging.critical("Got unexpected error code polling remote: %s", response.status_code)
+                logging.critical(
+                    "Got unexpected error code polling remote: %s",
+                    response.status_code
+                )
                 sys.exit(1)
+
+
 
     @classmethod
     def _de64(cls, env_name):
@@ -143,4 +148,3 @@ class MufiConfig:
 
         logging.warning("No playlist found matching %s", playlist_label)
         return None
-       

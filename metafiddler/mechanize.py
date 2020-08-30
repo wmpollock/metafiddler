@@ -20,11 +20,12 @@ class Browser(mechanize.Browser):
     def __init__(self, config):
         """Set up JARFILE and other housekeeping"""
         self.config = config
-
+        self.set_cookiejar(mechanize.LWPCookieJar())
+    
         # I guess we'll assume good until we get evidence otherwise...
         if JARFILE.exists():
             logging.debug("Loading jarfile: %s", str(JARFILE))
-            self.cookiejar = mechanize.LWPCookieJar(JARFILE)
+            self.cookiejar.load(JARFILE)
         else:
             self.login()
 

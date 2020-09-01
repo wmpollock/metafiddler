@@ -28,12 +28,7 @@ package metafiddler {
   } 
 }
 
-  package keyboadinterface {
-    interface KeyboardInterface {
-      print_bindings()
-    }
-  }
-
+  
   package config {
     class MufiConfig {
       playlist_by_label(playlist_label),
@@ -44,6 +39,8 @@ package metafiddler {
   package input {
     Input : poll()  
   }
+
+  
 
   package input_events {
     class EventType
@@ -113,6 +110,14 @@ package metafiddler {
   }
 
   package controller {
+    interface InputInterface {
+      print_bindings()
+    }
+    interface KeyboardInterface {
+      
+    }
+    KeyboardInterface --> InputInterface
+    
     package windows {
       class Keyboard {
         poll()
@@ -122,12 +127,17 @@ package metafiddler {
       class Joystick {
         poll()
       }
+      Joystick --> InputInterface
     }   
     package unix {
       class "Keyboard" as kbdunix {
         poll()
       }
       kbdunix -> KeyboardInterface 
+      class Joystick {
+        poll()
+      }
+      Joystick --> InputInterface
       
     }   
 

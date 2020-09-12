@@ -4,8 +4,7 @@ import unittest
 from metafiddler.input import Input
 from metafiddler.input_events import InputEvent
 
-
-class TestConroller(unittest.TestCase):
+class TestController(unittest.TestCase):
     """Test controller functions"""
 
     def test_controls(self):
@@ -16,5 +15,6 @@ class TestConroller(unittest.TestCase):
         while event == InputEvent.NONE:
             event = user_input.poll()
 
+        print("Event:", event)
         print("Got event", event.description)
-        return True
+        self.assertIsNotNone(event)

@@ -25,7 +25,7 @@ class KeyboardInterface:
         """ Display the bindings for a given key """
         table = []
         bindings = self.bindings
-        for key in bindings.keys():
+        for key in bindings:
             # Haha, since we use the labels I guess we don't need a dictionary to look these up (yikes...)
 
             if "description" in bindings[key]:

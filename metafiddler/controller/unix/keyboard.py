@@ -12,22 +12,23 @@ import sys
 from metafiddler.input_events import InputEvent
 from metafiddler.controller.keyboardinterface import KeyboardInterface
 
-ARROW_PREFIX =  "\x1b["
+ARROW_PREFIX = "\x1b["
 
 # Thanks, FAQ:
 # https://docs.python.org/2/faq/library.html#how-do-i-get-a-single-keypress-at-a-time
 
 class Keyboard(KeyboardInterface):
+    """ Unix keyboard """
     def __init__(self):
-        fd = self.fd = sys.stdin.fileno()
+        stdin_fd = self.stdin_fd = sys.stdin.fileno()
 
-        self.oldterm = termios.tcgetattr(fd)
-        newattr = termios.tcgetattr(fd)
+        self.oldterm = termios.tcgetattr(stdin_fd)
+        newattr = termios.tcgetattr(stdin_fd)
         newattr[3] = newattr[3] & ~termios.ICANON & ~termios.ECHO
-        termios.tcsetattr(fd, termios.TCSANOW, newattr)
+        termios.tcsetattr(stdin_fd, termios.TCSANOW, newattr)
 
-        self.oldflags = fcntl.fcntl(fd, fcntl.F_GETFL)
-        fcntl.fcntl(fd, fcntl.F_SETFL, self.oldflags | os.O_NONBLOCK)
+        self.oldflags = fcntl.fcntl(stdin_fd, fcntl.F_GETFL)
+        fcntl.fcntl(stdin_fd, fcntl.F_SETFL, self.oldflags | os.O_NONBLOCK)
 
         self.bindings.update(
             {
@@ -55,31 +56,30 @@ class Keyboard(KeyboardInterface):
         )
 
         self.print_bindings()
-        print(self.bindings)
 
     def __del__(self):
-        termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.oldterm)
-        fcntl.fcntl(self.fd, fcntl.F_SETFL, self.oldflags)
+        termios.tcsetattr(self.stdin_fd, termios.TCSAFLUSH, self.oldterm)
+        fcntl.fcntl(self.stdin_fd, fcntl.F_SETFL, self.oldflags)
 
     def poll(self):
         """See if there is any input on this device"""
         try:
-            c = sys.stdin.read(1)
+            key = sys.stdin.read(1)
 
-            if c:
-                
-                char = repr(c)
-                print(f"CHAR! {c} {char}")
+            if key:
+
+                char = repr(key)
                 # CONTROLLL SEQUEEENCE
-                if c == "\x1b":
+                if char == "\x1b":
+
                     esc = sys.stdin.read(1)
                     arrow = sys.stdin.read(1)
-                    lookup = c + esc + arrow
+                    lookup = key + esc + arrow
                     if lookup in self.bindings:
                         return self.bindings[lookup]["description"]
-                
-                if char in self.bindings:
-                    return self.bindings[char]["return"]
+
+                elif key in self.bindings:
+                    return self.bindings[key]["return"]
 
         except IOError:
             pass

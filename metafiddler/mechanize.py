@@ -82,7 +82,7 @@ class Browser:
         # if browser.form == None:
         #     #logging.critical("Did not receive page with form.")
         #     print("Did not receive page with form.")
-        #     exit()
+        #     sys.exit()
         browser = {}
         browser = self.browser
         browser.select_form(action="track-add.mefi")

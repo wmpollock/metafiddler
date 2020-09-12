@@ -22,6 +22,7 @@ but the horse was bit out of the barn before I came around to pygame I think.
 import ctypes
 import logging
 from tabulate import tabulate
+iport sys
 import winreg
 from ctypes.wintypes import WORD, UINT, DWORD
 from ctypes.wintypes import WCHAR as TCHAR
@@ -190,7 +191,7 @@ class Joystick:
             caps = JOYCAPS()
             if joyGetDevCaps(joy_id, ctypes.pointer(caps), ctypes.sizeof(JOYCAPS)) != 0:
                 logging.critical("FATAL: Failed to get device capabilities.")
-                exit()
+                sys.exit()
 
             # logging.debug("Driver name: " + caps.szPname)
 

@@ -2,6 +2,7 @@
 
 import logging
 import re
+import sys
 import urllib.request
 
 from bs4 import BeautifulSoup
@@ -51,7 +52,7 @@ class MufiPage:
         """Retrieve the page components"""
         if self.audio_source_url:
             logging.critical("FATAL: no audio source url provided to metafiddler.page")
-            exit()
+            sys.exit()
 
         logging.debug("Getting %s", self.audio_source_url)
         with urllib.request.urlopen(self.audio_source_url) as url:
@@ -123,7 +124,7 @@ class MufiPage:
             self.song.mufi_id = match.group(1)
         else:
             logging.critical("FATAL coudln't find mufi_id in %s", self.audio_source_url)
-            exit()
+            sys.exit()
 
     def provision(self, **kwargs):
         """Download the page and its components"""

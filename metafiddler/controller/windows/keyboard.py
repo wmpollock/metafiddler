@@ -22,7 +22,7 @@ class Keyboard(KeyboardInterface):
             logging.critical(
                 "FATAL: this process is not a terminal.  Perhaps you need to prefix with winpty."
             )
-            exit()
+            sys.exit()
 
         self.bindings.update(
             {
@@ -91,7 +91,7 @@ class Keyboard(KeyboardInterface):
             logging.critical(
                 "FATAL: this process is not a terminal.  Perhaps you need to prefix with winpty."
             )
-            exit()
+            sys.exit()
 
         # Second one necessary for winpty
         keycode_signals = [b"\000", b"\xe0"]
@@ -113,6 +113,6 @@ class Keyboard(KeyboardInterface):
                     return self.bindings[key]["return"]
         except KeyboardInterrupt:
             print("Yeet then")
-            exit(1)  # ?
+            sys.exit(1)  # ?
 
         return InputEvent.NONE

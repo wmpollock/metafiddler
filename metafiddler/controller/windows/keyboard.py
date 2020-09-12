@@ -32,54 +32,54 @@ class Keyboard(KeyboardInterface):
                 b"\000"
                 + b"M": {
                     "return": InputEvent.NEXT,
-                    # "desc": "arrrow-forward"
-                    "desc": "→",
+                    # "description": "arrrow-forward"
+                    "description": "→",
                 },
                 b"\000"
                 + b"K": {
                     "return": InputEvent.PREVIOUS,
-                    # "desc": "arrow-back"
-                    "desc": "←",
+                    # "description": "arrow-back"
+                    "description": "←",
                 },
                 b"\000"
                 + b"H": {
                     "return": InputEvent.VOLUME_UP,
-                    # "desc": "arrow-up"
-                    "desc": "↑",
+                    # "description": "arrow-up"
+                    "description": "↑",
                 },
                 b"\000"
                 + b"P": {
                     "return": InputEvent.VOLUME_DOWN,
-                    # "desc": "arrow-down"
-                    "desc": "↓",
+                    # "description": "arrow-down"
+                    "description": "↓",
                 },
                 # I don't get this second set but winpty seemed to need it?  Seems crass.
                 b"\xe0"
                 + b"M": {
                     "return": InputEvent.NEXT,
-                    # "desc": "arrrow-forward"
-                    "desc": "→",
+                    # "description": "arrrow-forward"
+                    "description": "→",
                 },
                 b"\xe0"
                 + b"K": {
                     "return": InputEvent.PREVIOUS,
-                    # "desc": "arrow-back"
-                    "desc": "←",
+                    # "description": "arrow-back"
+                    "description": "←",
                 },
                 b"\xe0"
                 + b"H": {
                     "return": InputEvent.VOLUME_UP,
-                    # "desc": "arrow-up"
-                    "desc": "↑",
+                    # "description": "arrow-up"
+                    "description": "↑",
                 },
                 b"\xe0"
                 + b"P": {
                     "return": InputEvent.VOLUME_DOWN,
-                    # "desc": "arrow-down"
-                    "desc": "↓",
+                    # "description": "arrow-down"
+                    "description": "↓",
                 },
                 # escape: may not want to print this bad boi
-                chr(27): {"return": InputEvent.STOP, "desc": "escape"},
+                chr(27): {"return": InputEvent.STOP, "description": "escape"},
             }
         )
 
@@ -112,6 +112,7 @@ class Keyboard(KeyboardInterface):
                 if key in self.bindings:
                     return self.bindings[key]["return"]
         except KeyboardInterrupt:
+            print("Yeet then")
             exit(1)  # ?
 
         return InputEvent.NONE

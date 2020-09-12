@@ -28,8 +28,8 @@ class KeyboardInterface:
         for key in bindings.keys():
             # Haha, since we use the labels I guess we don't need a dictionary to look these up (yikes...)
 
-            if "desc" in bindings[key]:
-                label = bindings[key]["desc"]
+            if "description" in bindings[key]:
+                label = bindings[key]["description"]
             else:
                 label = key
 

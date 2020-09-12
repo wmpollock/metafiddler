@@ -33,28 +33,29 @@ class Keyboard(KeyboardInterface):
             {
                 ARROW_PREFIX + "C": {
                     "return": InputEvent.NEXT,
-                    # "desc": "arrrow-forward"
-                    "desc": "→",
+                    # "description": "arrrow-forward"
+                    "description": "→",
                 },
                 ARROW_PREFIX + "D": {
                     "return": InputEvent.PREVIOUS,
-                    # "desc": "arrow-back"
-                    "desc": "←",
+                    # "description": "arrow-back"
+                    "description": "←",
                 },
                 ARROW_PREFIX + "A": {
                     "return": InputEvent.VOLUME_UP,
-                    # "desc": "arrow-up"
-                    "desc": "↑",
+                    # "description": "arrow-up"
+                    "description": "↑",
                 },
                 ARROW_PREFIX + "B": {
                     "return": InputEvent.VOLUME_DOWN,
-                    # "desc": "arrow-down"
-                    "desc": "↓",
+                    # "description": "arrow-down"
+                    "description": "↓",
                 },
             }
         )
 
         self.print_bindings()
+        print(self.bindings)
 
     def __del__(self):
         termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.oldterm)
@@ -64,17 +65,21 @@ class Keyboard(KeyboardInterface):
         """See if there is any input on this device"""
         try:
             c = sys.stdin.read(1)
+
             if c:
+                
                 char = repr(c)
+                print(f"CHAR! {c} {char}")
                 # CONTROLLL SEQUEEENCE
                 if c == "\x1b":
                     esc = sys.stdin.read(1)
                     arrow = sys.stdin.read(1)
                     lookup = c + esc + arrow
                     if lookup in self.bindings:
-                        return self.bindings[lookup]["desc"]
-                elif char in self.bindings:
-                    return char
+                        return self.bindings[lookup]["description"]
+                
+                if char in self.bindings:
+                    return self.bindings[char]["return"]
 
         except IOError:
             pass

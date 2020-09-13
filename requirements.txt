@@ -12,4 +12,7 @@ pygame
 requests
 # For better output
 tabulate
+# Testing
 requests_mock
+evdev
+#git+https://github.com/piborg/Gamepad

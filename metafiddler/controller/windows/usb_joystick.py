@@ -1,23 +1,15 @@
 """Windows USB Joysick consumer
 
-There's a good chance that I probably should have used pygame for this(?)
-but the horse was bit out of the barn before I came around to pygame I think.
+Adapted from:
+https://gist.github.com/rdb/8883307
+  Released by rdb under the Unlicense (unlicense.org)
+
+The strong point of this implementation was:
+ * Didn't require window focus (pygame)
+ Being able to grab input no matter whether the app was active
+or not was key to this whole thing working
 
 """
-
-# Adapted from:
-# https://gist.github.com/rdb/8883307
-#   Released by rdb under the Unlicense (unlicense.org)
-
-# I've stripped much of rdb's rich goodness in favor
-# of code readability: python is a hodgepodge when it comes
-# To hardware-specific calls.
-
-# The strong point of this implementation was:
-#  * Didn't require window focus (pygame)
-#  Being able to grab input no matter whether the app was active
-# or not was key to this whole thing working
-
 
 import ctypes
 import logging

@@ -28,11 +28,12 @@ try:
     controllers.append(metafiddler.controller.windows.usb_gamepad.Gamepad())
 except ModuleNotFoundError:
     print("Can't add Windows USB Gamepad.")
-    
-    
-import metafiddler.controller.unix.usb_gamepad
-controllers.append(metafiddler.controller.unix.gamepad.Gamepad())
 
+try:
+    import metafiddler.controller.unix.usb_gamepad
+    controllers.append(metafiddler.controller.unix.gamepad.Gamepad())
+except NotImplementedError:
+    print("Couldn't add UNIX gamepad")
 
 class Input: # pylint: disable=too-few-public-methods
     """Class to streamline all input events from the user"""

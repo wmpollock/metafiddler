@@ -124,20 +124,20 @@ package metafiddler {
       }
       
       Keyboard --> KeyboardInterface
-      class Joystick {
+      class Gamepad {
         poll()
       }
-      Joystick --> InputInterface
+      Gamepad --> InputInterface
     }   
     package unix {
       class "Keyboard" as kbdunix {
         poll()
       }
       kbdunix -> KeyboardInterface 
-      class Joystick {
+      class Gamepad {
         poll()
       }
-      Joystick --> InputInterface
+      Gamepad --> InputInterface
       
     }   
 
@@ -156,11 +156,11 @@ Run -> Input
 
 Input --> InputEvent
 Input --> Keyboard
-Input --> Joystick
+Input --> Gamepad
 Input --> kbdunix
 
 Keyboard-->InputEvent
-Joystick-->InputEvent
+Gamepad-->InputEvent
 kbdunix-->InputEvent
 
 MufiPage --> MufiSong

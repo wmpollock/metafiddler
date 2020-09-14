@@ -21,7 +21,7 @@ from ctypes.wintypes import WCHAR as TCHAR
 from metafiddler.input_events import InputEvent
 
 # Its possible the JS is not added and if so lets just get on with things
-joystick_provisioned = False
+gamepad_provisioned = False
 
 # Fetch function pointers
 joyGetNumDevs = ctypes.windll.winmm.joyGetNumDevs
@@ -132,31 +132,31 @@ class JOYINFOEX(ctypes.Structure):
     ]
 
 
-class Joystick:
+class Gamepad:
     def __init__(self):
         global info
         global caps
         global button_states
-        global joystick_provisioned
+        global gamepad_provisioned
 
         # Get the number of supported devices (usually 16).
         num_devs = joyGetNumDevs()
         if num_devs == 0:
-            logging.warn("Joystick driver not loaded.")
+            logging.warn("Gamepad driver not loaded.")
 
-        # Number of the joystick to open.
+        # Number of the gamepad to open.
         joy_id = 0
 
-        # Check if the joystick is plugged in.
+        # Check if the gamepad is plugged in.
         info = JOYINFO()
         p_info = ctypes.pointer(info)
         if joyGetPos(0, p_info) != 0:
-            logging.info("Joystick %d not plugged in.", (joy_id + 1))
+            logging.info("Gamepad %d not plugged in.", (joy_id + 1))
 
         else:
             print(
                 "\n"
-                + tabulate([["Joystick mapping"]], tablefmt="github")
+                + tabulate([["Gamepad mapping"]], tablefmt="github")
                 + "\n"
                 + tabulate(
                     [
@@ -177,7 +177,7 @@ class Joystick:
                 )
             )
 
-            joystick_provisioned = True
+            gamepad_provisioned = True
 
             # Get device capabilities.
             caps = JOYCAPS()
@@ -193,18 +193,18 @@ class Joystick:
                 try:
                     key = winreg.OpenKey(
                         winreg.HKEY_CURRENT_USER,
-                        "System\\CurrentControlSet\\Control\\MediaResources\\Joystick\\%s\\CurrentJoystickSettings"
+                        "System\\CurrentControlSet\\Control\\MediaResources\\Gamepad\\%s\\CurrentGamepadSettings"
                         % (caps.szRegKey),
                     )
                 except WindowsError:
                     key = None
 
             if key:
-                oem_name = winreg.QueryValueEx(key, "Joystick%dOEMName" % (joy_id + 1))
+                oem_name = winreg.QueryValueEx(key, "Gamepad%dOEMName" % (joy_id + 1))
                 if oem_name:
                     key2 = winreg.OpenKey(
                         winreg.HKEY_CURRENT_USER,
-                        "System\\CurrentControlSet\\Control\\MediaProperties\\PrivateProperties\\Joystick\\OEM\\%s"
+                        "System\\CurrentControlSet\\Control\\MediaProperties\\PrivateProperties\\Gamepad\\OEM\\%s"
                         % (oem_name[0]),
                     )
                     if key2:
@@ -236,17 +236,17 @@ class Joystick:
             )
             p_info = ctypes.pointer(info)
 
-    # Fetch new joystick data until it returns non-0 (that is, it has been unplugged)
+    # Fetch new gamepad data until it returns non-0 (that is, it has been unplugged)
     def poll(self):
         """See if there is any input on this device"""
         global p_info
         global info
         global caps
         global button_states
-        global joystick_provisioned
+        global gamepad_provisioned
 
-        # No joystick provisioned, lets bounce.
-        if not joystick_provisioned:
+        # No gamepad provisioned, lets bounce.
+        if not gamepad_provisioned:
             return
 
         if joyGetPosEx(0, p_info) == 0:

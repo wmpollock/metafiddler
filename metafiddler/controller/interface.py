@@ -16,7 +16,7 @@ with cross-platform libraries:
     except easy handling for my controller.  Benchmarks threw error :/
 
 Other contenders:
-https://github.com/justengel/pyjoystick
+https://github.com/justengel/pygamepad
 https://pypi.org/project/python-uinput/ - low level
 https://pypi.org/project/gamepadinfo/ - kitchen sink
 

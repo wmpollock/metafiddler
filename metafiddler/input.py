@@ -13,20 +13,25 @@ try:
     controllers.append(metafiddler.controller.windows.keyboard.Keyboard())
 except ModuleNotFoundError:
     print("Can't add Windows USB Keyboard.")
-    # try:
+    try:
         # And over here this is only
-    import metafiddler.controller.unix.keyboard
+        import metafiddler.controller.unix.keyboard
 
-    controllers.append(metafiddler.controller.unix.keyboard.Keyboard())
-    # except Exception as e:
-    #     print("Can't add Unix system keyboard")
+        controllers.append(metafiddler.controller.unix.keyboard.Keyboard())
+    except Exception as err:
+         print(f"Can't add Unix system keyboard: {err}")
 
 try:
-    import metafiddler.controller.windows.usb_joystick
 
-    controllers.append(metafiddler.controller.windows.usb_joystick.Joystick())
+    import metafiddler.controller.windows.usb_gamepad
+
+    controllers.append(metafiddler.controller.windows.usb_gamepad.Gamepad())
 except ModuleNotFoundError:
-    print("Can't add Windows USB Joystick.")
+    print("Can't add Windows USB Gamepad.")
+    
+    
+import metafiddler.controller.unix.usb_gamepad
+controllers.append(metafiddler.controller.unix.gamepad.Gamepad())
 
 
 class Input: # pylint: disable=too-few-public-methods

@@ -19,6 +19,7 @@ class EventType: # pylint: disable=too-few-public-methods
 class InputEvent: # pylint: disable=too-few-public-methods
     """ Class containing input events """
     NONE = EventType("Nothing happened.")
+
     STOP = EventType("Stop playing current track", "stop")
     PLAY = EventType("Resume playing the current track", "play")
     NEXT = EventType("Play next page", "next")

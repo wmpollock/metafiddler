@@ -19,6 +19,7 @@ import winreg
 from ctypes.wintypes import WORD, UINT, DWORD
 from ctypes.wintypes import WCHAR as TCHAR
 from metafiddler.input_events import InputEvent
+from metafiddler.controller.gamepadinterface import GamepadInterface
 
 # Its possible the JS is not added and if so lets just get on with things
 gamepad_provisioned = False
@@ -132,7 +133,7 @@ class JOYINFOEX(ctypes.Structure):
     ]
 
 
-class Gamepad:
+class Gamepad(GamepadInterface):
     def __init__(self):
         global info
         global caps
@@ -154,28 +155,7 @@ class Gamepad:
             logging.info("Gamepad %d not plugged in.", (joy_id + 1))
 
         else:
-            print(
-                "\n"
-                + tabulate([["Gamepad mapping"]], tablefmt="github")
-                + "\n"
-                + tabulate(
-                    [
-                        ["[right]", "next"],
-                        ["[left]", "prev"],
-                        ["[up]", "volume up"],
-                        ["[down]", "volume down"],
-                        ["[sel]", "stop"],
-                        ["[start]", "start"],
-                        ["left", "seek back"],
-                        ["right", "seek forward"],
-                        ["A", "Playlist A"],
-                        ["B", "Playlist B"],
-                        ["X", "Playlist X"],
-                        ["Y", "Playlist Y"],
-                    ],
-                    tablefmt="grid",
-                )
-            )
+            self.print_bindings()
 
             gamepad_provisioned = True
 
@@ -209,7 +189,7 @@ class Gamepad:
                     )
                     if key2:
                         oem_name = winreg.QueryValueEx(key2, "OEMName")
-                        logging.debug("OEM name: " + oem_name[0])
+                        logging.debug("OEM name: %s", oem_name[0])
                     key2.Close()
 
             # Set the initial button states.
@@ -282,20 +262,7 @@ class Gamepad:
 
             # Metabuttons
             # -----------------------------------------------------------------------------
-
-            # PLAYER BUTTONS
-            # -----------------------------------------------------------------------------
-            buttonmap = {
-                "a": InputEvent.PLAYLIST_A,
-                "b": InputEvent.PLAYLIST_B,
-                "x": InputEvent.PLAYLIST_X,
-                "y": InputEvent.PLAYLIST_Y,
-                "left": InputEvent.SEEK_BACK,
-                "right":  InputEvent.SEEK_FORWARD,
-                "start": InputEvent.PLAY,
-                "select": InputEvent.STOP
-
-            }
+            buttonmap = self.buttonmap
             for button in buttonmap.keys():
                 if button_states.get(button):
                     return buttonmap[button]

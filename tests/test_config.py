@@ -1,3 +1,5 @@
+#!/bin/env python3
+
 """Test for metafiddler.config"""
 import logging
 import pprint
@@ -43,4 +45,6 @@ class TestConfig(unittest.TestCase):
             config.current_page_url = test_value
             mocked_file.assert_called_once_with('/home/bill/.metafiddler.current', mode='w')
 
-            
+if __name__ == "__main__":
+    unittest.main()
+

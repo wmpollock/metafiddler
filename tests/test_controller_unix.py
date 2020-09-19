@@ -1,3 +1,5 @@
+#!/bin/env python3
+
 """ Unittest for Unix interfaces """
 
 import unittest
@@ -29,3 +31,7 @@ class TestGamepad(unittest.Testcase)
         gamepad_event(04, 04, 589826)
         # X
         gamepad_event(04, 04, 589825)
+
+if __name__ == "__main__":
+    unittest.main()
+

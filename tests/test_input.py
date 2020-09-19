@@ -1,3 +1,5 @@
+#!/bin/env python3
+
 # """Providing for metafiddler.input"""
 
 # import unittest
@@ -18,3 +20,7 @@
 
 #         print("Got event", event.description)
 #         return True
+
+if __name__ == "__main__":
+    unittest.main()
+

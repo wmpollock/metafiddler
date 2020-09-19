@@ -1,3 +1,5 @@
+#!/bin/env python3
+
 """Test for metafiddler.input_events """
 import logging
 import unittest
@@ -23,3 +25,7 @@ class TestInputEvents(unittest.TestCase):
         self.assertNotEqual(events, None)
         for event in events:
             self.assertIsNotNone(event.description)
+
+if __name__ == "__main__":
+    unittest.main()
+

@@ -1,3 +1,5 @@
+#!/bin/env python3
+
 # """Test for metafiddler.speech"""
 # import unittest
 # from unittest.mock import patch
@@ -13,3 +15,7 @@
 #         speaker = Speaker(config)
 #         speaker.say("Audio test complete.")
 #         print(gtts)
+
+if __name__ == "__main__":
+    unittest.main()
+

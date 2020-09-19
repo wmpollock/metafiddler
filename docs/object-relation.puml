@@ -2,6 +2,8 @@
 
 scale 1024 width 
 scale 768 height 
+'  Please, humans ...
+allowmixing
 
 package metafiddler {
 
@@ -116,8 +118,13 @@ package metafiddler {
     interface KeyboardInterface {
       
     }
+    interface GamepadInterface {
+      
+    }
+
     KeyboardInterface --> InputInterface
-    
+    GamepadInterface --> InputInterface
+
     package windows {
       class Keyboard {
         poll()
@@ -127,23 +134,25 @@ package metafiddler {
       class Gamepad {
         poll()
       }
-      Gamepad --> InputInterface
+      Gamepad --> GamepadInterface
     }   
     package unix {
       class "Keyboard" as kbdunix {
         poll()
       }
       kbdunix -> KeyboardInterface 
-      class Gamepad {
+      class "Gamepad" as gamepadlinux {
         poll()
       }
-      Gamepad --> InputInterface
+      gamepadlinux --> GamepadInterface
+      
       
     }   
 
   }
 }
 
+card "run.py" as run
 run --> Run 
 MufiConfig --> Browser
 

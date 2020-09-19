@@ -31,9 +31,6 @@ class Gamepad(GamepadInterface):
         for gamepad_device in gamepad_devices:
             self.gamepads.append(evdev.InputDevice(gamepad_device))
 
-        print("Init gamepad")
-        self.gamepad = InputDevice("/dev/input/js0")
-
     def poll(self):
         """ Get a gamepad event """
         for gamepad in self.gamepads:
@@ -41,5 +38,7 @@ class Gamepad(GamepadInterface):
 
             # Drain the rest of the events
             while event:
+                print(event)
                 event = gamepad.read_one()
-
+            
+            return InputEvent.NONE

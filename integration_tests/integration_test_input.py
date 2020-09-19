@@ -1,7 +1,7 @@
-""" Pysical test of controller interfaces,
+#!/bin/env python3
 
-Connect and go:  Ctrl-C ends the party
- """
+""" Pysical test of controller interfaces,
+"""
 
 import unittest
 
@@ -22,3 +22,6 @@ class TestController(unittest.TestCase):
         print("Event:", event)
         print("Got event", event.description)
         self.assertIsNotNone(event)
+
+if __name__ == "__main__":
+    unittest.main()

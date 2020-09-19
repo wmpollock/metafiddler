@@ -1,13 +1,21 @@
 @startuml
 
+title Metafiddler object model
+
 scale 1024 width 
 scale 768 height 
 '  Please, humans ...
 allowmixing
 
-package metafiddler {
+' First order module: #HoneyDew
+' Second order: #PowderBlue
+' Third order: #9cbdd3
+' Fourth order: #409da0
+' Fifth order: #568eb3
 
-  package main {
+package metafiddler #HoneyDew {
+
+  package main #PowderBlue {
     class Run {
       song_actioned
       queue
@@ -31,20 +39,20 @@ package metafiddler {
 }
 
   
-  package config {
+  package config #9cbdd3 {
     class MufiConfig {
       playlist_by_label(playlist_label),
       playlist_title(playlist_label)
       playlist_id(playlist_label)
     }
   }
-  package input {
+  package input #9cbdd3 {
     Input : poll()  
   }
 
   
 
-  package input_events {
+  package input_events #9cbdd3 {
     class EventType
     class InputEvent {
       NONE
@@ -63,13 +71,13 @@ package metafiddler {
       events()
     }
   }
-  package mechanise {
+  package mechanise #409da0 {
     class Browser {
       login()
       playlist_add()
     }
   }
-  package page {
+  package page #9cbdd3 {
     class MufiPage {
         song
         audio_source_url
@@ -79,7 +87,7 @@ package metafiddler {
         provision()
     }
   }
- package song {
+ package song #409da0 {
     class MufiSong {
       config
       title
@@ -103,7 +111,7 @@ package metafiddler {
     MufiSong --> Browser : playlist_add()
    }
   
-  package speech {
+  package speech #9cbdd3 {
     class Speaker {
       store(utterance, file)
       prepare(utterance)
@@ -111,7 +119,7 @@ package metafiddler {
     }
   }
 
-  package controller {
+  package controller #409da0 {
     interface InputInterface {
       print_bindings()
     }
@@ -122,10 +130,10 @@ package metafiddler {
       
     }
 
-    KeyboardInterface --> InputInterface
-    GamepadInterface --> InputInterface
+    KeyboardInterface -> InputInterface
+    GamepadInterface -> InputInterface
 
-    package windows {
+    package windows #568eb3 {
       class Keyboard {
         poll()
       }
@@ -136,7 +144,7 @@ package metafiddler {
       }
       Gamepad --> GamepadInterface
     }   
-    package unix {
+    package unix #568eb3 {
       class "Keyboard" as kbdunix {
         poll()
       }
@@ -168,7 +176,7 @@ Input --> Keyboard
 Input --> Gamepad
 Input --> kbdunix
 
-Keyboard-->InputEvent
+Keyboard->InputEvent
 Gamepad-->InputEvent
 kbdunix-->InputEvent
 

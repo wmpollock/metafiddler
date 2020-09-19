@@ -33,9 +33,9 @@ pip install -r requirements.txt
 ./run.py
 ```
 
-## Process model
+## Object model
 
-![Process diagram](.media/process-diagram.png)
+![Process diagram](docs/object-model.png)
 
 ## Background
 

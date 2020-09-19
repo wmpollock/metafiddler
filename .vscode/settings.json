@@ -1,0 +1,25 @@
+{
+    "editor.rulers": [100],
+    "terminal.integrated.env.linux": {
+        // "PYTHONPATH":  "~/Git/metafiddler",
+    },
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+
+    "python.autoComplete.extraPaths": [
+        // "~/Git/metafiddler"
+    ],
+    "python.linting.pylintArgs": [
+        //  Nasty hax :/
+        "--init-hook", "import sys; sys.path.append('/home/bill/Git/metafiddler/')",
+    ],
+    "files.exclude": {
+        "**/__pycache__": true,
+"**/__init__.py": true,
+        "**/*.pyc": true
+    },
+    "remote.SSH.useLocalServer": false,
+    "python.linting.pylintCategorySeverity.refactor": "Information",
+    "python.linting.pylintUseMinimalCheckers": false,
+    "plantuml.exportOutDir": "docs/"
+}

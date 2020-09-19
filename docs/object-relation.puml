@@ -1,0 +1,186 @@
+@startuml
+
+title Metafiddler object model
+
+scale 1024 width 
+scale 768 height 
+'  Please, humans ...
+allowmixing
+
+' First order module: #HoneyDew
+' Second order: #PowderBlue
+' Third order: #9cbdd3
+' Fourth order: #409da0
+' Fifth order: #568eb3
+
+package metafiddler #HoneyDew {
+
+  package main #PowderBlue {
+    class Run {
+      song_actioned
+      queue
+      done
+      config
+      speaker
+      current_page
+      user_input
+      main()
+      stop()
+      play()
+      next()
+      previous()
+      volume_up()
+      volume_down()
+      playlist(playlist_id)
+      seek_back()
+      seek_forward()
+      open_source_page()
+  } 
+}
+
+  
+  package config #9cbdd3 {
+    class MufiConfig {
+      playlist_by_label(playlist_label),
+      playlist_title(playlist_label)
+      playlist_id(playlist_label)
+    }
+  }
+  package input #9cbdd3 {
+    Input : poll()  
+  }
+
+  
+
+  package input_events #9cbdd3 {
+    class EventType
+    class InputEvent {
+      NONE
+      STOP
+      PLAY
+      NEXT
+      PREVIOUS
+      SEEK_FORWARD  
+      SEEK_BACK
+      VOLUME_UP
+      VOLUME_DOWN
+      PLAYLIST_A
+      PLAYLIST_B
+      PLAYLIST_X
+      PLAYLIST_y
+      events()
+    }
+  }
+  package mechanise #409da0 {
+    class Browser {
+      login()
+      playlist_add()
+    }
+  }
+  package page #9cbdd3 {
+    class MufiPage {
+        song
+        audio_source_url
+        config
+        links
+        get()
+        provision()
+    }
+  }
+ package song #409da0 {
+    class MufiSong {
+      config
+      title
+      artist
+      audio_file_url
+      local_path
+      mufi_id
+      speaker
+      title_read_path
+      provisioned
+      get()
+      get_title_read()
+      pause()
+      stop()
+      play()
+      play_title()
+      playing()
+      playlist_add()
+      provision()
+    }
+    MufiSong --> Browser : playlist_add()
+   }
+  
+  package speech #9cbdd3 {
+    class Speaker {
+      store(utterance, file)
+      prepare(utterance)
+      say(utterance)
+    }
+  }
+
+  package controller #409da0 {
+    interface InputInterface {
+      print_bindings()
+    }
+    interface KeyboardInterface {
+      
+    }
+    interface GamepadInterface {
+      
+    }
+
+    KeyboardInterface -> InputInterface
+    GamepadInterface -> InputInterface
+
+    package windows #568eb3 {
+      class Keyboard {
+        poll()
+      }
+      
+      Keyboard --> KeyboardInterface
+      class Gamepad {
+        poll()
+      }
+      Gamepad --> GamepadInterface
+    }   
+    package unix #568eb3 {
+      class "Keyboard" as kbdunix {
+        poll()
+      }
+      kbdunix -> KeyboardInterface 
+      class "Gamepad" as gamepadlinux {
+        poll()
+      }
+      gamepadlinux --> GamepadInterface
+      
+      
+    }   
+
+  }
+}
+
+card "run.py" as run
+run --> Run 
+MufiConfig --> Browser
+
+Run -> MufiPage
+Run --> Speaker
+Run --> InputEvent
+Run --> EventType
+Run -> MufiConfig 
+Run -> Input
+
+Input --> InputEvent
+Input --> Keyboard
+Input --> Gamepad
+Input --> kbdunix
+
+Keyboard->InputEvent
+Gamepad-->InputEvent
+kbdunix-->InputEvent
+
+MufiPage --> MufiSong
+MufiSong --> Speaker
+
+@enduml

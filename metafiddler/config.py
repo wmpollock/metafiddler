@@ -1,63 +1,150 @@
-import pathlib
-import yaml
+"""Manage configuration, its persistance and the propagation of the persistence."""
+
 import logging
 
+import os
+import sys
+import pathlib
+from pathlib import Path
+
+import base64
+import yaml
+import requests
+
+from metafiddler.mechanize import Browser
 
 class MufiConfig:
-    config_file = str(pathlib.Path.home() / ".metafiddlr.yaml")
-    
-    # Define some base configurations.
-    config = {
-        "song_save_dir": "Songs"
-    }
+    """Holds file and some state information"""
 
-    def __init__(self, **kwargs):
-        
+    # We need to bind the property set to save state
+    _curent_page_url = "https://music.metafilter.com/8" # earliest playable track
+    app_root_dir = os.path.join(str(Path.home()), "Music", "MetaFilter")
+    config_file = str(pathlib.Path.home() / ".metafiddler.yaml")
+    # Remote URLs for storage -- almost went SCP but this integrates with my questionable
+    # online tool O_o -- Needs more auth :]
+    current_page_get_url = ""
+    current_page_post_url = ""
+    # All the below values are overridable in the config
+    jar_file = str(pathlib.Path.home() / ".metafiddler.jar")
+    state_file = str(pathlib.Path.home() / ".metafiddler.current")
+    song_save_dir = os.path.join(app_root_dir, "Songs")
+    # These will have the same filename as the songs they are for
+    title_reads_dir = os.path.join(app_root_dir, "Title-Reads")
+    ui_reads_dir = os.path.join(app_root_dir, "User-Interface")
+
+    # These are derived from ENV{MEFI_LOGIN} & ENV{MEFI_PASSWORD}, both
+    # of which are bin64'd for a modicum of privacy :/
+    mefi_login = ""
+    mefi_password = ""
+
+    playlists = []
+
+    def __init__(self):
+        self.mefi_login = self._de64("MEFI_LOGIN")
+        self.mefi_password = self._de64("MEFI_PASSWORD")
+
+        # Because this is going to hit the login and needs to maintain
+        # its state after so doing we're going to persist this as much as possible
+        # ... This should really go into a metaclass that's used as the
+        # base instead of config but its getting kinda late meyabe
+        self.browser = Browser(self)
+
+        self._read_configfile()
+        self._read_statefile()
+
+        if self.current_page_get_url:
+            logging.info("Polling remote store.")
+            response = requests.get(url=self.current_page_get_url)
+            if response.status_code == 200:
+                logging.info("Server response '%s'", response.text)
+                # Lulzy -- OG architecture was clean IDs
+                self._curent_page_url = f"https://music.metafilter.com/{response.text}"
+            else:
+                logging.critical(
+                    "Got unexpected error code polling remote: %s",
+                    response.status_code
+                )
+                sys.exit(1)
+
+
+
+    @classmethod
+    def _de64(cls, env_name):
+        env_val = os.getenv(env_name)
+        if env_val:
+            return base64.decodebytes(env_val.encode('utf-8')).decode('utf-8')
+
+        logging.info("No %s value -- won't be able to playlist/favorite", env_name)
+        return ""
+
+    def _read_configfile(self):
+        """ Load the YAML configuration file and override any class defaults """
         try:
-            # I mean, we'd need to hook it...
-            if 'config_file' in kwargs:
-                self.config_file = kwargs['config_file']
 
             with open(self.config_file) as yaml_file:
-                self.config.update(yaml.load(yaml_file, Loader=yaml.FullLoader))
-            logging.debug("Loaded " + self.config_file)
+                self.__dict__.update(yaml.load(yaml_file, Loader=yaml.FullLoader))
+            logging.debug("Loaded %s", self.config_file)
         except FileNotFoundError:
-            logging.warning("No config file " + self.config_file)
+            logging.warning("No config file %s", self.config_file)
             # Hah, well, I guess we can start at the beginning then.
-            self.current_page = "https://music.metafilter.com/8"
 
-    # Store our current URL info
+    def _read_statefile(self):
+        """I feel badly about having this separate and liked it all in one file but this
+        content is the sharable, not-system-dependent part so ot needs to be separate"""
+        try:
+            with open(self.state_file, mode="r") as file:
+                self._curent_page_url = file.read()
+                logging.debug("Loaded state file %s", self.state_file)
+        except FileNotFoundError:
+            logging.debug("State file %s does not exist.", self.state_file)
+
+
+    # One-off the actual property so we can hook into setting the current_page
     @property
-    def current_page(self):
-        return self.config['current_page']
+    def current_page_url(self):
+        """Return the value for the current page"""
+        return self._curent_page_url
 
-    @current_page.setter
-    def current_page(self,url):
-        self.config['current_page'] = url
+    @current_page_url.setter
+    def current_page_url(self, url):
+        """Set the value for the current page"""
+        self._curent_page_url = url
 
-    @property
-    def song_save_dir(self):
-        return self.config['song_save_dir']
+        # Storing state file!
+        with open(self.state_file, mode="w") as file:
+            file.write(url)
+            logging.debug("Updated state file")
+
+        if self.current_page_post_url:
+            logging.info("Updating remote store.")
+            response = requests.post(url=self.current_page_post_url, data=url)
+            if response.status_code == 200:
+                logging.info("Success")
+            else:
+                logging.critical("Unexpected server response %s", response.text)
+                sys.exit(1)
 
 
-    def playlist_config(self, playlist):
-        if 'playlists' in self.config:
-            if playlist in self.config:
-                return self.config['playlists'][playlist]
+    def playlist_by_label(self, playlist_label):
+        """Return the playlist configuration"""
+        if playlist_label in self.playlists:
+            return self.playlists[playlist_label]
+        return None
 
-    def playlist_title(self, playlist):
-        playlist=self.playlist_config(playlist)
-        if playlist and 'list_title' in playlist:
-            return playlist['list_title']
-        else:
-            return ""
-            
-    def playlist_id(self, playlist): 
-        playlist=self.playlist_config(playlist)
-        if playlist and 'list_title' in playlist:
-            return playlist['list_id']
-         
-    def save(self):
-        with open(self.config_file, 'w') as yaml_file:
-            yaml.dump(self.config, yaml_file)
-        logging.debug("Wrote state file")
+    def playlist_title(self, playlist_label):
+        """Return the playlist title"""
+        playlist = self.playlist_by_label(playlist_label)
+        if playlist and "list_title" in playlist:
+            return playlist["list_title"]
+
+        return ""
+
+    def playlist_id(self, playlist_label):
+        """Return the playlist's ID"""
+        playlist = self.playlist_by_label(playlist_label)
+
+        if playlist and "list_id" in playlist:
+            return playlist["list_id"]
+
+        logging.warning("No playlist found matching %s", playlist_label)
+        return None

@@ -1,6 +1,10 @@
-"""Providing for metafiddler.input"""
+""" Pysical test of controller interfaces,
+
+Connect and go:  Ctrl-C ends the party
+ """
 
 import unittest
+
 from metafiddler.input import Input
 from metafiddler.input_events import InputEvent
 

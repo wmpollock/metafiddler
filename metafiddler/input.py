@@ -23,14 +23,14 @@ except ModuleNotFoundError:
 
 try:
 
-    import metafiddler.controller.windows.usb_gamepad
+    import metafiddler.controller.windows.gamepad
 
-    controllers.append(metafiddler.controller.windows.usb_gamepad.Gamepad())
+    controllers.append(metafiddler.controller.windows.gamepad.Gamepad())
 except ModuleNotFoundError:
     print("Can't add Windows USB Gamepad.")
 
 try:
-    import metafiddler.controller.unix.usb_gamepad
+    import metafiddler.controller.unix.gamepad
     controllers.append(metafiddler.controller.unix.gamepad.Gamepad())
 except NotImplementedError:
     print("Couldn't add UNIX gamepad")

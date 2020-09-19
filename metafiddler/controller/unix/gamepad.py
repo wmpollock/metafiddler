@@ -27,13 +27,13 @@ class Gamepad(GamepadInterface):
         gamepad_devices = list(filter(deviceIsGamepad, evdev.list_devices()))
         if not gamepad_devices:
             raise NotImplementedError()
-        
+
         for gamepad_device in gamepad_devices:
             self.gamepads.append(evdev.InputDevice(gamepad_device))
 
         print("Init gamepad")
         self.gamepad = InputDevice("/dev/input/js0")
-        
+
     def poll(self):
         """ Get a gamepad event """
         for gamepad in self.gamepads:

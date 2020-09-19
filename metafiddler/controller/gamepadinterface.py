@@ -3,6 +3,8 @@
 from metafiddler.input_events import InputEvent
 
 class GamepadInterface():
+    """ Interface class for gamepads/joysticks """
+
     # PLAYER BUTTONS
     # -----------------------------------------------------------------------------
     bindings = {

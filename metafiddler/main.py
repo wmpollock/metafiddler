@@ -112,28 +112,8 @@ class Run:
                     input_prompted = True
                     logging.info("Waiting for user for input.")
 
-                # This event stacking makes it seem like we're not going to deal
-                # with +1 events and, um, yes, wait for the next poll and
-                # pop them off your stack or something.
-                try:
-                    event = self.user_input.poll()
-                except KeyboardInterrupt:
-                    logging.info("Keyboard interrupt: exiting")
-                    self.speaker.say("Keyboard interrupt: exiting")
-                    sys.exit(1)
-
-                # ** I really wanted to put all these into a magnificent map but python
-                # does not have a multiline lambda and IDK if busting them functions is
-                # more sensible?
-
-                if event and event != InputEvent.NONE:
-                    logging.info("EVENT: %s", event)
-                    self.speaker.say(event.description)
-
-                    if event.type == EventType.PLAYLIST:
-                        self.playlist(event)
-                    else:
-                        event.event_id()
+                self.process_event()
+               
 
             # This is the resolved end page which is already provisioned...
             next_page = queue.get(timeout=15)
@@ -144,6 +124,30 @@ class Run:
             else:
                 current_page = next_page
 
+
+    def process_event(self):
+        # This event stacking makes it seem like we're not going to deal
+        # with +1 events and, um, yes, wait for the next poll and
+        # pop them off your stack or something.
+        try:
+            event = self.user_input.poll()
+        except KeyboardInterrupt:
+            logging.info("Keyboard interrupt: exiting")
+            self.speaker.say("Keyboard interrupt: exiting")
+            sys.exit(1)
+        
+        if event and event != InputEvent.NONE:
+            logging.info("EVENT: %s", event)
+            self.speaker.say(event.description)
+
+            if event.type == EventType.PLAYLIST:
+                self.playlist(event)
+            else:
+                event.event_id()
+
+
+    # event_id verbs actioned
+    # -----------------------------------------------------------------------------
     def stop(self):
         """ Stop playing the current track """
         self.current_page.song.stop()

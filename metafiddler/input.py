@@ -9,32 +9,24 @@ controllers = []  # pylint: disable=invalid-name
 try:
     # This of course uses mscvrt which is not available on linux
     import metafiddler.controller.windows.keyboard
-
-    controllers.append(metafiddler.controller.windows.keyboard.Keyboard())
-except ModuleNotFoundError:
-    print("Can't add Windows USB Keyboard.")
-    try:
-        # And over here this is only
-        import metafiddler.controller.unix.keyboard
-
-        controllers.append(metafiddler.controller.unix.keyboard.Keyboard())
-    except Exception as err:
-        print(f"Can't add Unix system keyboard: {err}")
-
-try:
-
     import metafiddler.controller.windows.gamepad
 
+    controllers.append(metafiddler.controller.windows.keyboard.Keyboard())
     controllers.append(metafiddler.controller.windows.gamepad.Gamepad())
+
 except ModuleNotFoundError:
-    print("Can't add Windows USB Gamepad.")
+    print("Can't add Windows controllers.  Defaulting to unix...")
+    try:
+        import metafiddler.controller.unix.keyboard
+        import metafiddler.controller.unix.gamepad
+
+        controllers.append(metafiddler.controller.unix.keyboard.Keyboard())
+        controllers.append(metafiddler.controller.unix.gamepad.Gamepad())
+
+    except Exception as err:
+        print(f"Can't add Unix system controllers: {err}")
 
 try:
-    import metafiddler.controller.unix.gamepad
-
-    controllers.append(metafiddler.controller.unix.gamepad.Gamepad())
-except NotImplementedError:
-    print("Couldn't add UNIX gamepad")
 
 
 class Input:  # pylint: disable=too-few-public-methods

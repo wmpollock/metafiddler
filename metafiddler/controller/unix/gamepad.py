@@ -3,10 +3,6 @@ controller with asynchronous polling seems nearly impossible to find """
 
 import evdev
 
-
-#creates object 'gamepad' to store the data
-#you can call it whatever you like
-
 from metafiddler.controller.gamepadinterface import GamepadInterface
 from metafiddler.input_events import InputEvent
 
@@ -21,7 +17,6 @@ def device_is_gamepad(path):
         return True
 
     return False
-
 
 class Gamepad(GamepadInterface):
     """ Unix Gamepad interface """
@@ -47,7 +42,6 @@ class Gamepad(GamepadInterface):
 
             # Drain the rest of the events
             while event:
-                print(event)
                 event = gamepad.read_one()
 
         return retval
@@ -82,5 +76,4 @@ class Gamepad(GamepadInterface):
         if event.type == DIRECTION and event.code in directions:
             return self.bindings[directions[event.code][event.val]]
         
-
         return InputEvent.NONE

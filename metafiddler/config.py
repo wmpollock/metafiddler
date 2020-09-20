@@ -73,7 +73,7 @@ class MufiConfig:
             return base64.decodebytes(env_val.encode("utf-8")).decode("utf-8")
 
         logging.info("No %s value -- won't be able to playlist/favorite", env_name)
-        return ""
+        return None
 
     def _read_configfile(self):
         """ Load the YAML configuration file and override any class defaults """

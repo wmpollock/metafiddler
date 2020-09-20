@@ -24,7 +24,7 @@ class TestConfig(unittest.TestCase):
     def test_config(self, requests):
         """Test configuration load/setup"""
         with self.assertRaises(SystemExit):
-            config = MufiConfig()
+            MufiConfig()
 
         requests.return_value=Mock(status_code=200,response_text='YAYYY')
         config = MufiConfig()

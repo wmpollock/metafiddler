@@ -32,6 +32,8 @@ class Gamepad(GamepadInterface):
 
         for gamepad_device in gamepad_devices:
             self.gamepads.append(evdev.InputDevice(gamepad_device))
+        
+        self.print_bindings()
 
     def poll(self):
         """ Get a gamepad event """

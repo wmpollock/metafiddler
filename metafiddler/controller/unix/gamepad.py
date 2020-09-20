@@ -38,7 +38,8 @@ class Gamepad(GamepadInterface):
             event = gamepad.read_one()
 
             # There are a sequence of events; we only care about the first it appears
-            retval = self.translate_event(event)
+            if event:
+                retval = self.translate_event(event)
 
             # Drain the rest of the events
             while event:
@@ -47,6 +48,10 @@ class Gamepad(GamepadInterface):
         return retval
 
     def translate_event(self, event):
+        """ 
+        Convert the significant parts of the event into generic mappings that
+        we can universally map back 
+        """
         button_map = {
             589825: "x",
             589826: "a",
@@ -69,11 +74,11 @@ class Gamepad(GamepadInterface):
             }
 
         }
-        if event.val in button_map:
-            button = button_map[event.val]
+        if event.value in button_map:
+            button = button_map[event.value]
             return self.bindings[button]
 
         if event.type == DIRECTION and event.code in directions:
-            return self.bindings[directions[event.code][event.val]]
+            return self.bindings[directions[event.code][event.value]]
         
         return InputEvent.NONE

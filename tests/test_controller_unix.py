@@ -16,10 +16,10 @@ class EvEvent:
     def __init__(self, code, evtype, val):
         self.code = code
         self.type = evtype
-        self.val = val
+        self.value = val
 
     def __str__(self):
-        return f"Code: {self.code} Type: {self.type} Value: {self.val}"
+        return f"Code: {self.code} Type: {self.type} Value: {self.value}"
 
 
 def mock_gamepad(code, evtype, val):

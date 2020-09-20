@@ -17,7 +17,7 @@ class EventType: # pylint: disable=too-few-public-methods
         self.type = event_type
 
     def __str__(self):
-        self.event_id
+        return self.event_id
 
 class InputEvent: # pylint: disable=too-few-public-methods
     """ Class containing input events """

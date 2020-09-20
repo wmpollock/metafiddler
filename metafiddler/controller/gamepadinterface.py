@@ -13,8 +13,6 @@ class GamepadInterface:
         "b": InputEvent.PLAYLIST_B,
         "x": InputEvent.PLAYLIST_X,
         "y": InputEvent.PLAYLIST_Y,
-        "left": InputEvent.NEXT,
-        "right": InputEvent.SEEK_FORWARD,
         "start": InputEvent.PLAY,
         "select": InputEvent.STOP,
         "shoulder_r": InputEvent.SEEK_FORWARD,

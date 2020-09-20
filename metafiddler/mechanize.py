@@ -13,13 +13,14 @@ JARFILE = pathlib.Path.home() / ".metafiddler.cookiejar"
 class Browser:
     """ Handle macro interactions w/MeFi """
     logged_in = False
-    browser = {}
+    mechanize = {}
+
     # Pylint can't read the 1001 instances of browser
     # pylint: disable=no-member
     def __init__(self, config):
         """Set up JARFILE and other housekeeping"""
         self.cookiejar = mechanize.LWPCookieJar()
-        browser = self.browser = mechanize.Browser()
+        browser = self.mechanize = mechanize.Browser()
         browser.set_cookiejar(self.cookiejar)
         self.config = config
 
@@ -38,7 +39,7 @@ class Browser:
             return False
 
         if not self.logged_in:
-            browser = self.browser
+            browser = self.mechanize
             browser.open("https://login.metafilter.com")
 
             browser.select_form(action="logging-in.mefi")
@@ -73,18 +74,14 @@ class Browser:
         self.login()
 
         # try:
-        response = self.browser.open(  # pylint: disable=assignment-from-none
+        browser = self.mechanize
+
+        response = browser.open(  # pylint: disable=assignment-from-none
             "https://music.metafilter.com/contribute/add_to_playlist.mefi?id="
             + str(mufi_id)
         )
         print("Response code: ", response.code)
 
-        # if browser.form == None:
-        #     #logging.critical("Did not receive page with form.")
-        #     print("Did not receive page with form.")
-        #     sys.exit()
-        browser = {}
-        browser = self.browser
         browser.select_form(action="track-add.mefi")
 
 

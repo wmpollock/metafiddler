@@ -8,7 +8,7 @@ import pathlib
 from pathlib import Path
 
 import base64
-import yaml
+import ruyaml as yaml
 import requests
 
 from metafiddler.mechanize import Browser

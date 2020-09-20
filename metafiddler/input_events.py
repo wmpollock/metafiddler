@@ -43,7 +43,7 @@ class InputEvent:  # pylint: disable=too-few-public-methods
     PLAYLIST_X = EventType("Add to playlist 'X'", "playlist_x", "playlist")
     PLAYLIST_Y = EventType("Add to playlist 'Y'", "playlist_y", "playlist")
 
-    GO_SOURCE = EventType("Open source webpage", "open_web")
+    GO_SOURCE = EventType("Open source webpage", "open_source_page")
 
     @classmethod
     def events(cls):

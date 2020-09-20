@@ -14,5 +14,3 @@ requests
 tabulate
 # Testing
 requests_mock
-evdev
-#git+https://github.com/piborg/Gamepad

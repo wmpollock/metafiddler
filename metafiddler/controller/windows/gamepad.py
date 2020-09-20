@@ -236,7 +236,7 @@ class Gamepad(GamepadInterface):
 
             # Figure out which buttons are pressed.
             for b in range(caps.wNumButtons):
-                pressed =  (1 << b) & info.dwButtons != 0
+                pressed = (1 << b) & info.dwButtons != 0
                 name = button_names[b]
 
                 if pressed and not button_states[name] == pressed:
@@ -266,6 +266,5 @@ class Gamepad(GamepadInterface):
             for button in buttonmap.keys():
                 if button_states.get(button):
                     return buttonmap[button]
-
 
         return InputEvent.NONE

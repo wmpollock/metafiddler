@@ -6,7 +6,8 @@ labels to misuse in configuration map dumps.
 
 import re
 
-class EventType: # pylint: disable=too-few-public-methods
+
+class EventType:  # pylint: disable=too-few-public-methods
     """ Individual event types """
 
     PLAYLIST = "playlsit"
@@ -19,8 +20,10 @@ class EventType: # pylint: disable=too-few-public-methods
     def __str__(self):
         return self.event_id
 
-class InputEvent: # pylint: disable=too-few-public-methods
+
+class InputEvent:  # pylint: disable=too-few-public-methods
     """ Class containing input events """
+
     NONE = EventType("Nothing happened.", "nothing")
 
     STOP = EventType("Stop playing current track", "stop")
@@ -40,14 +43,15 @@ class InputEvent: # pylint: disable=too-few-public-methods
     PLAYLIST_X = EventType("Add to playlist 'X'", "playlist_x", "playlist")
     PLAYLIST_Y = EventType("Add to playlist 'Y'", "playlist_y", "playlist")
 
-    GO_SOURCE = EventType("Open source webpage","open_web")
-
+    GO_SOURCE = EventType("Open source webpage", "open_web")
 
     @classmethod
     def events(cls):
         """ List all defined events """
 
-        return list(map(lambda x: cls.__dict__[x],
-                        filter(lambda x: re.match(r'^[A-Z]+\w+$', x), cls.__dict__.keys())
-                        )
+        return list(
+            map(
+                lambda x: cls.__dict__[x],
+                filter(lambda x: re.match(r"^[A-Z]+\w+$", x), cls.__dict__.keys()),
+            )
         )

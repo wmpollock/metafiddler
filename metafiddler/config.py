@@ -13,11 +13,12 @@ import requests
 
 from metafiddler.mechanize import Browser
 
+
 class MufiConfig:
     """Holds file and some state information"""
 
     # We need to bind the property set to save state
-    _curent_page_url = "https://music.metafilter.com/8" # earliest playable track
+    _curent_page_url = "https://music.metafilter.com/8"  # earliest playable track
     app_root_dir = os.path.join(str(Path.home()), "Music", "MetaFilter")
     config_file = str(pathlib.Path.home() / ".metafiddler.yaml")
     # Remote URLs for storage -- almost went SCP but this integrates with my questionable
@@ -61,18 +62,15 @@ class MufiConfig:
                 self._curent_page_url = f"https://music.metafilter.com/{response.text}"
             else:
                 logging.critical(
-                    "Got unexpected error code polling remote: %s",
-                    response.status_code
+                    "Got unexpected error code polling remote: %s", response.status_code
                 )
                 sys.exit(1)
-
-
 
     @classmethod
     def _de64(cls, env_name):
         env_val = os.getenv(env_name)
         if env_val:
-            return base64.decodebytes(env_val.encode('utf-8')).decode('utf-8')
+            return base64.decodebytes(env_val.encode("utf-8")).decode("utf-8")
 
         logging.info("No %s value -- won't be able to playlist/favorite", env_name)
         return ""
@@ -98,7 +96,6 @@ class MufiConfig:
         except FileNotFoundError:
             logging.debug("State file %s does not exist.", self.state_file)
 
-
     # One-off the actual property so we can hook into setting the current_page
     @property
     def current_page_url(self):
@@ -123,7 +120,6 @@ class MufiConfig:
             else:
                 logging.critical("Unexpected server response %s", response.text)
                 sys.exit(1)
-
 
     def playlist_by_label(self, playlist_label):
         """Return the playlist configuration"""

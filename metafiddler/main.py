@@ -5,7 +5,7 @@ import multiprocessing
 import webbrowser
 import sys
 
-import pygame #
+import pygame  #
 from tabulate import tabulate
 
 from metafiddler.config import MufiConfig
@@ -23,6 +23,7 @@ logging.basicConfig(
 # we got something else bad in here...
 sys.setrecursionlimit(10000)
 
+
 class Run:
     """ Main application controller """
 
@@ -35,7 +36,6 @@ class Run:
         # queue.put(page.provision())
         next_page = page.provision()
         self.queue.put(next_page, False, 2)
-
 
     def __init__(self):
         """Pre-run configurations"""
@@ -126,8 +126,6 @@ class Run:
                 # does not have a multiline lambda and IDK if busting them functions is
                 # more sensible?
 
-
-
                 if event and event != InputEvent.NONE:
                     logging.info("EVENT: %s", event)
                     self.speaker.say(event.description)
@@ -145,7 +143,6 @@ class Run:
                 current_page.provision()
             else:
                 current_page = next_page
-
 
     def stop(self):
         """ Stop playing the current track """
@@ -196,7 +193,8 @@ class Run:
         else:
             logging.warning(
                 "No playlist configured for that button in this config (%s)",
-                playlist_id)
+                playlist_id,
+            )
 
         self.song_actioned = True
 

@@ -15,6 +15,7 @@ from metafiddler.mechanize import Browser
 
 HOT_TEST = False
 
+
 class TestMechanise(unittest.TestCase):
     """Test configuration methods"""
 
@@ -31,7 +32,7 @@ class TestMechanise(unittest.TestCase):
         """ Check the login process, or the mockery of the login process, as you like it"""
         if not HOT_TEST:
             print("SUBSTITUTING BROWSER")
-            self.browser.browser = MagicMock(name='Browser()')
+            self.browser.browser = MagicMock(name="Browser()")
 
     def test_playlist_add(self):
         """Invoke adding a record to the playlist"""

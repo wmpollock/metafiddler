@@ -25,8 +25,10 @@ https://pypi.org/project/gamepadinfo/ - kitchen sink
 
 from tabulate import tabulate
 
+
 class ControllerInterface:
     """ Abstract input interface class """
+
     bindings = {}
 
     def poll(self):

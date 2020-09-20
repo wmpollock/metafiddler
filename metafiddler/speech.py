@@ -6,6 +6,7 @@ import re
 import pygame.mixer
 import gtts
 
+
 class Speaker:
     """Class for generating, storing and recovering TTS utterances"""
 

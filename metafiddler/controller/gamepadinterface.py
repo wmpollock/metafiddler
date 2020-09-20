@@ -2,31 +2,33 @@
 
 from metafiddler.input_events import InputEvent
 
-class GamepadInterface():
+
+class GamepadInterface:
     """ Interface class for gamepads/joysticks """
 
     # PLAYER BUTTONS
     # -----------------------------------------------------------------------------
     bindings = {
-        "a":  InputEvent.PLAYLIST_A,
-        "b":  InputEvent.PLAYLIST_B,
-        "x":  InputEvent.PLAYLIST_X,
-        "y":  InputEvent.PLAYLIST_Y,
-        "left":  InputEvent.NEXT,
-        "right":  InputEvent.SEEK_FORWARD,
-        "start":  InputEvent.PLAY,
-        "select":  InputEvent.STOP,
-        "shoulder_r":  InputEvent.SEEK_FORWARD,
-        "shoulder_l":  InputEvent.SEEK_BACK,
+        "a": InputEvent.PLAYLIST_A,
+        "b": InputEvent.PLAYLIST_B,
+        "x": InputEvent.PLAYLIST_X,
+        "y": InputEvent.PLAYLIST_Y,
+        "left": InputEvent.NEXT,
+        "right": InputEvent.SEEK_FORWARD,
+        "start": InputEvent.PLAY,
+        "select": InputEvent.STOP,
+        "shoulder_r": InputEvent.SEEK_FORWARD,
+        "shoulder_l": InputEvent.SEEK_BACK,
         "up": InputEvent.VOLUME_UP,
         "down": InputEvent.VOLUME_DOWN,
         "left": InputEvent.PREVIOUS,
-        "right": InputEvent.NEXT
+        "right": InputEvent.NEXT,
     }
 
     @classmethod
     def print_bindings(cls):
-        print("""
+        print(
+            """
        Seek back                                     Seek forward
      ╔════════════╗                                 ╔════════════╗
 ┌────╜────────────╙─────────────────────────────────╜────────────╙─────╖
@@ -40,4 +42,5 @@ class GamepadInterface():
 │         ╚══╝            Stop      Play          ╰──╯                 ▒
 │        vol dn                                Playlist B              ▒
 │                                                                      ▒
- ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒""")
+ ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒"""
+        )

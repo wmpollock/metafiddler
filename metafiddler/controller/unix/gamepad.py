@@ -9,6 +9,7 @@ from metafiddler.input_events import InputEvent
 BUTTON_CODE = 4
 DIRECTION = 3
 
+
 def device_is_gamepad(path):
     """ Filter a list of devices to find USB gamepads """
     device = evdev.InputDevice(path)
@@ -18,8 +19,10 @@ def device_is_gamepad(path):
 
     return False
 
+
 class Gamepad(GamepadInterface):
     """ Unix Gamepad interface """
+
     gamepads = []
 
     def __init__(self):
@@ -64,15 +67,8 @@ class Gamepad(GamepadInterface):
         }
         directions = {
             # EVENT_CODE : EVENT.VAL
-            0 : {
-                0: "left",
-                255: "right",
-            },
-            1 : {
-                0: "up",
-                255: "down",
-            }
-
+            0: {0: "left", 255: "right",},
+            1: {0: "up", 255: "down",},
         }
         if event.value in button_map:
             button = button_map[event.value]
@@ -80,5 +76,5 @@ class Gamepad(GamepadInterface):
 
         if event.type == DIRECTION and event.code in directions:
             return self.bindings[directions[event.code][event.value]]
-        
+
         return InputEvent.NONE

@@ -8,8 +8,9 @@ entirely necessary for my use cases (GitBash)
 
 import logging
 import sys
+
 # https://stackoverflow.com/questions/9602811/how-to-tell-pylint-to-ignore-certain-imports
-import msvcrt # pylint: disable=import-error
+import msvcrt  # pylint: disable=import-error
 from metafiddler.input_events import InputEvent
 from metafiddler.controller.keyboardinterface import KeyboardInterface
 

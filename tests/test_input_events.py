@@ -5,6 +5,7 @@ import logging
 import unittest
 from metafiddler.input_events import InputEvent, EventType
 
+
 class TestInputEvents(unittest.TestCase):
     """Test input_events methods"""
 
@@ -26,6 +27,6 @@ class TestInputEvents(unittest.TestCase):
         for event in events:
             self.assertIsNotNone(event.description)
 
+
 if __name__ == "__main__":
     unittest.main()
-

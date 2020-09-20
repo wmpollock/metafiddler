@@ -4,7 +4,7 @@ into a singular access point and let this sort things out"""
 import sys
 from metafiddler.input_events import InputEvent
 
-controllers = [] # pylint: disable=invalid-name
+controllers = []  # pylint: disable=invalid-name
 
 try:
     # This of course uses mscvrt which is not available on linux
@@ -19,7 +19,7 @@ except ModuleNotFoundError:
 
         controllers.append(metafiddler.controller.unix.keyboard.Keyboard())
     except Exception as err:
-         print(f"Can't add Unix system keyboard: {err}")
+        print(f"Can't add Unix system keyboard: {err}")
 
 try:
 
@@ -31,11 +31,13 @@ except ModuleNotFoundError:
 
 try:
     import metafiddler.controller.unix.gamepad
+
     controllers.append(metafiddler.controller.unix.gamepad.Gamepad())
 except NotImplementedError:
     print("Couldn't add UNIX gamepad")
 
-class Input: # pylint: disable=too-few-public-methods
+
+class Input:  # pylint: disable=too-few-public-methods
     """Class to streamline all input events from the user"""
 
     last_events = [InputEvent.NONE, InputEvent.NONE]

@@ -43,7 +43,6 @@ class MufiSong:
         self.config = c
         self.speaker = Speaker(self.config)
 
-
     def __str__(self):
         return str({"title", self.title, "artist", self.artist})
 
@@ -85,9 +84,7 @@ class MufiSong:
         # IDK, maybe more pickling is what this all calls for....
         # tts_file = tempfile.mktemp(suffix="mp3")
         if self.title_read_path == "":
-            self.title_read_path = self.__get_outpath(
-                dir=self.config.title_reads_dir
-            )
+            self.title_read_path = self.__get_outpath(dir=self.config.title_reads_dir)
 
         if os.path.exists(self.title_read_path):
             logging.debug("Title read %s already exists.", self.title_read_path)

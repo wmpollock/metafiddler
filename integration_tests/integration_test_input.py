@@ -8,6 +8,7 @@ import unittest
 from metafiddler.input import Input
 from metafiddler.input_events import InputEvent
 
+
 class TestController(unittest.TestCase):
     """Test controller functions"""
 
@@ -22,6 +23,7 @@ class TestController(unittest.TestCase):
         print("Event:", event)
         print("Got event", event.description)
         self.assertIsNotNone(event)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -17,8 +17,10 @@ ARROW_PREFIX = "\x1b["
 # Thanks, FAQ:
 # https://docs.python.org/2/faq/library.html#how-do-i-get-a-single-keypress-at-a-time
 
+
 class Keyboard(KeyboardInterface):
     """ Unix keyboard """
+
     def __init__(self):
         stdin_fd = self.stdin_fd = sys.stdin.fileno()
 
@@ -32,22 +34,26 @@ class Keyboard(KeyboardInterface):
 
         self.bindings.update(
             {
-                ARROW_PREFIX + "C": {
+                ARROW_PREFIX
+                + "C": {
                     "return": InputEvent.NEXT,
                     # "description": "arrrow-forward"
                     "description": "→",
                 },
-                ARROW_PREFIX + "D": {
+                ARROW_PREFIX
+                + "D": {
                     "return": InputEvent.PREVIOUS,
                     # "description": "arrow-back"
                     "description": "←",
                 },
-                ARROW_PREFIX + "A": {
+                ARROW_PREFIX
+                + "A": {
                     "return": InputEvent.VOLUME_UP,
                     # "description": "arrow-up"
                     "description": "↑",
                 },
-                ARROW_PREFIX + "B": {
+                ARROW_PREFIX
+                + "B": {
                     "return": InputEvent.VOLUME_DOWN,
                     # "description": "arrow-down"
                     "description": "↓",

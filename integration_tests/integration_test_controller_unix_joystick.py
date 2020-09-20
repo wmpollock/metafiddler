@@ -8,12 +8,13 @@ from unittest import TestCase
 
 class TestControllerUnixUSBGamepad(TestCase):
     """ Test yon Gamepaderino """
+
     def test_gamepad(self):
         """ Run the gamepad setup """
         stick = Gamepad()
         event = InputEvent.NONE
         while event == InputEvent.NONE:
             event = stick.poll()
-        
+
         print("Got event", event.description)
         return True

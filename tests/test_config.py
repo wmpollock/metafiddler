@@ -10,6 +10,7 @@ import requests_mock
 
 from metafiddler.config import MufiConfig
 
+
 class TestConfig(unittest.TestCase):
     """Test configuration methods"""
 
@@ -34,17 +35,19 @@ class TestConfig(unittest.TestCase):
     def test_update(self, request):
         """Test whether update works"""
 
-        request.register_uri(requests_mock.ANY, requests_mock.ANY, text='7734')
+        request.register_uri(requests_mock.ANY, requests_mock.ANY, text="7734")
         print("PAGE:", MufiConfig.current_page_post_url)
         config = MufiConfig()
         # https://github.com/otrabalhador/python-testing-by-examples/blob/master/docs/en/mocking/examples/reading-writing-on-files.md#writing-on-files
-        with patch('builtins.open', mock_open()) as mocked_file:
+        with patch("builtins.open", mock_open()) as mocked_file:
             test_value = config.current_page_url
             print(f"Setting current page to {test_value}")
 
             config.current_page_url = test_value
-            mocked_file.assert_called_once_with('/home/bill/.metafiddler.current', mode='w')
+            mocked_file.assert_called_once_with(
+                "/home/bill/.metafiddler.current", mode="w"
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
-

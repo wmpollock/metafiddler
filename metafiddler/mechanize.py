@@ -10,8 +10,10 @@ OK = 200
 
 JARFILE = pathlib.Path.home() / ".metafiddler.cookiejar"
 
+
 class Browser:
     """ Handle macro interactions w/MeFi """
+
     logged_in = False
     mechanize = {}
 
@@ -44,8 +46,16 @@ class Browser:
 
             browser.select_form(action="logging-in.mefi")
 
-            browser["user_name"] = self.config.mefi_login # pylint: disable=unsupported-assignment-operation
-            browser["user_pass"] = self.config.mefi_password # pylint: disable=unsupported-assignment-operation
+            browser[
+                "user_name"
+            ] = (
+                self.config.mefi_login
+            )  # pylint: disable=unsupported-assignment-operation
+            browser[
+                "user_pass"
+            ] = (
+                self.config.mefi_password
+            )  # pylint: disable=unsupported-assignment-operation
 
             response = browser.submit()
             logging.debug("Response code: %s", response.code)
@@ -58,10 +68,11 @@ class Browser:
                 self.cookiejar.save(JARFILE)
                 self.logged_in = True
             else:
-                logging.warning("Unexpected reponse code from logging in %d", response.code)
+                logging.warning(
+                    "Unexpected reponse code from logging in %d", response.code
+                )
 
         return self.logged_in
-
 
     def playlist_add(self, playlist_id, mufi_id):
         """Add an entry to the specified playlist"""
@@ -84,13 +95,16 @@ class Browser:
 
         browser.select_form(action="track-add.mefi")
 
-
-        browser["playlist_id"] = (str(playlist_id),) # pylint: disable=unsupported-assignment-operation
+        browser["playlist_id"] = (
+            str(playlist_id),
+        )  # pylint: disable=unsupported-assignment-operation
         response = browser.submit()
         if response.code == OK:
             logging.info("Added sweet, sib! s( ^ ‿ ^)-b")
         else:
-            logging.warning("This did not go well, we recieved response %d", response.code)
+            logging.warning(
+                "This did not go well, we recieved response %d", response.code
+            )
 
         self.cookiejar.save(JARFILE)
         return True

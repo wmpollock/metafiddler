@@ -52,11 +52,10 @@ class TestGamepad(unittest.TestCase):
         evdev.return_value = [Mock()]
         self.assertIsInstance(Gamepad(), Gamepad)
 
-    def test_poll(self):
+    @classmethod
+    def test_poll(cls):
+        """ Test the poll() method """
         Gamepad.poll(mock_gamepad(4, 4, 589826))
-        # self.assertEqual(
-        #     InputEvent.PLAYLIST_A, )
-        # )
 
     def test_translate_event(self):
         """ Test the buttonmappings """

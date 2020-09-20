@@ -1,6 +1,7 @@
 #!/bin/env python3
 
-""" Pysical test of controller interfaces,
+""" 
+Physical test of controller interfaces,
 """
 
 import unittest

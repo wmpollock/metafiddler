@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+ 
 """ Gamepad integration tests for unix/pygame """
 
 from metafiddler.input_events import InputEvent
@@ -18,3 +20,6 @@ class TestControllerUnixUSBGamepad(TestCase):
 
         print("Got event", event.description)
         return True
+
+if __name__ == "__main__":
+    unittest.main()

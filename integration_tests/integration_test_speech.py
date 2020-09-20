@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """Test for metafiddler.speech"""
 import unittest
 
@@ -13,3 +15,6 @@ class TestConroller(unittest.TestCase):
         config = MufiConfig()
         s = Speaker(config)
         s.say("Audio test complete.")
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Test for metafiddler.mechanize
 
@@ -41,3 +43,6 @@ class TestMechanise(unittest.TestCase):
         print("Playlist:", playlist)
 
         self.browser.playlist_add(playlist, 8)
+
+if __name__ == "__main__":
+    unittest.main()

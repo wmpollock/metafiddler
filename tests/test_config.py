@@ -5,7 +5,7 @@ import logging
 import pprint
 import unittest
 
-from unittest.mock import patch, mock_open
+from unittest.mock import patch, mock_open, Mock
 import requests_mock
 
 from metafiddler.config import MufiConfig
@@ -17,19 +17,21 @@ class TestConfig(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         logging.basicConfig(
-            level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(message)s"
+            level=logging.CRITICAL, format="%(asctime)s [%(levelname)s] %(message)s"
         )
 
-    def test_config(self):
+    @patch("metafiddler.config.requests.get", )
+    def test_config(self, requests):
         """Test configuration load/setup"""
-        config = MufiConfig()
+        with self.assertRaises(SystemExit):
+            config = MufiConfig()
 
-        pretty = pprint.PrettyPrinter(indent=4)
-        pretty.pprint(vars(config))
-        print(config.playlist_id("playlist_b"))
-        print("Current page:", config.current_page_url)
-        print("Song save dir:", config.song_save_dir)
+        requests.return_value=Mock(status_code=200,response_text='YAYYY')
+        config = MufiConfig()
         self.assertIsNotNone(config.current_page_url)
+
+    def test_de64(self):
+        self.assertIsNone(MufiConfig._de64("NONESUCH"))
 
     @requests_mock.Mocker()
     def test_update(self, request):

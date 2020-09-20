@@ -11,14 +11,17 @@ class EventType: # pylint: disable=too-few-public-methods
 
     PLAYLIST = "playlsit"
 
-    def __init__(self, description, event_id="", event_type=""):
+    def __init__(self, description, event_id, event_type=""):
         self.event_id = event_id
         self.description = description
         self.type = event_type
 
+    def __str__(self):
+        self.event_id
+
 class InputEvent: # pylint: disable=too-few-public-methods
     """ Class containing input events """
-    NONE = EventType("Nothing happened.")
+    NONE = EventType("Nothing happened.", "nothing")
 
     STOP = EventType("Stop playing current track", "stop")
     PLAY = EventType("Resume playing the current track", "play")
@@ -37,14 +40,14 @@ class InputEvent: # pylint: disable=too-few-public-methods
     PLAYLIST_X = EventType("Add to playlist 'X'", "playlist_x", "playlist")
     PLAYLIST_Y = EventType("Add to playlist 'Y'", "playlist_y", "playlist")
 
-    GO_SOURCE = EventType("Open source webpage")
+    GO_SOURCE = EventType("Open source webpage","open_web")
 
 
     @classmethod
     def events(cls):
         """ List all defined events """
 
-        return list(map(lambda x: cls.__dict__[x], 
+        return list(map(lambda x: cls.__dict__[x],
                         filter(lambda x: re.match(r'^[A-Z]+\w+$', x), cls.__dict__.keys())
                         )
         )

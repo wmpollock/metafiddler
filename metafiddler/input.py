@@ -26,8 +26,6 @@ except ModuleNotFoundError:
     except Exception as err:
         print(f"Can't add Unix system controllers: {err}")
 
-try:
-
 
 class Input:  # pylint: disable=too-few-public-methods
     """Class to streamline all input events from the user"""

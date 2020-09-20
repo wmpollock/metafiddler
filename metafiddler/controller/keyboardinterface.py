@@ -2,8 +2,9 @@
 
 from tabulate import tabulate
 from metafiddler.input_events import InputEvent
+from metafiddler.controller.interface import ControllerInterface
 
-class KeyboardInterface:
+class KeyboardInterface(ControllerInterface):
     """ Abstract keyboard class """
     bindings = {
         "s": {"return": InputEvent.STOP},

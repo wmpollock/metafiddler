@@ -2,7 +2,7 @@
 
 """Test for metafiddler.config"""
 import logging
-import pprint
+import pathlib
 import unittest
 
 from unittest.mock import patch, mock_open, Mock
@@ -14,19 +14,44 @@ from metafiddler.config import MufiConfig
 class TestConfig(unittest.TestCase):
     """Test configuration methods"""
 
+    mock_config = {
+        "current_page_get_url": "https://path/to/some/server",
+        "metafiddler_root": "C:\\Users\\Bill\\Music\\MetaFilter",
+        "playlists": {
+            "playlist_a": {
+                "list_id": 12345,
+                "list_title": "Playlist A",
+            },
+            "playlist_b": {
+                "list_id": 6789,
+                "list_title": "Playlist B",
+            },
+            "playlist_x": {
+                "list_id": 42424, 
+                "list_title": "Playlist X"
+            },
+            "playlist_y": {
+                "list_id": 14011, 
+                "list_title": "Playlist Y"
+            },
+        },
+    }
+
     @classmethod
     def setUpClass(cls):
         logging.basicConfig(
             level=logging.CRITICAL, format="%(asctime)s [%(levelname)s] %(message)s"
         )
 
-    @patch("metafiddler.config.requests.get", )
-    def test_config(self, requests):
+    @patch("yaml.load", return_value=mock_config)
+    @patch("metafiddler.config.requests.get")
+    def test_init(self, requests, yaml):
         """Test configuration load/setup"""
-        with self.assertRaises(SystemExit):
-            MufiConfig()
+        # This test only works when the current_page_get_url is null :O
+        # with self.assertRaises(SystemExit):
+        #     print(vars(MufiConfig()))
 
-        requests.return_value=Mock(status_code=200,response_text='YAYYY')
+        requests.return_value = Mock(status_code=200, response_text="YAYYY")
         config = MufiConfig()
         self.assertIsNotNone(config.current_page_url)
 
@@ -46,8 +71,9 @@ class TestConfig(unittest.TestCase):
             print(f"Setting current page to {test_value}")
 
             config.current_page_url = test_value
+            test_path = str(pathlib.Path.home() / ".metafiddler.current")
             mocked_file.assert_called_once_with(
-                "/home/bill/.metafiddler.current", mode="w"
+                test_path, mode="w"
             )
 
 

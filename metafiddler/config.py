@@ -8,7 +8,7 @@ import pathlib
 from pathlib import Path
 
 import base64
-import ruyaml as yaml
+import yaml
 import requests
 
 from metafiddler.mechanize import Browser
@@ -52,8 +52,9 @@ class MufiConfig:
 
         self._read_configfile()
         self._read_statefile()
-
+        
         if self.current_page_get_url:
+        
             logging.info("Polling remote store.")
             response = requests.get(url=self.current_page_get_url)
             if response.status_code == 200:
